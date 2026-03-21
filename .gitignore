@@ -1,0 +1,42 @@
+# Dependencies
+node_modules/
+.npm
+
+# Environment variables - NEVER commit these
+.env
+.env.local
+.env.*.local
+apps/api/.env
+apps/web/.env
+apps/pocketbase/.env
+
+# Build output
+dist/
+build/
+
+# PocketBase data (local database - do not commit)
+apps/pocketbase/pb_data/
+apps/pocketbase/pb_data.bak/
+
+# PocketBase binaries
+apps/pocketbase/pocketbase
+apps/pocketbase/pocketbase.linux-x86
+
+# Logs
+*.log
+logs/
+/tmp/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/settings.json
+.idea/
+*.swp
+*.swo
+
+# Vite cache
+.vite/
+apps/web/.vite/

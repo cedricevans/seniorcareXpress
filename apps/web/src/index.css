@@ -1,0 +1,112 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  font-family: "Plus Jakarta Sans", sans-serif;
+  overflow-x: clip;
+  background-color: hsl(var(--background));
+  color: hsl(var(--foreground));
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, h5, h6, .font-heading {
+  font-family: "Playfair Display", serif;
+  text-wrap: balance;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+@layer base {
+  :root {
+    /* Premium Blue */
+    --primary: 215 85% 25%;
+    --primary-foreground: 0 0% 100%;
+    
+    /* Elegant Yellow/Gold */
+    --secondary: 42 90% 55%;
+    --secondary-foreground: 215 85% 15%;
+    
+    /* Warm Accent */
+    --accent: 35 100% 60%;
+    --accent-foreground: 0 0% 100%;
+    
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    
+    --muted: 220 14% 96%;
+    --muted-foreground: 220 10% 45%;
+    
+    --background: 210 40% 98%; /* Slightly tinted background for portal */
+    --foreground: 220 20% 15%;
+    
+    --card: 0 0% 100%;
+    --card-foreground: 220 20% 15%;
+    
+    --popover: 0 0% 100%;
+    --popover-foreground: 220 20% 15%;
+    
+    --border: 220 13% 91%;
+    --input: 220 13% 91%;
+    --ring: 215 85% 25%;
+    --radius: 1rem;
+
+    /* Portal Specific */
+    --sidebar-bg: 0 0% 100%;
+    --sidebar-border: 220 13% 91%;
+  }
+  
+  .dark {
+    --primary: 215 85% 60%;
+    --primary-foreground: 220 20% 10%;
+    
+    --secondary: 42 90% 50%;
+    --secondary-foreground: 220 20% 10%;
+    
+    --accent: 35 100% 65%;
+    --accent-foreground: 220 20% 10%;
+    
+    --destructive: 0 84% 65%;
+    --destructive-foreground: 0 0% 100%;
+    
+    --muted: 220 20% 20%;
+    --muted-foreground: 220 15% 70%;
+    
+    --background: 220 25% 10%;
+    --foreground: 210 20% 98%;
+    
+    --card: 220 25% 14%;
+    --card-foreground: 210 20% 98%;
+    
+    --popover: 220 25% 14%;
+    --popover-foreground: 210 20% 98%;
+    
+    --border: 220 20% 25%;
+    --input: 220 20% 25%;
+    --ring: 215 85% 60%;
+
+    /* Portal Specific */
+    --sidebar-bg: 220 25% 12%;
+    --sidebar-border: 220 20% 20%;
+  }
+}
+
+@layer utilities {
+  .shadow-soft {
+    box-shadow: 0 8px 30px -4px rgba(0, 0, 0, 0.05);
+  }
+  .shadow-elegant {
+    box-shadow: 0 20px 40px -10px rgba(15, 35, 65, 0.1);
+  }
+  .dark .shadow-soft, .dark .shadow-elegant {
+    box-shadow: 0 8px 30px -4px rgba(0, 0, 0, 0.4);
+  }
+  .text-balance {
+    text-wrap: balance;
+  }
+}
