@@ -1,0 +1,49 @@
+services:
+  # Express API
+  - type: web
+    name: seniorcare-api
+    runtime: node
+    rootDir: apps/api
+    buildCommand: npm install
+    startCommand: node src/main.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3001
+      - key: PB_URL
+        fromService:
+          name: seniorcare-pocketbase
+          type: web
+          property: host
+      - key: PB_SUPERUSER_EMAIL
+        sync: false
+      - key: PB_SUPERUSER_PASSWORD
+        sync: false
+
+  # React Web (Static Site)
+  - type: web
+    name: seniorcare-web
+    runtime: static
+    rootDir: apps/web
+    buildCommand: npm install && npm run build
+    staticPublishPath: dist
+    envVars:
+      - key: VITE_POCKETBASE_URL
+        sync: false
+
+  # PocketBase
+  - type: web
+    name: seniorcare-pocketbase
+    runtime: docker
+    rootDir: apps/pocketbase
+    dockerfilePath: Dockerfile
+    disk:
+      name: pb-data
+      mountPath: /pb/pb_data
+      sizeGB: 10
+    envVars:
+      - key: PB_SUPERUSER_EMAIL
+        sync: false
+      - key: PB_SUPERUSER_PASSWORD
+        sync: false
