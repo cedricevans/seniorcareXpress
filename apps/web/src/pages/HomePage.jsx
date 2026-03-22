@@ -34,15 +34,15 @@ const HomePage = () => {
       {/* HERO SECTION */}
       <ParallaxSection 
         backgroundImage="https://horizons-cdn.hostinger.com/0f92c1a5-75e3-4878-84c5-4c29eda99ea0/998e20385080771dbf491b59f248bada.png"
-        height="min-h-[95vh]"
+        height="min-h-screen"
         overlay="bg-gradient-to-b from-slate-950/55 via-slate-900/35 to-slate-950/65"
       >
-        <div className="container mx-auto px-4 text-center">
+        <div className="container mx-auto px-4 text-center pt-24 pb-12">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
-            className="max-w-4xl mx-auto flex flex-col items-center"
+            className="max-w-4xl mx-auto flex flex-col items-center justify-center h-full"
           >
             <img 
               src="https://horizons-cdn.hostinger.com/0f92c1a5-75e3-4878-84c5-4c29eda99ea0/6cf179a531307fd05365d487c05a8a26.png" 
@@ -74,7 +74,7 @@ const HomePage = () => {
       </ParallaxSection>
 
       {/* SERVICES SECTION */}
-      <section ref={servicesRef} className="py-24 md:py-32 bg-slate-50 relative overflow-hidden">
+      <section ref={servicesRef} className="py-16 md:py-20 bg-slate-50 relative overflow-hidden">
         <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-primary/5 rounded-full blur-3xl -mr-64 -mt-64 pointer-events-none" />
         <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-secondary/10 rounded-full blur-3xl -ml-48 -mb-48 pointer-events-none" />
 
