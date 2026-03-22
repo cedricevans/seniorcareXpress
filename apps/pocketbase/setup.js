@@ -18,6 +18,7 @@ const SUPERUSER_EMAIL = process.env.PB_SUPERUSER_EMAIL || 'admin@seniorcare.com'
 const SUPERUSER_PASSWORD = process.env.PB_SUPERUSER_PASSWORD || 'Admin123!';
 
 let token = '';
+const collectionCache = new Map();
 
 async function pb(method, path, body) {
   const res = await fetch(`${PB_URL}${path}`, {
@@ -37,6 +38,35 @@ async function pb(method, path, body) {
     throw new Error(`${method} ${path} → ${res.status}: ${JSON.stringify(json)}`);
   }
   return json;
+}
+
+async function getCollection(name) {
+  if (collectionCache.has(name)) return collectionCache.get(name);
+  const collection = await pb('GET', `/api/collections/${name}`);
+  collectionCache.set(name, collection);
+  return collection;
+}
+
+async function getCollectionId(name) {
+  if (name === '_pb_users_auth_') {
+    return '_pb_users_auth_';
+  }
+  const collection = await getCollection(name);
+  return collection.id;
+}
+
+function withRelationIds(fields, relationMap = {}) {
+  return Promise.all(fields.map(async (field) => {
+    if (field.type !== 'relation' || !field.collectionId) {
+      return field;
+    }
+
+    const targetName = relationMap[field.name] || field.collectionId;
+    return {
+      ...field,
+      collectionId: await getCollectionId(targetName),
+    };
+  }));
 }
 
 // ─── 1. Auth ─────────────────────────────────────────────────────────────────
@@ -64,32 +94,72 @@ async function auth() {
 }
 
 // ─── 2. Create Collections ───────────────────────────────────────────────────
-async function createCollection(schema) {
+async function upsertCollection(schema) {
+  // Try GET first to see if collection already exists
+  let existing = null;
   try {
-    await pb('POST', '/api/collections', schema);
-    console.log(`  ✓ Created: ${schema.name}`);
-  } catch (err) {
-    if (err.message.includes('already exists') || err.message.includes('400')) {
-      console.log(`  · Exists:  ${schema.name}`);
-    } else {
-      console.error(`  ✗ Failed:  ${schema.name} — ${err.message}`);
+    existing = await pb('GET', `/api/collections/${schema.name}`);
+  } catch {
+    // doesn't exist yet
+  }
+
+  if (existing) {
+    // PATCH to update fields and rules
+    try {
+      // For auth collections, only send fields/rules — not type
+      const patchBody = existing.type === 'auth'
+        ? { fields: schema.fields, listRule: schema.listRule, viewRule: schema.viewRule, createRule: schema.createRule, updateRule: schema.updateRule, deleteRule: schema.deleteRule }
+        : schema;
+      await pb('PATCH', `/api/collections/${existing.id}`, patchBody);
+      console.log(`  ↺ Updated: ${schema.name}`);
+    } catch (patchErr) {
+      console.error(`  ✗ Failed update: ${schema.name} — ${patchErr.message}`);
+    }
+  } else {
+    // POST to create
+    try {
+      await pb('POST', '/api/collections', schema);
+      console.log(`  ✓ Created: ${schema.name}`);
+    } catch (createErr) {
+      console.error(`  ✗ Failed create: ${schema.name} — ${createErr.message}`);
     }
   }
+}
+
+async function createOrUpdateCollection({ schema, relationMap }) {
+  const fields = await withRelationIds(schema.fields, relationMap);
+  await upsertCollection({ ...schema, fields });
+  try {
+    const collection = await pb('GET', `/api/collections/${schema.name}`);
+    collectionCache.set(schema.name, collection);
+  } catch {
+    // ignore if create failed; caller will surface via logs
+  }
+}
+
+function schemaWithoutRules(schema) {
+  return {
+    ...schema,
+    listRule: null,
+    viewRule: null,
+    createRule: null,
+    updateRule: null,
+    deleteRule: null,
+  };
 }
 
 async function createCollections() {
   console.log('\n[2/3] Creating collections...');
 
-  // ── users (auth collection — extends built-in)
-  await createCollection({
+  const usersSchema = {
     name: 'users',
     type: 'auth',
     fields: [
       { name: 'name', type: 'text', required: true },
-      { name: 'avatar', type: 'file', options: { maxSelect: 1 } },
+      { name: 'avatar', type: 'file', maxSelect: 1 },
       {
         name: 'role', type: 'select', required: true,
-        options: { maxSelect: 1, values: ['admin', 'caregiver', 'family', 'patient'] }
+        maxSelect: 1, values: ['admin', 'caregiver', 'family', 'patient']
       },
       { name: 'phone', type: 'text' },
     ],
@@ -98,10 +168,9 @@ async function createCollections() {
     createRule: null,
     updateRule: '@request.auth.id = id || @request.auth.role = "admin"',
     deleteRule: '@request.auth.role = "admin"',
-  });
+  };
 
-  // ── contacts
-  await createCollection({
+  const contactsSchema = {
     name: 'contacts',
     type: 'base',
     fields: [
@@ -109,63 +178,60 @@ async function createCollections() {
       { name: 'email', type: 'email' },
       { name: 'phone', type: 'text' },
       { name: 'message', type: 'text' },
-      { name: 'status', type: 'select', options: { maxSelect: 1, values: ['new', 'read', 'archived'] } },
+      { name: 'status', type: 'select', maxSelect: 1, values: ['new', 'read', 'archived'] },
     ],
     listRule: '@request.auth.role = "admin"',
     viewRule: '@request.auth.role = "admin"',
     createRule: '',
     updateRule: '@request.auth.role = "admin"',
     deleteRule: '@request.auth.role = "admin"',
-  });
+  };
 
-  // ── patients
-  await createCollection({
+  const patientsSchema = {
     name: 'patients',
     type: 'base',
     fields: [
       { name: 'first_name', type: 'text', required: true },
       { name: 'last_name', type: 'text', required: true },
       { name: 'date_of_birth', type: 'date' },
-      { name: 'gender', type: 'select', options: { maxSelect: 1, values: ['male', 'female', 'other'] } },
+      { name: 'gender', type: 'select', maxSelect: 1, values: ['male', 'female', 'other'] },
       { name: 'address', type: 'text' },
       { name: 'phone', type: 'text' },
       { name: 'emergency_contact', type: 'text' },
       { name: 'medical_notes', type: 'text' },
-      { name: 'status', type: 'select', options: { maxSelect: 1, values: ['active', 'inactive', 'discharged'] } },
-      { name: 'user_id', type: 'relation', options: { collectionId: '_pb_users_auth_', cascadeDelete: false, minSelect: null, maxSelect: 1 } },
+      { name: 'status', type: 'select', maxSelect: 1, values: ['active', 'inactive', 'discharged'] },
+      { name: 'user_id', type: 'relation', collectionId: 'users', cascadeDelete: false, maxSelect: 1 },
     ],
     listRule: '@request.auth.id != "" && (@request.auth.role = "admin" || @collection.patient_assignments.caregiver_id = @request.auth.id || user_id = @request.auth.id)',
     viewRule: '@request.auth.id != ""',
     createRule: '@request.auth.role = "admin"',
     updateRule: '@request.auth.role = "admin" || @collection.patient_assignments.caregiver_id = @request.auth.id',
     deleteRule: '@request.auth.role = "admin"',
-  });
+  };
 
-  // ── patient_assignments
-  await createCollection({
+  const patientAssignmentsSchema = {
     name: 'patient_assignments',
     type: 'base',
     fields: [
-      { name: 'patient_id', type: 'relation', required: true, options: { collectionId: 'patients', cascadeDelete: true, maxSelect: 1 } },
-      { name: 'caregiver_id', type: 'relation', required: true, options: { collectionId: '_pb_users_auth_', cascadeDelete: false, maxSelect: 1 } },
+      { name: 'patient_id', type: 'relation', required: true, collectionId: 'patients', cascadeDelete: true, maxSelect: 1 },
+      { name: 'caregiver_id', type: 'relation', required: true, collectionId: 'users', cascadeDelete: false, maxSelect: 1 },
       { name: 'start_date', type: 'date' },
       { name: 'end_date', type: 'date' },
-      { name: 'status', type: 'select', options: { maxSelect: 1, values: ['active', 'inactive'] } },
+      { name: 'status', type: 'select', maxSelect: 1, values: ['active', 'inactive'] },
     ],
     listRule: '@request.auth.id != "" && (@request.auth.role = "admin" || caregiver_id = @request.auth.id)',
     viewRule: '@request.auth.id != ""',
     createRule: '@request.auth.role = "admin"',
     updateRule: '@request.auth.role = "admin"',
     deleteRule: '@request.auth.role = "admin"',
-  });
+  };
 
-  // ── family_links
-  await createCollection({
+  const familyLinksSchema = {
     name: 'family_links',
     type: 'base',
     fields: [
-      { name: 'patient_id', type: 'relation', required: true, options: { collectionId: 'patients', cascadeDelete: true, maxSelect: 1 } },
-      { name: 'family_user_id', type: 'relation', required: true, options: { collectionId: '_pb_users_auth_', cascadeDelete: false, maxSelect: 1 } },
+      { name: 'patient_id', type: 'relation', required: true, collectionId: 'patients', cascadeDelete: true, maxSelect: 1 },
+      { name: 'family_user_id', type: 'relation', required: true, collectionId: 'users', cascadeDelete: false, maxSelect: 1 },
       { name: 'relationship', type: 'text' },
     ],
     listRule: '@request.auth.id != "" && (@request.auth.role = "admin" || family_user_id = @request.auth.id)',
@@ -173,16 +239,15 @@ async function createCollections() {
     createRule: '@request.auth.role = "admin"',
     updateRule: '@request.auth.role = "admin"',
     deleteRule: '@request.auth.role = "admin"',
-  });
+  };
 
-  // ── care_updates
-  await createCollection({
+  const careUpdatesSchema = {
     name: 'care_updates',
     type: 'base',
     fields: [
-      { name: 'patient_id', type: 'relation', required: true, options: { collectionId: 'patients', cascadeDelete: true, maxSelect: 1 } },
-      { name: 'caregiver_id', type: 'relation', options: { collectionId: '_pb_users_auth_', cascadeDelete: false, maxSelect: 1 } },
-      { name: 'update_type', type: 'select', options: { maxSelect: 1, values: ['vitals', 'medication', 'activity', 'incident', 'general'] } },
+      { name: 'patient_id', type: 'relation', required: true, collectionId: 'patients', cascadeDelete: true, maxSelect: 1 },
+      { name: 'caregiver_id', type: 'relation', collectionId: 'users', cascadeDelete: false, maxSelect: 1 },
+      { name: 'update_type', type: 'select', maxSelect: 1, values: ['vitals', 'medication', 'activity', 'incident', 'general'] },
       { name: 'notes', type: 'text' },
       { name: 'vitals', type: 'json' },
     ],
@@ -191,32 +256,30 @@ async function createCollections() {
     createRule: '@request.auth.role = "admin" || @request.auth.role = "caregiver"',
     updateRule: '@request.auth.role = "admin" || caregiver_id = @request.auth.id',
     deleteRule: '@request.auth.role = "admin"',
-  });
+  };
 
-  // ── caregiver_notes
-  await createCollection({
+  const caregiverNotesSchema = {
     name: 'caregiver_notes',
     type: 'base',
     fields: [
-      { name: 'patient_id', type: 'relation', required: true, options: { collectionId: 'patients', cascadeDelete: true, maxSelect: 1 } },
-      { name: 'caregiver_id', type: 'relation', required: true, options: { collectionId: '_pb_users_auth_', cascadeDelete: false, maxSelect: 1 } },
+      { name: 'patient_id', type: 'relation', required: true, collectionId: 'patients', cascadeDelete: true, maxSelect: 1 },
+      { name: 'caregiver_id', type: 'relation', required: true, collectionId: 'users', cascadeDelete: false, maxSelect: 1 },
       { name: 'note', type: 'text', required: true },
-      { name: 'note_type', type: 'select', options: { maxSelect: 1, values: ['general', 'medical', 'behavioral', 'nutrition', 'activity'] } },
+      { name: 'note_type', type: 'select', maxSelect: 1, values: ['general', 'medical', 'behavioral', 'nutrition', 'activity'] },
     ],
     listRule: '@request.auth.id != ""',
     viewRule: '@request.auth.id != ""',
     createRule: '@request.auth.role = "caregiver" || @request.auth.role = "admin"',
     updateRule: '@request.auth.role = "admin" || caregiver_id = @request.auth.id',
     deleteRule: '@request.auth.role = "admin" || caregiver_id = @request.auth.id',
-  });
+  };
 
-  // ── messages
-  await createCollection({
+  const messagesSchema = {
     name: 'messages',
     type: 'base',
     fields: [
-      { name: 'sender_id', type: 'relation', required: true, options: { collectionId: '_pb_users_auth_', cascadeDelete: false, maxSelect: 1 } },
-      { name: 'recipient_id', type: 'relation', required: true, options: { collectionId: '_pb_users_auth_', cascadeDelete: false, maxSelect: 1 } },
+      { name: 'sender_id', type: 'relation', required: true, collectionId: 'users', cascadeDelete: false, maxSelect: 1 },
+      { name: 'recipient_id', type: 'relation', required: true, collectionId: 'users', cascadeDelete: false, maxSelect: 1 },
       { name: 'content', type: 'text', required: true },
       { name: 'read', type: 'bool' },
     ],
@@ -225,17 +288,16 @@ async function createCollections() {
     createRule: '@request.auth.id != ""',
     updateRule: 'sender_id = @request.auth.id',
     deleteRule: '@request.auth.role = "admin"',
-  });
+  };
 
-  // ── video_calls
-  await createCollection({
+  const videoCallsSchema = {
     name: 'video_calls',
     type: 'base',
     fields: [
-      { name: 'patient_id', type: 'relation', required: true, options: { collectionId: 'patients', cascadeDelete: true, maxSelect: 1 } },
-      { name: 'initiated_by', type: 'relation', options: { collectionId: '_pb_users_auth_', cascadeDelete: false, maxSelect: 1 } },
-      { name: 'participants', type: 'relation', options: { collectionId: '_pb_users_auth_', cascadeDelete: false, maxSelect: 10 } },
-      { name: 'status', type: 'select', options: { maxSelect: 1, values: ['scheduled', 'active', 'ended', 'missed'] } },
+      { name: 'patient_id', type: 'relation', required: true, collectionId: 'patients', cascadeDelete: true, maxSelect: 1 },
+      { name: 'initiated_by', type: 'relation', collectionId: 'users', cascadeDelete: false, maxSelect: 1 },
+      { name: 'participants', type: 'relation', collectionId: 'users', cascadeDelete: false, maxSelect: 10 },
+      { name: 'status', type: 'select', maxSelect: 1, values: ['scheduled', 'active', 'ended', 'missed'] },
       { name: 'started_at', type: 'date' },
       { name: 'ended_at', type: 'date' },
       { name: 'room_id', type: 'text' },
@@ -245,39 +307,37 @@ async function createCollections() {
     createRule: '@request.auth.id != ""',
     updateRule: '@request.auth.id != ""',
     deleteRule: '@request.auth.role = "admin"',
-  });
+  };
 
-  // ── appointments
-  await createCollection({
+  const appointmentsSchema = {
     name: 'appointments',
     type: 'base',
     fields: [
-      { name: 'patient_id', type: 'relation', required: true, options: { collectionId: 'patients', cascadeDelete: true, maxSelect: 1 } },
-      { name: 'caregiver_id', type: 'relation', options: { collectionId: '_pb_users_auth_', cascadeDelete: false, maxSelect: 1 } },
+      { name: 'patient_id', type: 'relation', required: true, collectionId: 'patients', cascadeDelete: true, maxSelect: 1 },
+      { name: 'caregiver_id', type: 'relation', collectionId: 'users', cascadeDelete: false, maxSelect: 1 },
       { name: 'title', type: 'text', required: true },
       { name: 'description', type: 'text' },
       { name: 'appointment_date', type: 'date', required: true },
       { name: 'appointment_time', type: 'text' },
       { name: 'duration_minutes', type: 'number' },
-      { name: 'status', type: 'select', options: { maxSelect: 1, values: ['scheduled', 'completed', 'cancelled', 'no-show'] } },
-      { name: 'appointment_type', type: 'select', options: { maxSelect: 1, values: ['check-up', 'medication', 'therapy', 'specialist', 'emergency', 'other'] } },
+      { name: 'status', type: 'select', maxSelect: 1, values: ['scheduled', 'completed', 'cancelled', 'no-show'] },
+      { name: 'appointment_type', type: 'select', maxSelect: 1, values: ['check-up', 'medication', 'therapy', 'specialist', 'emergency', 'other'] },
     ],
     listRule: '@request.auth.id != ""',
     viewRule: '@request.auth.id != ""',
     createRule: '@request.auth.role = "admin" || @request.auth.role = "caregiver"',
     updateRule: '@request.auth.role = "admin" || caregiver_id = @request.auth.id',
     deleteRule: '@request.auth.role = "admin"',
-  });
+  };
 
-  // ── medical_history
-  await createCollection({
+  const medicalHistorySchema = {
     name: 'medical_history',
     type: 'base',
     fields: [
-      { name: 'patient_id', type: 'relation', required: true, options: { collectionId: 'patients', cascadeDelete: true, maxSelect: 1 } },
+      { name: 'patient_id', type: 'relation', required: true, collectionId: 'patients', cascadeDelete: true, maxSelect: 1 },
       { name: 'condition', type: 'text', required: true },
       { name: 'diagnosed_date', type: 'date' },
-      { name: 'status', type: 'select', options: { maxSelect: 1, values: ['active', 'resolved', 'chronic'] } },
+      { name: 'status', type: 'select', maxSelect: 1, values: ['active', 'resolved', 'chronic'] },
       { name: 'notes', type: 'text' },
       { name: 'medications', type: 'json' },
     ],
@@ -286,14 +346,13 @@ async function createCollections() {
     createRule: '@request.auth.role = "admin" || @request.auth.role = "caregiver"',
     updateRule: '@request.auth.role = "admin" || @request.auth.role = "caregiver"',
     deleteRule: '@request.auth.role = "admin"',
-  });
+  };
 
-  // ── audit_logs
-  await createCollection({
+  const auditLogsSchema = {
     name: 'audit_logs',
     type: 'base',
     fields: [
-      { name: 'user_id', type: 'relation', options: { collectionId: '_pb_users_auth_', cascadeDelete: false, maxSelect: 1 } },
+      { name: 'user_id', type: 'relation', collectionId: 'users', cascadeDelete: false, maxSelect: 1 },
       { name: 'action', type: 'text', required: true },
       { name: 'collection_name', type: 'text' },
       { name: 'record_id', type: 'text' },
@@ -304,7 +363,32 @@ async function createCollections() {
     createRule: '@request.auth.id != ""',
     updateRule: null,
     deleteRule: '@request.auth.role = "admin"',
-  });
+  };
+
+  await createOrUpdateCollection({ schema: usersSchema });
+  await createOrUpdateCollection({ schema: contactsSchema });
+
+  await createOrUpdateCollection({ schema: schemaWithoutRules(patientsSchema) });
+  await createOrUpdateCollection({ schema: schemaWithoutRules(patientAssignmentsSchema) });
+  await createOrUpdateCollection({ schema: schemaWithoutRules(familyLinksSchema) });
+  await createOrUpdateCollection({ schema: schemaWithoutRules(careUpdatesSchema) });
+  await createOrUpdateCollection({ schema: schemaWithoutRules(caregiverNotesSchema) });
+  await createOrUpdateCollection({ schema: schemaWithoutRules(messagesSchema) });
+  await createOrUpdateCollection({ schema: schemaWithoutRules(videoCallsSchema) });
+  await createOrUpdateCollection({ schema: schemaWithoutRules(appointmentsSchema) });
+  await createOrUpdateCollection({ schema: schemaWithoutRules(medicalHistorySchema) });
+  await createOrUpdateCollection({ schema: schemaWithoutRules(auditLogsSchema) });
+
+  await createOrUpdateCollection({ schema: patientsSchema });
+  await createOrUpdateCollection({ schema: patientAssignmentsSchema });
+  await createOrUpdateCollection({ schema: familyLinksSchema });
+  await createOrUpdateCollection({ schema: careUpdatesSchema });
+  await createOrUpdateCollection({ schema: caregiverNotesSchema });
+  await createOrUpdateCollection({ schema: messagesSchema });
+  await createOrUpdateCollection({ schema: videoCallsSchema });
+  await createOrUpdateCollection({ schema: appointmentsSchema });
+  await createOrUpdateCollection({ schema: medicalHistorySchema });
+  await createOrUpdateCollection({ schema: auditLogsSchema });
 }
 
 // ─── 3. Seed Data ────────────────────────────────────────────────────────────

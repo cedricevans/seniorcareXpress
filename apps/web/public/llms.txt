@@ -1,0 +1,10 @@
+## Pages
+- [| SeniorCare Xpress](/placeholder): No description available
+- [About Us | SeniorCare Xpress](/about): No description available
+- [Admin Dashboard | SeniorCare Xpress](/admindashboard): No description available
+- [Careers | SeniorCare Xpress](/careers): Join our warm, supportive team and make a meaningful difference in the lives of seniors.
+- [Caregiver Portal | SeniorCare Xpress](/caregiverdashboard): No description available
+- [Contact Us | SeniorCare Xpress](/contact): No description available
+- [Family Portal | SeniorCare Xpress](/familydashboard): No description available
+- [Our Services | SeniorCare Xpress](/services): No description available
+- [SeniorCare Xpress | Empowering Independent Living](/home): Uplifting senior care focused on wellness, independence, and quality of life. Keeping families connected and seniors thriving.
