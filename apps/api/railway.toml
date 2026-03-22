@@ -1,6 +1,7 @@
 # Railway config for Express API service
 [build]
 builder = "NIXPACKS"
+buildCommand = "npm install"
 
 [deploy]
 startCommand = "node src/main.js"
