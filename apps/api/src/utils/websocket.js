@@ -8,7 +8,9 @@ import logger from './logger.js';
 if (typeof globalThis.EventSource === 'undefined') {
   try {
     const require = createRequire(import.meta.url);
-    globalThis.EventSource = require('eventsource');
+    const es = require('eventsource');
+    // eventsource exports { EventSource } as a named export
+    globalThis.EventSource = es.EventSource ?? es.default ?? es;
   } catch {
     logger.warn('eventsource polyfill not available — realtime subscriptions disabled');
   }
