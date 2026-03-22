@@ -25,6 +25,10 @@ const HomePage = () => {
       <Helmet>
         <title>SeniorCare Xpress | Empowering Independent Living</title>
         <meta name="description" content="Uplifting senior care focused on wellness, independence, and quality of life. Keeping families connected and seniors thriving." />
+        <meta name="keywords" content="senior care, home care, elder care, caregiver, family support, wellness" />
+        <meta property="og:title" content="SeniorCare Xpress" />
+        <meta property="og:description" content="Dedicated support that celebrates independence and enhances quality of life." />
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
       </Helmet>
 
       {/* HERO SECTION */}
