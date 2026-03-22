@@ -37,7 +37,7 @@ const AdminCarePlansPage = () => {
     setLoading(true);
     try {
       const [plans, pts, cgs] = await Promise.all([
-        pb.collection('care_plans').getFullList({ sort: '-created', expand: 'patient_id,caregiver_id', $autoCancel: false }),
+        pb.collection('care_plans').getFullList({ expand: 'patient_id,caregiver_id', $autoCancel: false }),
         pb.collection('patients').getFullList({ sort: 'first_name', $autoCancel: false }),
         pb.collection('users').getFullList({ filter: 'role = "caregiver"', sort: 'name', $autoCancel: false }),
       ]);

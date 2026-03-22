@@ -17,7 +17,6 @@ const AdminReportsPage = () => {
     setLoading(true);
     try {
       const res = await pb.collection('audit_logs').getList(1, 100, {
-        sort: '-created',
         $autoCancel: false,
       });
       setLogs(res.items);

@@ -29,7 +29,7 @@ const AdminPatientList = () => {
     setLoading(true);
     try {
       const records = await pb.collection('patients').getList(1, 100, {
-        sort: '-created',
+        sort: 'first_name',
         $autoCancel: false,
       });
       setPatients(records.items);

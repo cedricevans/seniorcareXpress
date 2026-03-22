@@ -113,7 +113,6 @@ const CaregiverPatientsView = () => {
     try {
       const updates = await pb.collection('care_updates').getList(1, 10, {
         filter: `patient_id="${patient.id}"`,
-        sort: '-created',
         expand: 'caregiver_id',
         $autoCancel: false,
       });
@@ -125,7 +124,6 @@ const CaregiverPatientsView = () => {
     try {
       const plans = await pb.collection('care_plans').getList(1, 1, {
         filter: `patient_id=\"${patient.id}\" && status=\"active\"`,
-        sort: '-created',
         expand: 'caregiver_id',
         $autoCancel: false,
       });
@@ -179,7 +177,6 @@ const CaregiverPatientsView = () => {
       setLogForm({ update_type: '', notes: '' });
       const updates = await pb.collection('care_updates').getList(1, 10, {
         filter: `patient_id="${selectedPatient.id}"`,
-        sort: '-created',
         expand: 'caregiver_id',
         $autoCancel: false,
       });

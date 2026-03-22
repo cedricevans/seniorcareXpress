@@ -29,7 +29,7 @@ const AdminCaregiverList = () => {
     try {
       const records = await pb.collection('users').getList(1, 50, {
         filter: 'role = "caregiver"',
-        sort: '-created',
+        sort: 'name',
         $autoCancel: false
       });
       setCaregivers(records.items);

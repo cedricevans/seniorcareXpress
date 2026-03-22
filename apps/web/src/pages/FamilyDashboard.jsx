@@ -35,7 +35,6 @@ const FamilyDashboard = () => {
           const [logsRes, historyRes, aptsRes, planRes] = await Promise.all([
             pb.collection('care_updates').getFullList({
               filter: `patient_id="${linkedPatient.id}"`,
-              sort: '-created',
               expand: 'caregiver_id',
               limit: 10,
               $autoCancel: false
@@ -52,7 +51,6 @@ const FamilyDashboard = () => {
             }),
             pb.collection('care_plans').getList(1, 1, {
               filter: `patient_id="${linkedPatient.id}" && status="active"`,
-              sort: '-created',
               expand: 'caregiver_id',
               $autoCancel: false
             })

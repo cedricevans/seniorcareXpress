@@ -28,7 +28,6 @@ const MessagesPage = () => {
     try {
       const res = await pb.collection('messages').getFullList({
         filter: `sender_id="${currentUser.id}" || recipient_id="${currentUser.id}"`,
-        sort: '-created',
         expand: 'sender_id,recipient_id',
         $autoCancel: false,
       });

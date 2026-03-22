@@ -33,7 +33,6 @@ const CaregiverAssignmentsTab = ({ patients, caregivers }) => {
     try {
       const res = await pb.collection('patient_assignments').getFullList({
         expand: 'patient_id,caregiver_id',
-        sort: '-created',
         $autoCancel: false,
       });
       setAssignments(res);
@@ -262,7 +261,6 @@ const FamilyLinksTab = ({ patients, familyUsers }) => {
     try {
       const res = await pb.collection('family_links').getFullList({
         expand: 'patient_id,family_user_id',
-        sort: '-created',
         $autoCancel: false,
       });
       setLinks(res);
