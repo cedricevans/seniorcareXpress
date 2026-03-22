@@ -11,6 +11,7 @@
   "dependencies": {
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
+    "eventsource": "^4.1.0",
     "express": "^5.0.1",
     "helmet": "^8.0.0",
     "morgan": "^1.10.0",

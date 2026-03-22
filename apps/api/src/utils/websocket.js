@@ -1,7 +1,18 @@
 import 'dotenv/config';
+import { createRequire } from 'module';
 import { WebSocketServer } from 'ws';
 import pb from './pocketbaseClient.js';
 import logger from './logger.js';
+
+// Polyfill EventSource for Node.js (required by PocketBase realtime)
+if (typeof globalThis.EventSource === 'undefined') {
+  try {
+    const require = createRequire(import.meta.url);
+    globalThis.EventSource = require('eventsource');
+  } catch {
+    logger.warn('eventsource polyfill not available — realtime subscriptions disabled');
+  }
+}
 
 let wss = null;
 const clients = new Map(); // Map of userId -> Set of WebSocket connections
@@ -53,32 +64,23 @@ const initWebSocket = (server) => {
 };
 
 const subscribeToCollectionChanges = async () => {
-  try {
-    // Subscribe to care_updates
-    pb.collection('care_updates').subscribe('*', (e) => {
-      if (e.action === 'create') {
-        broadcastEvent('careUpdateAdded', e.record);
-      }
-    });
+  const collections = [
+    { name: 'care_updates', event: 'careUpdateAdded' },
+    { name: 'messages',     event: 'messageReceived' },
+    { name: 'video_calls',  event: 'videoCallScheduled' },
+  ];
 
-    // Subscribe to messages
-    pb.collection('messages').subscribe('*', (e) => {
-      if (e.action === 'create') {
-        broadcastEvent('messageReceived', e.record);
-      }
-    });
-
-    // Subscribe to video_calls
-    pb.collection('video_calls').subscribe('*', (e) => {
-      if (e.action === 'create') {
-        broadcastEvent('videoCallScheduled', e.record);
-      }
-    });
-
-    logger.info('WebSocket subscriptions initialized');
-  } catch (error) {
-    logger.error('Error subscribing to PocketBase collections:', error);
+  for (const { name, event } of collections) {
+    try {
+      await pb.collection(name).subscribe('*', (e) => {
+        if (e.action === 'create') broadcastEvent(event, e.record);
+      });
+    } catch (err) {
+      logger.warn(`Realtime subscribe skipped for '${name}': ${err.message}`);
+    }
   }
+
+  logger.info('WebSocket subscriptions initialized');
 };
 
 const broadcastEvent = (eventType, data) => {
