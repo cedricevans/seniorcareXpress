@@ -202,7 +202,7 @@ async function createCollections() {
       { name: 'status', type: 'select', maxSelect: 1, values: ['active', 'inactive', 'discharged'] },
       { name: 'user_id', type: 'relation', collectionId: 'users', cascadeDelete: false, maxSelect: 1 },
     ],
-    listRule: '@request.auth.id != "" && (@request.auth.role = "admin" || @collection.patient_assignments.caregiver_id = @request.auth.id || user_id = @request.auth.id)',
+    listRule: '@request.auth.id != "" && (@request.auth.role = "admin" || @collection.patient_assignments.caregiver_id = @request.auth.id || @collection.family_links.family_user_id = @request.auth.id || user_id = @request.auth.id)',
     viewRule: '@request.auth.id != ""',
     createRule: '@request.auth.role = "admin"',
     updateRule: '@request.auth.role = "admin" || @collection.patient_assignments.caregiver_id = @request.auth.id',
