@@ -2,7 +2,6 @@
 import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet';
 import { useLocation } from 'react-router-dom';
-import CaregiverLayout from '@/components/CaregiverLayout.jsx';
 import CaregiverDashboardView from '@/components/CaregiverDashboardView.jsx';
 import CaregiverPatientsView from '@/components/CaregiverPatientsView.jsx';
 import CaregiverAppointmentsView from '@/components/CaregiverAppointmentsView.jsx';
@@ -56,9 +55,7 @@ const CaregiverDashboard = () => {
         </div>
       </div>
 
-      <CaregiverLayout currentView={currentView} onNavigate={setCurrentView}>
-        {renderView()}
-      </CaregiverLayout>
+      {renderView()}
     </div>
   );
 };
