@@ -15,6 +15,8 @@ import AboutPage from './pages/AboutPage.jsx';
 import ServicesPage from './pages/ServicesPage.jsx';
 import ContactPage from './pages/ContactPage.jsx';
 import LoginPage from './pages/LoginPage.jsx';
+import VeteransPage from './pages/VeteransPage.jsx';
+import CareersPage from './pages/CareersPage.jsx';
 
 // Portal Dashboards
 import AdminDashboard from './pages/AdminDashboard.jsx';
@@ -47,6 +49,8 @@ function App() {
           <Route path="/services" element={<PublicLayout><ServicesPage /></PublicLayout>} />
           <Route path="/contact" element={<PublicLayout><ContactPage /></PublicLayout>} />
           <Route path="/login" element={<PublicLayout><LoginPage /></PublicLayout>} />
+          <Route path="/veterans" element={<PublicLayout><VeteransPage /></PublicLayout>} />
+          <Route path="/careers" element={<PublicLayout><CareersPage /></PublicLayout>} />
 
           {/* Admin Portal Routes */}
           <Route path="/admin" element={<ProtectedRoute allowedRoles={['admin']}><PortalLayout><AdminDashboard /></PortalLayout></ProtectedRoute>} />

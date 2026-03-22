@@ -34,6 +34,8 @@ const Footer = () => {
             <ul className="space-y-4">
               <li><Link to="/" className="text-slate-400 hover:text-secondary transition-colors">Home</Link></li>
               <li><Link to="/services" className="text-slate-400 hover:text-secondary transition-colors">Services</Link></li>
+              <li><Link to="/veterans" className="text-slate-400 hover:text-secondary transition-colors">Veterans Benefits</Link></li>
+              <li><Link to="/careers" className="text-slate-400 hover:text-secondary transition-colors">Careers</Link></li>
               <li><Link to="/about" className="text-slate-400 hover:text-secondary transition-colors">About Us</Link></li>
               <li><Link to="/contact" className="text-slate-400 hover:text-secondary transition-colors">Contact</Link></li>
             </ul>
@@ -56,15 +58,15 @@ const Footer = () => {
             <ul className="space-y-4">
               <li className="flex items-start gap-3 text-slate-400">
                 <MapPin className="h-5 w-5 mt-0.5 shrink-0 text-secondary" />
-                <span>123 Care Avenue, Suite 100<br/>Wellness City, ST 12345</span>
+                <span>P.O. Box 18442<br/>Fairfield, OH 45018</span>
               </li>
               <li className="flex items-center gap-3 text-slate-400">
                 <Phone className="h-5 w-5 shrink-0 text-secondary" />
-                <span>(555) 123-4567</span>
+                <a href="tel:5136877866" className="hover:text-white transition-colors">513.687.7866</a>
               </li>
               <li className="flex items-center gap-3 text-slate-400">
                 <Mail className="h-5 w-5 shrink-0 text-secondary" />
-                <span>hello@seniorcarexpress.com</span>
+                <a href="mailto:contact@seniorcarexpress.com" className="hover:text-white transition-colors">contact@seniorcarexpress.com</a>
               </li>
             </ul>
           </div>

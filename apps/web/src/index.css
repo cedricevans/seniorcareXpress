@@ -20,6 +20,7 @@ h1, h2, h3, h4, h5, h6, .font-heading {
 
 html {
   scroll-behavior: smooth;
+  font-size: 18px; /* base 16px + 2pts */
 }
 
 @layer base {
