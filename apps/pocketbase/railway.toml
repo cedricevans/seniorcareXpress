@@ -1,7 +1,7 @@
 # Railway config for PocketBase service
 [build]
 builder = "DOCKERFILE"
-dockerfilePath = "apps/pocketbase/Dockerfile"
+dockerfilePath = "Dockerfile"
 
 [deploy]
 startCommand = "/bin/sh -c '/app/pocketbase serve --http=0.0.0.0:${PORT:-8090} --hooksDir=/app/pb_hooks --hooksWatch=false'"
