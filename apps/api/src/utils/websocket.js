@@ -1,10 +1,12 @@
 import 'dotenv/config';
-import EventSource from 'eventsource';
+import { createRequire } from 'module';
 import { WebSocketServer } from 'ws';
 import pb from './pocketbaseClient.js';
 import logger from './logger.js';
 
-// Polyfill EventSource for Node.js (required by PocketBase realtime subscriptions)
+// Polyfill EventSource for Node.js ESM (required by PocketBase realtime subscriptions)
+const require = createRequire(import.meta.url);
+const EventSource = require('eventsource');
 if (typeof globalThis.EventSource === 'undefined') {
   globalThis.EventSource = EventSource;
 }
