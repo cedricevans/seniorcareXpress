@@ -263,7 +263,7 @@ const HomePage = () => {
             >
               <div className="rounded-3xl overflow-hidden shadow-2xl">
                 <img
-                  src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?q=80&w=1000&auto=format&fit=crop"
+                  src="/elder-care-planning.jpg"
                   alt="SeniorCare Xpress elder care planning"
                   className="w-full h-96 object-cover"
                 />
