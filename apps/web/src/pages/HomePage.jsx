@@ -66,96 +66,159 @@ const HomePage = () => {
         </div>
       </ParallaxSection>
 
-      {/* SERVICES SECTION (Bento Grid with Parallax) */}
-      <section ref={servicesRef} className="py-24 md:py-32 bg-slate-50 relative overflow-hidden">
-        <div className="container mx-auto px-4">
+      {/* SERVICES SECTION */}
+      <section ref={servicesRef} className="py-24 md:py-32 bg-slate-950 relative overflow-hidden">
+        {/* Subtle background texture */}
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-primary/10 via-transparent to-transparent pointer-events-none" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,_var(--tw-gradient-stops))] from-secondary/5 via-transparent to-transparent pointer-events-none" />
+
+        <div className="container mx-auto px-4 relative z-10">
           <div className="text-center max-w-3xl mx-auto mb-20">
-            <h2 className="text-4xl md:text-5xl font-heading font-bold text-slate-900 mb-6">Support for an Active, Fulfilling Life</h2>
-            <p className="text-lg text-slate-600">Tailored companionship and assistance designed to maintain dignity, encourage mobility, and foster everyday joy.</p>
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5 }}
+              className="text-secondary font-medium tracking-widest uppercase text-sm mb-4"
+            >
+              What We Offer
+            </motion.p>
+            <motion.h2
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.1 }}
+              className="text-4xl md:text-5xl font-heading font-bold text-white mb-6"
+            >
+              Support for an Active, <span className="text-secondary italic font-normal">Fulfilling Life</span>
+            </motion.h2>
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="text-lg text-slate-400"
+            >
+              Tailored companionship and assistance designed to maintain dignity, encourage mobility, and foster everyday joy.
+            </motion.p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-12 gap-6 max-w-6xl mx-auto">
             {/* Large Card 1 */}
-            <motion.div style={{ y: y1 }} className="md:col-span-7 h-full">
-              <Card className="h-full overflow-hidden border-0 shadow-elegant group rounded-3xl">
+            <motion.div
+              style={{ y: y1 }}
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.7 }}
+              className="md:col-span-7 h-full"
+            >
+              <div className="h-full overflow-hidden group rounded-3xl border border-white/10 bg-slate-900 shadow-2xl">
                 <div className="relative h-64 overflow-hidden">
-                  <div className="absolute inset-0 bg-slate-900/20 group-hover:bg-transparent transition-colors duration-500 z-10" />
-                  <img 
-                    src="https://images.unsplash.com/photo-1603129473525-4cd6f36fe057?q=80&w=1000&auto=format&fit=crop" 
-                    alt="Positive Caregiver Moments" 
+                  <div className="absolute inset-0 bg-gradient-to-b from-transparent to-slate-900/80 z-10" />
+                  <img
+                    src="https://images.unsplash.com/photo-1603129473525-4cd6f36fe057?q=80&w=1000&auto=format&fit=crop"
+                    alt="Positive Caregiver Moments"
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                   />
                 </div>
-                <CardContent className="p-8 bg-white">
-                  <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center mb-6">
+                <div className="p-8">
+                  <div className="w-12 h-12 rounded-2xl bg-primary/20 flex items-center justify-center mb-6 border border-primary/30">
                     <Sun className="w-6 h-6 text-primary" />
                   </div>
-                  <h3 className="text-2xl font-heading font-bold mb-3">Wellness & Lifestyle Support</h3>
-                  <p className="text-slate-600 leading-relaxed">Personalized assistance that respects daily routines, encouraging independence while ensuring comfort. We focus on what our clients *can* do, celebrating every achievement.</p>
-                </CardContent>
-              </Card>
+                  <h3 className="text-2xl font-heading font-bold mb-3 text-white">Wellness & Lifestyle Support</h3>
+                  <p className="text-slate-400 leading-relaxed">Personalized assistance that respects daily routines, encouraging independence while ensuring comfort. We focus on what our clients can do, celebrating every achievement.</p>
+                </div>
+              </div>
             </motion.div>
 
             {/* Small Card 1 */}
-            <motion.div style={{ y: y2 }} className="md:col-span-5 h-full">
-              <Card className="h-full border-0 shadow-elegant group rounded-3xl bg-primary text-primary-foreground overflow-hidden relative">
+            <motion.div
+              style={{ y: y2 }}
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.7, delay: 0.1 }}
+              className="md:col-span-5 h-full"
+            >
+              <div className="h-full rounded-3xl bg-gradient-to-br from-primary to-primary/70 border border-primary/30 shadow-2xl shadow-primary/20 overflow-hidden relative p-8 flex flex-col justify-center">
                 <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full blur-3xl -mr-20 -mt-20" />
-                <CardContent className="p-8 relative z-10 flex flex-col justify-center h-full">
-                  <div className="w-12 h-12 rounded-2xl bg-white/20 flex items-center justify-center mb-6 backdrop-blur-sm">
+                <div className="relative z-10">
+                  <div className="w-12 h-12 rounded-2xl bg-white/20 flex items-center justify-center mb-6 backdrop-blur-sm border border-white/20">
                     <Sparkles className="w-6 h-6 text-secondary" />
                   </div>
-                  <h3 className="text-2xl font-heading font-bold mb-3">Health Routine Management</h3>
+                  <h3 className="text-2xl font-heading font-bold mb-3 text-white">Health Routine Management</h3>
                   <p className="text-primary-foreground/80 leading-relaxed">Seamless support for daily health routines and wellness goals, providing peace of mind so you can focus on enjoying life's beautiful moments.</p>
-                </CardContent>
-              </Card>
+                </div>
+              </div>
             </motion.div>
 
             {/* Small Card 2 */}
-            <motion.div style={{ y: y3 }} className="md:col-span-4 h-full">
-              <Card className="h-full border-0 shadow-elegant group rounded-3xl hover:-translate-y-2 transition-transform duration-300">
-                <CardContent className="p-8">
-                  <div className="w-12 h-12 rounded-2xl bg-secondary/20 flex items-center justify-center mb-6">
-                    <Shield className="w-6 h-6 text-secondary-foreground" />
-                  </div>
-                  <h3 className="text-xl font-heading font-bold mb-3">24/7 Peace of Mind</h3>
-                  <p className="text-slate-600 text-sm leading-relaxed">Always-available support ensuring safety and confidence, empowering a worry-free, independent lifestyle for your loved ones.</p>
-                </CardContent>
-              </Card>
+            <motion.div
+              style={{ y: y3 }}
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.7, delay: 0.2 }}
+              className="md:col-span-4 h-full"
+            >
+              <div className="h-full rounded-3xl border border-white/10 bg-slate-900 shadow-2xl p-8 hover:-translate-y-2 transition-transform duration-300">
+                <div className="w-12 h-12 rounded-2xl bg-secondary/20 flex items-center justify-center mb-6 border border-secondary/30">
+                  <Shield className="w-6 h-6 text-secondary" />
+                </div>
+                <h3 className="text-xl font-heading font-bold mb-3 text-white">24/7 Peace of Mind</h3>
+                <p className="text-slate-400 text-sm leading-relaxed">Always-available support ensuring safety and confidence, empowering a worry-free, independent lifestyle for your loved ones.</p>
+              </div>
             </motion.div>
 
             {/* Large Card 2 */}
-            <motion.div style={{ y: y1 }} className="md:col-span-8 h-full">
-              <Card className="h-full overflow-hidden border-0 shadow-elegant group rounded-3xl flex flex-col sm:flex-row">
+            <motion.div
+              style={{ y: y1 }}
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.7, delay: 0.3 }}
+              className="md:col-span-8 h-full"
+            >
+              <div className="h-full overflow-hidden rounded-3xl border border-white/10 bg-slate-900 shadow-2xl group flex flex-col sm:flex-row">
                 <div className="sm:w-2/5 relative overflow-hidden min-h-[200px]">
-                  <img 
-                    src="https://images.unsplash.com/photo-1654702761561-d6d64d4227a1?q=80&w=800&auto=format&fit=crop" 
-                    alt="Family Communication" 
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent to-slate-900/60 z-10" />
+                  <img
+                    src="https://images.unsplash.com/photo-1654702761561-d6d64d4227a1?q=80&w=800&auto=format&fit=crop"
+                    alt="Family Communication"
                     className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                   />
                 </div>
-                <CardContent className="p-8 sm:w-3/5 bg-white flex flex-col justify-center">
-                  <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center mb-6">
+                <div className="p-8 sm:w-3/5 flex flex-col justify-center">
+                  <div className="w-12 h-12 rounded-2xl bg-primary/20 flex items-center justify-center mb-6 border border-primary/30">
                     <MessageSquare className="w-6 h-6 text-primary" />
                   </div>
-                  <h3 className="text-2xl font-heading font-bold mb-3">Connected Care</h3>
-                  <p className="text-slate-600 leading-relaxed">Stay close to the moments that matter. Share updates, photos, and joy seamlessly with our dedicated family portal, keeping everyone in the loop.</p>
-                </CardContent>
-              </Card>
+                  <h3 className="text-2xl font-heading font-bold mb-3 text-white">Connected Care</h3>
+                  <p className="text-slate-400 leading-relaxed">Stay close to the moments that matter. Share updates, photos, and joy seamlessly with our dedicated family portal, keeping everyone in the loop.</p>
+                </div>
+              </div>
             </motion.div>
 
-            {/* Small Card 3 */}
-            <motion.div style={{ y: y2 }} className="md:col-span-12 lg:col-span-8 lg:col-start-3 mt-6">
-              <Card className="border-0 shadow-elegant group rounded-3xl bg-white hover:shadow-2xl transition-shadow duration-300">
-                <CardContent className="p-8 flex flex-col sm:flex-row items-center gap-6 text-center sm:text-left">
-                  <div className="w-16 h-16 rounded-full bg-accent/20 flex items-center justify-center shrink-0">
-                    <Users className="w-8 h-8 text-accent-foreground" />
+            {/* Bottom Card */}
+            <motion.div
+              style={{ y: y2 }}
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.7, delay: 0.4 }}
+              className="md:col-span-12 lg:col-span-8 lg:col-start-3 mt-2"
+            >
+              <div className="rounded-3xl border border-white/10 bg-slate-900 shadow-2xl hover:border-secondary/30 transition-colors duration-300">
+                <div className="p-8 flex flex-col sm:flex-row items-center gap-6 text-center sm:text-left">
+                  <div className="w-16 h-16 rounded-full bg-secondary/20 flex items-center justify-center shrink-0 border border-secondary/30">
+                    <Users className="w-8 h-8 text-secondary" />
                   </div>
                   <div>
-                    <h3 className="text-2xl font-heading font-bold mb-2">Active Living & Joy</h3>
-                    <p className="text-slate-600">Engaging experiences, hobbies, and meaningful companionship designed to inspire joy, maintain mobility, and cultivate a vibrant daily life.</p>
+                    <h3 className="text-2xl font-heading font-bold mb-2 text-white">Active Living & Joy</h3>
+                    <p className="text-slate-400">Engaging experiences, hobbies, and meaningful companionship designed to inspire joy, maintain mobility, and cultivate a vibrant daily life.</p>
                   </div>
-                </CardContent>
-              </Card>
+                </div>
+              </div>
             </motion.div>
           </div>
         </div>
