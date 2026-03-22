@@ -19,7 +19,7 @@ const AdminDashboard = () => {
         const [patients, caregivers, appointments, encounters] = await Promise.all([
           pb.collection('patients').getList(1, 1, { $autoCancel: false }),
           pb.collection('users').getList(1, 1, { filter: 'role="caregiver"', $autoCancel: false }),
-          pb.collection('appointments').getList(1, 1, { filter: `appointment_date >= "${today}"`, $autoCancel: false }),
+          pb.collection('appointments').getList(1, 1, { filter: `appointment_date >= "${today} 00:00:00.000Z" && status = "scheduled"`, $autoCancel: false }),
           pb.collection('encounters').getList(1, 1, { $autoCancel: false })
         ]);
         
