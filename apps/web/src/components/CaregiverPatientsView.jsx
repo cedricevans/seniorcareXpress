@@ -111,8 +111,10 @@ const CaregiverPatientsView = () => {
     setDetailOpen(true);
     setLogForm({ update_type: '', notes: '' });
     try {
-      const updates = await pb.collection('care_updates').getList(1, 10, {
-        filter: `patient_id="${patient.id}"`,
+      // Get past 30 days of updates
+      const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
+      const updates = await pb.collection('care_updates').getList(1, 100, {
+        filter: `patient_id="${patient.id}" && created >= "${thirtyDaysAgo}"`,
         expand: 'caregiver_id',
         $autoCancel: false,
       });

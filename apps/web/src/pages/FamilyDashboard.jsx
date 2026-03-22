@@ -34,9 +34,9 @@ const FamilyDashboard = () => {
           // 2. Fetch related data in parallel
           const [logsRes, historyRes, aptsRes, planRes] = await Promise.all([
             pb.collection('care_updates').getFullList({
-              filter: `patient_id="${linkedPatient.id}"`,
+              filter: `patient_id="${linkedPatient.id}" && created >= "${new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString()}"`,
               expand: 'caregiver_id',
-              limit: 10,
+              limit: 100,
               $autoCancel: false
             }),
             pb.collection('medical_history').getFullList({
