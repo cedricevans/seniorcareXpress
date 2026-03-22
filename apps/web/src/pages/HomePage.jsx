@@ -263,7 +263,7 @@ const HomePage = () => {
             >
               <div className="rounded-3xl overflow-hidden shadow-2xl">
                 <img
-                  src="http://www.seniorcarexpress.com/wp-content/uploads/2020/01/elder-care-planning.jpg"
+                  src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?q=80&w=1000&auto=format&fit=crop"
                   alt="SeniorCare Xpress elder care planning"
                   className="w-full h-96 object-cover"
                 />

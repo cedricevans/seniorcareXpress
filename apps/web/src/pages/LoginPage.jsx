@@ -99,7 +99,7 @@ const LoginPage = () => {
               For demo purposes, use:<br/>
               admin@seniorcare.com / caregiver@seniorcare.com<br/>
               family@seniorcare.com / patient@seniorcare.com<br/>
-              (Password: Password123!)
+              (Password: Admin123!)
             </p>
           </CardFooter>
         </Card>
