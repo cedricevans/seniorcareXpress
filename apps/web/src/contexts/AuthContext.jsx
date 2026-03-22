@@ -21,24 +21,27 @@ export const AuthProvider = ({ children }) => {
       return null;
     }
   });
+  const [isAuthenticated, setIsAuthenticated] = useState(() => {
+    try { return pb.authStore.isValid; } catch { return false; }
+  });
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     try {
       if (pb.authStore.isValid && pb.authStore.model) {
         setCurrentUser(pb.authStore.model);
+        setIsAuthenticated(true);
       }
 
       const unsubscribe = pb.authStore.onChange((token, model) => {
         setCurrentUser(model || null);
+        setIsAuthenticated(!!token && !!model);
       });
 
       setLoading(false);
 
       return () => {
-        try {
-          unsubscribe();
-        } catch (error) {
+        try { unsubscribe(); } catch (error) {
           console.error('Error unsubscribing from auth changes:', error);
         }
       };
@@ -52,6 +55,7 @@ export const AuthProvider = ({ children }) => {
     try {
       const authData = await pb.collection('users').authWithPassword(email, password, { $autoCancel: false });
       setCurrentUser(authData.record);
+      setIsAuthenticated(true);
       return authData;
     } catch (error) {
       console.error('Login error:', error);
@@ -63,6 +67,7 @@ export const AuthProvider = ({ children }) => {
     try {
       pb.authStore.clear();
       setCurrentUser(null);
+      setIsAuthenticated(false);
       window.location.href = '/login';
     } catch (error) {
       console.error('Logout error:', error);
@@ -82,17 +87,15 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const getUserRole = () => {
-    return currentUser?.role || null;
-  };
+  const getUserRole = () => currentUser?.role || null;
 
   const value = {
     currentUser,
     login,
     logout,
     signup,
-    isAuthenticated: pb.authStore.isValid,
-    role: getUserRole(),
+    isAuthenticated,
+    role: currentUser?.role || null,
     getUserRole,
     loading
   };

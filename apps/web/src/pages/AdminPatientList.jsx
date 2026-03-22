@@ -28,10 +28,14 @@ const AdminPatientList = () => {
   const fetchPatients = async () => {
     setLoading(true);
     try {
-      const records = await pb.collection('patients').getList(1, 100, { sort: '-created' });
+      const records = await pb.collection('patients').getList(1, 100, {
+        sort: '-created',
+        $autoCancel: false,
+      });
       setPatients(records.items);
     } catch (error) {
-      toast.error('Failed to load patients');
+      console.error('Failed to load patients:', error);
+      toast.error(`Failed to load patients: ${error?.message || 'Check your connection and permissions'}`);
     } finally {
       setLoading(false);
     }
@@ -70,27 +74,35 @@ const AdminPatientList = () => {
       return;
     }
     try {
+      const payload = {
+        ...formData,
+        date_of_birth: formData.date_of_birth || null,
+        gender: formData.gender || null,
+        status: formData.status || 'active',
+      };
       if (selectedPatient) {
-        await pb.collection('patients').update(selectedPatient.id, formData);
+        await pb.collection('patients').update(selectedPatient.id, payload, { $autoCancel: false });
         toast.success('Patient updated');
       } else {
-        await pb.collection('patients').create(formData);
+        await pb.collection('patients').create(payload, { $autoCancel: false });
         toast.success('Patient added');
       }
       setIsDialogOpen(false);
       fetchPatients();
     } catch (error) {
-      toast.error(error.message || 'Save failed');
+      console.error('Save patient error:', error);
+      toast.error(error?.message || 'Save failed');
     }
   };
 
   const handleDelete = async () => {
     try {
-      await pb.collection('patients').delete(selectedPatient.id);
+      await pb.collection('patients').delete(selectedPatient.id, { $autoCancel: false });
       toast.success('Patient deleted');
       setIsDeleteDialogOpen(false);
       fetchPatients();
-    } catch {
+    } catch (error) {
+      console.error('Delete patient error:', error);
       toast.error('Failed to delete patient');
     }
   };

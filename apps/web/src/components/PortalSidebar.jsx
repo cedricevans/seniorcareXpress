@@ -11,7 +11,8 @@ import {
   MessageSquare, 
   Activity,
   Settings,
-  PieChart
+  PieChart,
+  UserCheck
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -27,6 +28,7 @@ const PortalSidebar = ({ isOpen, onClose }) => {
           { name: 'Patients', path: '/admin/patients', icon: Users },
           { name: 'Caregivers', path: '/admin/caregivers', icon: Activity },
           { name: 'Appointments', path: '/admin/appointments', icon: Calendar },
+          { name: 'Assignments', path: '/admin/assignments', icon: UserCheck },
           { name: 'Analytics', path: '/admin/analytics', icon: PieChart },
         ];
       case 'caregiver':

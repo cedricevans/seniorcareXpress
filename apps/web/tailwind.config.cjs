@@ -61,6 +61,9 @@ module.exports = {
           ring: "hsl(var(--sidebar-ring))",
         },
       },
+      fontFamily: {
+        script: ['"Dancing Script"', 'cursive'],
+      },
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",

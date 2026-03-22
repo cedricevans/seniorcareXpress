@@ -8,7 +8,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Loader2, FileText, Utensils, Droplets, Activity, Pill, HeartPulse, CheckCircle2 } from 'lucide-react';
+import { Loader2, FileText, Utensils, Droplets, Activity, Pill, HeartPulse, CheckCircle2, Smile, BedDouble, Accessibility, AlertTriangle, NotebookPen, Dumbbell } from 'lucide-react';
 import { toast } from 'sonner';
 
 const CaregiverCareNotesForm = ({ patients, onSuccess }) => {
@@ -24,12 +24,26 @@ const CaregiverCareNotesForm = ({ patients, onSuccess }) => {
   const updateTypes = [
     { id: 'feeding', label: 'Feeding/Meals', icon: Utensils },
     { id: 'bathing', label: 'Bathing/Hygiene', icon: Droplets },
-    { id: 'exercise', label: 'Exercise/Mobility', icon: Activity },
+    { id: 'grooming', label: 'Grooming', icon: Smile },
+    { id: 'toileting', label: 'Toileting', icon: Accessibility },
+    { id: 'exercise', label: 'Exercise', icon: Dumbbell },
+    { id: 'mobility', label: 'Mobility', icon: Activity },
+    { id: 'sleep', label: 'Sleep/Rest', icon: BedDouble },
+    { id: 'mood', label: 'Mood/Behavior', icon: HeartPulse },
+    { id: 'social_activity', label: 'Social Activity', icon: CheckCircle2 },
     { id: 'medication', label: 'Medication', icon: Pill },
     { id: 'vitals', label: 'Vitals Check', icon: HeartPulse },
-    { id: 'activity', label: 'Social Activity', icon: CheckCircle2 },
-    { id: 'other', label: 'Other', icon: CheckCircle2 },
+    { id: 'incident', label: 'Incident', icon: AlertTriangle },
+    { id: 'general', label: 'General', icon: NotebookPen },
   ];
+
+  const mapNoteType = (type) => {
+    if (['vitals', 'medication'].includes(type)) return 'medical';
+    if (['feeding', 'bathing', 'grooming', 'toileting', 'exercise', 'mobility', 'sleep', 'mood', 'social_activity', 'incident'].includes(type)) {
+      return type;
+    }
+    return 'general';
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -44,7 +58,7 @@ const CaregiverCareNotesForm = ({ patients, onSuccess }) => {
       await pb.collection('care_updates').create({
         patient_id: formData.patient_id,
         caregiver_id: currentUser.id,
-        update_type: formData.update_type === 'feeding' ? 'activity' : formData.update_type === 'other' ? 'general' : formData.update_type,
+        update_type: formData.update_type,
         notes: formData.note_text,
       }, { $autoCancel: false });
       
@@ -52,7 +66,7 @@ const CaregiverCareNotesForm = ({ patients, onSuccess }) => {
         patient_id: formData.patient_id,
         caregiver_id: currentUser.id,
         note: `${formData.is_urgent ? '[URGENT] ' : ''}${formData.note_text}`,
-        note_type: formData.update_type === 'feeding' ? 'nutrition' : formData.update_type === 'exercise' ? 'activity' : formData.update_type === 'other' ? 'general' : formData.update_type
+        note_type: mapNoteType(formData.update_type),
       }, { $autoCancel: false });
       
       toast.success('Care note added successfully');

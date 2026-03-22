@@ -34,8 +34,8 @@ const AdminCaregiverList = () => {
       });
       setCaregivers(records.items);
     } catch (error) {
-      console.error(error);
-      toast.error('Failed to load caregivers');
+      console.error('Failed to load caregivers:', error);
+      toast.error(`Failed to load caregivers: ${error?.message || 'Check your connection and permissions'}`);
     } finally {
       setLoading(false);
     }
@@ -68,12 +68,20 @@ const AdminCaregiverList = () => {
 
   const handleSave = async (e) => {
     e.preventDefault();
+    if (!formData.name || !formData.email) {
+      toast.error('Name and email are required');
+      return;
+    }
+    if (!selectedCaregiver && !formData.password) {
+      toast.error('Password is required for new caregivers');
+      return;
+    }
     try {
       const payload = {
         name: formData.name,
         email: formData.email,
         role: 'caregiver',
-        emailVisibility: true
+        emailVisibility: true,
       };
 
       if (formData.password) {
@@ -85,17 +93,14 @@ const AdminCaregiverList = () => {
         await pb.collection('users').update(selectedCaregiver.id, payload, { $autoCancel: false });
         toast.success('Caregiver updated successfully');
       } else {
-        if (!formData.password) {
-          toast.error('Password is required for new caregivers');
-          return;
-        }
         await pb.collection('users').create(payload, { $autoCancel: false });
         toast.success('Caregiver added successfully');
       }
       setIsDialogOpen(false);
       fetchCaregivers();
     } catch (error) {
-      toast.error(selectedCaregiver ? 'Failed to update caregiver' : 'Failed to add caregiver');
+      console.error('Caregiver save error:', error);
+      toast.error(error?.message || (selectedCaregiver ? 'Failed to update caregiver' : 'Failed to add caregiver'));
     }
   };
 

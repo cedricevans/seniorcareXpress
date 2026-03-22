@@ -4,11 +4,10 @@ import pb from '@/lib/pocketbaseClient';
 import { useAuth } from '@/contexts/AuthContext.jsx';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Skeleton } from '@/components/ui/skeleton';
-import { User, Activity, Phone, Calendar, ArrowRight, FileText, PlusCircle } from 'lucide-react';
+import { User, Activity, Phone, Calendar, FileText } from 'lucide-react';
 import { toast } from 'sonner';
-import CaregiverEncounterForm from '@/components/CaregiverEncounterForm.jsx';
 import CaregiverCareNotesForm from '@/components/CaregiverCareNotesForm.jsx';
 
 const CaregiverPatientList = () => {
@@ -16,7 +15,7 @@ const CaregiverPatientList = () => {
   const [assignments, setAssignments] = useState([]);
   const [loading, setLoading] = useState(true);
   
-  const [activeDialog, setActiveDialog] = useState(null); // 'encounter' or 'note'
+  const [activeDialog, setActiveDialog] = useState(null); // 'note'
   const [selectedPatient, setSelectedPatient] = useState(null);
 
   const fetchAssignments = async () => {
@@ -109,14 +108,7 @@ const CaregiverPatientList = () => {
                     </p>
                   </div>
                   
-                  <div className="mt-auto pt-4 grid grid-cols-2 gap-2">
-                    <Button 
-                      variant="outline" 
-                      className="w-full gap-2 text-xs"
-                      onClick={() => handleOpenDialog('encounter', patient)}
-                    >
-                      <PlusCircle className="h-3 w-3" /> Log Visit
-                    </Button>
+                  <div className="mt-auto pt-4">
                     <Button 
                       className="w-full bg-secondary hover:bg-secondary/90 text-secondary-foreground gap-2 text-xs"
                       onClick={() => handleOpenDialog('note', patient)}
@@ -134,12 +126,6 @@ const CaregiverPatientList = () => {
       {/* Dialogs for Forms */}
       <Dialog open={!!activeDialog} onOpenChange={(open) => !open && setActiveDialog(null)}>
         <DialogContent className="sm:max-w-[600px] p-0 border-0 bg-transparent shadow-none">
-          {activeDialog === 'encounter' && selectedPatient && (
-            <CaregiverEncounterForm 
-              patients={[selectedPatient]} 
-              onSuccess={() => setActiveDialog(null)} 
-            />
-          )}
           {activeDialog === 'note' && selectedPatient && (
             <CaregiverCareNotesForm 
               patients={[selectedPatient]} 

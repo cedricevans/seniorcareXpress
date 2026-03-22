@@ -3,10 +3,11 @@ import React, { useRef } from 'react';
 import { Helmet } from 'react-helmet';
 import { Link } from 'react-router-dom';
 import { motion, useScroll, useTransform } from 'framer-motion';
-import { Shield, Clock, Users, Activity, PhoneCall, MessageSquare, Heart, CheckCircle2, ArrowRight, Sparkles, Sun, Target, BookOpen } from 'lucide-react';
+import { Shield, Clock, Users, Activity, PhoneCall, MessageSquare, Heart, CheckCircle2, ArrowRight, Sparkles, Sun } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import ParallaxSection from '@/components/ParallaxSection.jsx';
+import GradientText from '@/components/GradientText.jsx';
 
 const HomePage = () => {
   const servicesRef = useRef(null);
@@ -45,7 +46,9 @@ const HomePage = () => {
               className="h-20 md:h-28 mb-8 brightness-0 invert drop-shadow-lg"
             />
             <h1 className="text-5xl md:text-6xl lg:text-7xl font-heading font-bold text-white mb-6 leading-tight drop-shadow-xl">
-              Living Well, <br/><span className="text-secondary italic font-normal">Every Single Day</span>
+              Xpress Your Need,{' '}<br />
+              <GradientText>We Will Xpress</GradientText>{' '}
+              <span className="text-white">the Solution!</span>
             </h1>
             <p className="text-xl md:text-2xl text-slate-200 mb-10 font-light max-w-2xl leading-relaxed">
               Dedicated support that celebrates independence and enhances quality of life, keeping families connected and seniors thriving in their own rhythm.
@@ -244,32 +247,58 @@ const HomePage = () => {
         </div>
       </section>
 
-      {/* WHO WE ARE — BRAND STORY SECTION */}
-      <section className="py-24 md:py-32 bg-white relative overflow-hidden">
-        <div className="absolute top-0 left-0 w-[500px] h-[500px] bg-secondary/5 rounded-full blur-3xl -ml-64 -mt-64 pointer-events-none" />
+      {/* WHO WE ARE — compact brand story */}
+      <section className="py-20 md:py-24 bg-white relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-secondary/5 rounded-full blur-3xl -mr-64 -mt-64 pointer-events-none" />
         <div className="container mx-auto px-4 relative z-10">
+          <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-14 items-center">
 
-          {/* Top — Tagline + story copy */}
-          <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-14 items-center mb-20">
+            {/* Left — image */}
             <motion.div
               initial={{ opacity: 0, x: -40 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.7 }}
+              className="relative order-2 lg:order-1"
+            >
+              <div className="rounded-3xl overflow-hidden shadow-2xl">
+                <img
+                  src="http://www.seniorcarexpress.com/wp-content/uploads/2020/01/elder-care-planning.jpg"
+                  alt="SeniorCare Xpress elder care planning"
+                  className="w-full h-96 object-cover"
+                />
+              </div>
+              <div className="absolute -bottom-5 -right-5 bg-white rounded-2xl shadow-xl p-5 border border-slate-100">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
+                    <Users className="w-5 h-5 text-primary" />
+                  </div>
+                  <div>
+                    <div className="font-bold text-slate-900 text-sm">Our Mission</div>
+                    <div className="text-slate-500 text-xs">Compassionate home care</div>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Right — tagline + 2 lines + CTA */}
+            <motion.div
+              initial={{ opacity: 0, x: 40 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.7 }}
+              className="order-1 lg:order-2"
             >
               <p className="text-primary font-semibold tracking-widest uppercase text-sm mb-4">Who We Are</p>
               <h2 className="text-4xl md:text-5xl font-heading font-bold text-slate-900 mb-6 leading-tight">
-                Xpress Your Need,{' '}
-                <span className="text-primary italic font-normal">We Will Xpress the Solution!</span>
+                Compassionate Care,{' '}
+                <span className="text-primary italic font-normal">Right at Home</span>
               </h2>
               <p className="text-slate-600 leading-relaxed mb-5 text-lg">
-                Are you 50 plus? Over the years, most of us have developed an appreciation for what we have — our health, loved ones, passions, interests, and assets acquired over time. We want to nurture and conserve our resources so that we can live our lives to the fullest.
+                SeniorCare Xpress is dedicated to delivering compassionate, high-quality, and personalized home health care services to individuals in the comfort of their own homes.
               </p>
-              <p className="text-slate-600 leading-relaxed mb-5">
-                <strong className="text-slate-800">SeniorCare Xpress</strong> is designed to help us do just that. The program's goal is to meet the needs of older adults who want to maintain their quality of life as they age.
-              </p>
-              <p className="text-slate-600 leading-relaxed mb-8">
-                We strive to meet the healthcare needs of our senior population, providing ongoing information and education most relevant to your health in an efficient and expedient manner.
+              <p className="text-slate-500 leading-relaxed mb-8">
+                Our goal is to foster independence, dignity, and respect — ensuring every client receives the utmost attention and support on their journey to better health and wellness.
               </p>
               <Link to="/about">
                 <Button variant="outline" className="rounded-full px-8 border-primary/30 text-primary hover:bg-primary hover:text-white transition-all duration-300">
@@ -278,138 +307,7 @@ const HomePage = () => {
               </Link>
             </motion.div>
 
-            <motion.div
-              initial={{ opacity: 0, x: 40 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.7 }}
-              className="relative"
-            >
-              <div className="rounded-3xl overflow-hidden shadow-2xl">
-                <img
-                  src="https://images.unsplash.com/photo-1588966915713-6d43603478e5?q=80&w=1200&auto=format&fit=crop"
-                  alt="SeniorCare Xpress caregiver with senior"
-                  className="w-full h-96 object-cover"
-                />
-              </div>
-              {/* Floating badge */}
-              <div className="absolute -bottom-6 -left-6 bg-white rounded-2xl shadow-xl p-5 border border-slate-100">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
-                    <Users className="w-5 h-5 text-primary" />
-                  </div>
-                  <div>
-                    <div className="font-bold text-slate-900 text-sm">50+ Community</div>
-                    <div className="text-slate-500 text-xs">Serving members daily</div>
-                  </div>
-                </div>
-              </div>
-            </motion.div>
           </div>
-
-          {/* Middle — "Make the Right Choice" + services checklist */}
-          <div className="max-w-5xl mx-auto bg-slate-50 rounded-3xl border border-slate-100 p-10 md:p-14 mb-20">
-            <div className="text-center mb-10">
-              <motion.p
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                className="text-primary font-semibold tracking-widest uppercase text-sm mb-3"
-              >
-                Our Commitment
-              </motion.p>
-              <motion.h3
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.1 }}
-                className="text-3xl md:text-4xl font-heading font-bold text-slate-900 mb-4"
-              >
-                Make the Right Choice{' '}
-                <span className="text-primary italic font-normal">For Your Loved One</span>
-              </motion.h3>
-              <motion.p
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.2 }}
-                className="text-slate-500 max-w-2xl mx-auto leading-relaxed"
-              >
-                SeniorCare Xpress is a membership service dedicated to assisting those 50 and older with living a happy and healthier life. Our broad scope of services includes educational programs, assessments, personalized care plans, face-to-face visits, ongoing monitoring and so much more!
-              </motion.p>
-            </div>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              {[
-                'Educational Programs',
-                'Health Assessments',
-                'Personalized Care Plans',
-                'Face-to-Face Visits',
-                'Ongoing Monitoring',
-                'Companion Services',
-                'Transportation',
-                'Veterans Aid & Attendance',
-              ].map((item, i) => (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0, y: 16 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.06 }}
-                  className="bg-white rounded-2xl border border-slate-100 shadow-sm p-4 flex items-start gap-3"
-                >
-                  <CheckCircle2 className="w-4 h-4 text-primary mt-0.5 shrink-0" />
-                  <span className="text-sm font-medium text-slate-700">{item}</span>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-
-          {/* Bottom — Core Values cards */}
-          <div className="max-w-6xl mx-auto">
-            <div className="text-center mb-12">
-              <motion.p
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                className="text-primary font-semibold tracking-widest uppercase text-sm mb-3"
-              >
-                What Drives Us
-              </motion.p>
-              <motion.h3
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.1 }}
-                className="text-3xl md:text-4xl font-heading font-bold text-slate-900"
-              >
-                Our <span className="text-primary italic font-normal">Core Values</span>
-              </motion.h3>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {[
-                { icon: Heart, title: 'Compassionate Care', desc: 'We treat every client like family, delivering care that is both professional and deeply personal.' },
-                { icon: Target, title: 'Quality First', desc: 'We strive to provide the highest quality care and services, never compromising on the standard of support we deliver.' },
-                { icon: BookOpen, title: 'Education & Empowerment', desc: 'We provide ongoing information and education most relevant to your health in an efficient and expedient manner.' },
-                { icon: Sparkles, title: 'Independence & Dignity', desc: 'We honor each individual\'s desire to live independently and age with grace, purpose, and joy.' },
-              ].map((v, i) => (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.1 }}
-                  className="bg-slate-50 rounded-3xl border border-slate-100 p-7 hover:shadow-lg hover:-translate-y-1 transition-all duration-300"
-                >
-                  <div className="w-11 h-11 rounded-2xl bg-primary/10 flex items-center justify-center mb-4">
-                    <v.icon className="w-5 h-5 text-primary" />
-                  </div>
-                  <h4 className="font-bold text-slate-900 mb-2">{v.title}</h4>
-                  <p className="text-slate-500 text-sm leading-relaxed">{v.desc}</p>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-
         </div>
       </section>
 

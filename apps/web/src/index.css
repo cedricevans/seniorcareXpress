@@ -1,5 +1,5 @@
 
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -21,6 +21,10 @@ h1, h2, h3, h4, h5, h6, .font-heading {
 html {
   scroll-behavior: smooth;
   font-size: 18px; /* base 16px + 2pts */
+}
+
+.text-gradient {
+  color: hsl(42 90% 65%);
 }
 
 @layer base {

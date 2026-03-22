@@ -30,7 +30,7 @@ const AboutPage = () => {
     <>
       <Helmet>
         <title>About Us | SeniorCare Xpress</title>
-        <meta name="description" content="SeniorCare Xpress is a membership service dedicated to assisting those 50 and older with living a happy and healthier life. Learn about our mission and team." />
+        <meta name="description" content="Our mission at SeniorCare Xpress is to deliver compassionate, high-quality, and personalized home health care services to individuals in the comfort of their own homes." />
       </Helmet>
 
       {/* HERO */}
@@ -38,10 +38,10 @@ const AboutPage = () => {
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }} className="max-w-3xl mx-auto">
           <p className="text-secondary font-semibold tracking-widest uppercase text-sm mb-4">About Us</p>
           <h1 className="text-4xl md:text-5xl font-heading font-bold mb-6">
-            Dedicated to the <span className="italic font-normal text-secondary">50+ Community</span>
+            Our Mission is{' '}<span className="italic font-normal text-secondary">Your Well-Being</span>
           </h1>
           <p className="text-lg text-white/80 max-w-2xl mx-auto leading-relaxed">
-            SeniorCare Xpress is a membership service dedicated to assisting those 50 and older with living a happy and healthier life.
+            Delivering compassionate, high-quality, and personalized home health care services to individuals in the comfort of their own homes.
           </p>
         </motion.div>
       </div>
@@ -58,16 +58,16 @@ const AboutPage = () => {
             >
               <p className="text-primary font-semibold tracking-widest uppercase text-sm mb-4">Who We Are</p>
               <h2 className="text-3xl md:text-4xl font-heading font-bold text-slate-900 mb-6">
-                Xpress Your Need, <span className="text-primary italic font-normal">We Will Xpress the Solution!</span>
+                Xpress Your Need,{' '}<span className="text-primary italic font-normal">We Will Xpress the Solution!</span>
               </h2>
               <p className="text-slate-600 leading-relaxed mb-5">
-                Are you 50 plus? Over the years, most of us have developed an appreciation for what we have — our health, loved ones, passions, interests, and assets acquired over time. We want to nurture and conserve our resources so that we can live our lives to the fullest.
+                Our mission at SeniorCare Xpress is to deliver compassionate, high-quality, and personalized home health care services to individuals in the comfort of their own homes.
               </p>
               <p className="text-slate-600 leading-relaxed mb-5">
-                <strong className="text-slate-800">SeniorCare Xpress</strong> is designed to help us do just that. The program's goal is to meet the needs of older adults who want to maintain their quality of life as they age.
+                We are committed to delivering exceptional care through innovative solutions, highly trained professionals, and a holistic approach that prioritizes physical, emotional, and social well-being.
               </p>
               <p className="text-slate-600 leading-relaxed">
-                We have always held the philosophy that we are in business to provide the best care possible to seniors as well as others who are in need of services and discounts. We strive to meet the healthcare needs of our senior population, as we believe it's important to provide you with ongoing information and education most relevant to your health in an efficient and expedient manner.
+                Our goal is to foster independence, dignity, and respect — ensuring that every client receives the utmost attention and support on their journey to better health and wellness while in the comfort of their own homes.
               </p>
             </motion.div>
 
@@ -80,8 +80,8 @@ const AboutPage = () => {
             >
               <div className="rounded-3xl overflow-hidden shadow-2xl">
                 <img
-                  src="https://images.unsplash.com/photo-1588966915713-6d43603478e5?q=80&w=1000&auto=format&fit=crop"
-                  alt="SeniorCare Xpress team with senior"
+                  src="http://www.seniorcarexpress.com/wp-content/uploads/2020/01/home-care-services-e1578767005218.jpg"
+                  alt="SeniorCare Xpress home care services"
                   className="w-full h-96 object-cover"
                 />
               </div>
@@ -91,8 +91,8 @@ const AboutPage = () => {
                     <Users className="w-5 h-5 text-primary" />
                   </div>
                   <div>
-                    <div className="font-bold text-slate-900 text-sm">50+ Community</div>
-                    <div className="text-slate-500 text-xs">Serving members daily</div>
+                    <div className="font-bold text-slate-900 text-sm">Compassionate Care</div>
+                    <div className="text-slate-500 text-xs">In the comfort of home</div>
                   </div>
                 </div>
               </div>
@@ -111,7 +111,7 @@ const AboutPage = () => {
                 Make the Right Choice <span className="text-primary italic font-normal">For Your Loved One</span>
               </h2>
               <p className="text-lg text-slate-600 leading-relaxed mb-10">
-                SeniorCare Xpress is a membership service dedicated to assisting those 50 and older with living a happy and healthier life. Our broad scope of services includes educational programs, assessments, personalized care plans, face-to-face visits, ongoing monitoring and so much more!
+                We are committed to delivering exceptional care through innovative solutions, highly trained professionals, and a holistic approach that prioritizes physical, emotional, and social well-being. Our broad scope of services ensures every client receives the right support at every step.
               </p>
             </motion.div>
 

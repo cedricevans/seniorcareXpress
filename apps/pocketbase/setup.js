@@ -165,7 +165,7 @@ async function createCollections() {
     ],
     listRule: '@request.auth.id != "" && (@request.auth.role = "admin" || @request.auth.id = id)',
     viewRule: '@request.auth.id != ""',
-    createRule: null,
+    createRule: '@request.auth.role = "admin"',
     updateRule: '@request.auth.id = id || @request.auth.role = "admin"',
     deleteRule: '@request.auth.role = "admin"',
   };
@@ -247,7 +247,11 @@ async function createCollections() {
     fields: [
       { name: 'patient_id', type: 'relation', required: true, collectionId: 'patients', cascadeDelete: true, maxSelect: 1 },
       { name: 'caregiver_id', type: 'relation', collectionId: 'users', cascadeDelete: false, maxSelect: 1 },
-      { name: 'update_type', type: 'select', maxSelect: 1, values: ['vitals', 'medication', 'activity', 'incident', 'general'] },
+      { name: 'update_type', type: 'select', maxSelect: 1, values: [
+        'vitals', 'medication', 'feeding', 'bathing', 'grooming',
+        'toileting', 'exercise', 'mobility', 'sleep', 'mood',
+        'social_activity', 'incident', 'general'
+      ]},
       { name: 'notes', type: 'text' },
       { name: 'vitals', type: 'json' },
     ],
@@ -265,13 +269,35 @@ async function createCollections() {
       { name: 'patient_id', type: 'relation', required: true, collectionId: 'patients', cascadeDelete: true, maxSelect: 1 },
       { name: 'caregiver_id', type: 'relation', required: true, collectionId: 'users', cascadeDelete: false, maxSelect: 1 },
       { name: 'note', type: 'text', required: true },
-      { name: 'note_type', type: 'select', maxSelect: 1, values: ['general', 'medical', 'behavioral', 'nutrition', 'activity'] },
+      { name: 'note_type', type: 'select', maxSelect: 1, values: [
+        'general', 'medical', 'behavioral', 'nutrition', 'feeding',
+        'bathing', 'grooming', 'toileting', 'exercise', 'mobility',
+        'sleep', 'mood', 'social_activity', 'incident'
+      ]},
     ],
     listRule: '@request.auth.id != ""',
     viewRule: '@request.auth.id != ""',
     createRule: '@request.auth.role = "caregiver" || @request.auth.role = "admin"',
     updateRule: '@request.auth.role = "admin" || caregiver_id = @request.auth.id',
     deleteRule: '@request.auth.role = "admin" || caregiver_id = @request.auth.id',
+  };
+
+  const careChecklistsSchema = {
+    name: 'care_checklists',
+    type: 'base',
+    fields: [
+      { name: 'patient_id', type: 'relation', required: true, collectionId: 'patients', cascadeDelete: true, maxSelect: 1 },
+      { name: 'caregiver_id', type: 'relation', required: true, collectionId: 'users', cascadeDelete: false, maxSelect: 1 },
+      { name: 'date', type: 'date', required: true },
+      { name: 'tasks', type: 'json' },
+      { name: 'notes', type: 'text' },
+      { name: 'status', type: 'select', maxSelect: 1, values: ['in_progress', 'completed'] },
+    ],
+    listRule: '@request.auth.id != ""',
+    viewRule: '@request.auth.id != ""',
+    createRule: '@request.auth.role = "caregiver" || @request.auth.role = "admin"',
+    updateRule: '@request.auth.role = "admin" || caregiver_id = @request.auth.id',
+    deleteRule: '@request.auth.role = "admin"',
   };
 
   const messagesSchema = {
@@ -469,6 +495,7 @@ async function createCollections() {
   await createOrUpdateCollection({ schema: schemaWithoutRules(caregiverNotesSchema) });
   await createOrUpdateCollection({ schema: schemaWithoutRules(messagesSchema) });
   await createOrUpdateCollection({ schema: schemaWithoutRules(videoCallsSchema) });
+  await createOrUpdateCollection({ schema: schemaWithoutRules(careChecklistsSchema) });
   await createOrUpdateCollection({ schema: schemaWithoutRules(appointmentsSchema) });
   await createOrUpdateCollection({ schema: schemaWithoutRules(medicalHistorySchema) });
   await createOrUpdateCollection({ schema: schemaWithoutRules(auditLogsSchema) });
@@ -480,9 +507,28 @@ async function createCollections() {
   await createOrUpdateCollection({ schema: caregiverNotesSchema });
   await createOrUpdateCollection({ schema: messagesSchema });
   await createOrUpdateCollection({ schema: videoCallsSchema });
+  await createOrUpdateCollection({ schema: careChecklistsSchema });
   await createOrUpdateCollection({ schema: appointmentsSchema });
   await createOrUpdateCollection({ schema: medicalHistorySchema });
   await createOrUpdateCollection({ schema: auditLogsSchema });
+
+  const siteAssetsSchema = {
+    name: 'site_assets',
+    type: 'base',
+    listRule: '',
+    viewRule: '',
+    createRule: '@request.auth.role = "admin"',
+    updateRule: '@request.auth.role = "admin"',
+    deleteRule: '@request.auth.role = "admin"',
+    fields: [
+      { name: 'key',         type: 'text',  required: true },
+      { name: 'label',       type: 'text',  required: false },
+      { name: 'image',       type: 'file',  required: false, options: { maxSelect: 1, maxSize: 10485760, mimeTypes: ['image/jpeg','image/png','image/webp','image/gif','image/svg+xml'] } },
+      { name: 'alt_text',    type: 'text',  required: false },
+      { name: 'category',    type: 'text',  required: false },
+    ],
+  };
+  await createOrUpdateCollection({ schema: siteAssetsSchema });
 }
 
 // ─── 3. Seed Data ────────────────────────────────────────────────────────────

@@ -56,7 +56,7 @@ const Header = () => {
             <Link 
               key={link.path} 
               to={link.path}
-              className={`text-sm font-medium transition-all duration-200 hover:text-primary relative py-2 ${
+              className={`text-base font-medium transition-all duration-200 hover:text-primary relative py-2 ${
                 location.pathname === link.path ? 'text-primary' : 'text-muted-foreground'
               }`}
             >
@@ -72,7 +72,7 @@ const Header = () => {
           {isAuthenticated ? (
             <div className="hidden md:flex items-center gap-4">
               <Link to={getDashboardLink()}>
-                <Button variant="ghost" className="font-medium">Dashboard</Button>
+                <Button variant="ghost" className="font-medium text-base">Dashboard</Button>
               </Link>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -80,7 +80,7 @@ const Header = () => {
                     <div className="h-7 w-7 rounded-full bg-primary/10 flex items-center justify-center">
                       <User className="h-4 w-4 text-primary" />
                     </div>
-                    <span className="font-medium text-sm hidden sm:inline-block">
+                    <span className="font-medium text-base hidden sm:inline-block">
                       {currentUser?.name || currentUser?.email}
                     </span>
                   </Button>
