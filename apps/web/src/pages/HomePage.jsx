@@ -57,14 +57,14 @@ const HomePage = () => {
             <p className="text-xl md:text-2xl text-slate-200 mb-10 font-light max-w-2xl leading-relaxed">
               Dedicated support that celebrates independence and enhances quality of life, keeping families connected and seniors thriving in their own rhythm.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4">
+            <div className="flex flex-col sm:flex-row gap-6 justify-center">
               <Link to="/login">
-                <Button size="lg" className="rounded-full h-14 px-8 text-lg shadow-lg shadow-primary/30 hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+                <Button size="lg" className="rounded-full h-14 px-10 text-lg shadow-lg shadow-primary/30 hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
                   Access Family Portal
                 </Button>
               </Link>
               <Link to="/services">
-                <Button size="lg" variant="outline" className="rounded-full h-14 px-8 text-lg bg-white/10 text-white border-white/30 hover:bg-white/20 hover:text-white backdrop-blur-sm transition-all duration-300">
+                <Button size="lg" variant="outline" className="rounded-full h-14 px-10 text-lg bg-white/10 text-white border-white/30 hover:bg-white/20 hover:text-white backdrop-blur-sm transition-all duration-300">
                   Explore Our Approach
                 </Button>
               </Link>
@@ -81,7 +81,7 @@ const HomePage = () => {
         <div className="container mx-auto px-4 relative z-10">
 
           {/* Section Header */}
-          <div className="text-center max-w-3xl mx-auto mb-20">
+          <div className="text-center max-w-3xl mx-auto mb-12">
             <motion.p
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}

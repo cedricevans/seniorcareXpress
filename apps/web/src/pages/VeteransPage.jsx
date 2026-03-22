@@ -307,9 +307,9 @@ const VeteransPage = () => {
             </div>
 
             <div className="flex flex-col sm:flex-row gap-4">
-              <a href="tel:5136877866">
+              <a href="#eligibility-check">
                 <Button size="lg" className="rounded-full h-14 px-8 text-lg bg-yellow-400 text-slate-900 hover:bg-yellow-300 shadow-lg shadow-yellow-400/30 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 font-bold">
-                  <Phone className="w-5 h-5 mr-2" /> See if You Qualify
+                  <ClipboardList className="w-5 h-5 mr-2" /> Free Eligibility Check
                 </Button>
               </a>
               <a href="#benefits">
@@ -579,7 +579,7 @@ const VeteransPage = () => {
       </section>
 
       {/* CTA */}
-      <section className="py-16 bg-slate-50">
+      <section id="eligibility-check" className="py-16 bg-slate-50">
         <div className="container mx-auto px-4">
           <div className="max-w-3xl mx-auto">
             <motion.div

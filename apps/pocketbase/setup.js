@@ -558,7 +558,7 @@ let createdUsers = {};
 let patientId = '';
 
 async function seedUsers() {
-  console.log('\n[3/3] Seeding demo data...');
+  console.log('\n[3/3] Seeding demo data (users NOT overwritten)...');
 
   const users = [
     { email: 'admin@seniorcare.com',    password: 'Admin123!', name: 'Admin User',    role: 'admin' },
@@ -569,25 +569,26 @@ async function seedUsers() {
 
   for (const u of users) {
     try {
-      const rec = await pb('POST', '/api/collections/users/records', {
-        email: u.email,
-        password: u.password,
-        passwordConfirm: u.password,
-        name: u.name,
-        role: u.role,
-        emailVisibility: true,
-      });
-      createdUsers[u.role] = rec.id;
-      console.log(`  ✓ User created: ${u.email} (${u.role})`);
-    } catch {
-      // User exists — fetch their ID
-      try {
-        const res = await pb('GET', `/api/collections/users/records?filter=email='${u.email}'`);
-        if (res.items?.[0]) {
-          createdUsers[u.role] = res.items[0].id;
-          console.log(`  · User exists: ${u.email}`);
-        }
-      } catch {}
+      // IMPORTANT: Always check if user exists FIRST — never create/overwrite
+      const res = await pb('GET', `/api/collections/users/records?filter=email='${u.email}'`);
+      if (res.items?.[0]) {
+        createdUsers[u.role] = res.items[0].id;
+        console.log(`  · User exists: ${u.email}`);
+      } else {
+        // Only create if doesn't exist
+        const rec = await pb('POST', '/api/collections/users/records', {
+          email: u.email,
+          password: u.password,
+          passwordConfirm: u.password,
+          name: u.name,
+          role: u.role,
+          emailVisibility: true,
+        });
+        createdUsers[u.role] = rec.id;
+        console.log(`  ✓ User created: ${u.email} (${u.role})`);
+      }
+    } catch (err) {
+      console.log(`  ⚠ Could not check user ${u.email}: ${err.message}`);
     }
   }
 }
