@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet';
-import { Clock, Activity } from 'lucide-react';
+import { Clock, Activity, ClipboardList } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import pb from '@/lib/pocketbaseClient';
@@ -13,6 +13,7 @@ const PatientDashboard = () => {
   const [patient, setPatient] = useState(null);
   const [appointments, setAppointments] = useState([]);
   const [careUpdates, setCareUpdates] = useState([]);
+  const [carePlan, setCarePlan] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -42,7 +43,7 @@ const PatientDashboard = () => {
         if (linkedPatient) {
           setPatient(linkedPatient);
 
-          const [aptsRes, careUpdatesRes] = await Promise.all([
+          const [aptsRes, careUpdatesRes, planRes] = await Promise.all([
             pb.collection('appointments').getFullList({
               filter: `patient_id="${linkedPatient.id}"`,
               sort: 'appointment_date',
@@ -55,11 +56,18 @@ const PatientDashboard = () => {
               expand: 'caregiver_id',
               limit: 5,
               $autoCancel: false
+            }),
+            pb.collection('care_plans').getList(1, 1, {
+              filter: `patient_id="${linkedPatient.id}" && status="active"`,
+              sort: '-created',
+              expand: 'caregiver_id',
+              $autoCancel: false
             })
           ]);
 
           setAppointments(aptsRes);
           setCareUpdates(careUpdatesRes);
+          setCarePlan(planRes.items?.[0] || null);
         }
       } catch (error) {
         console.error("Error fetching patient data:", error);
@@ -166,6 +174,26 @@ const PatientDashboard = () => {
           </CardContent>
         </Card>
       </div>
+
+      <Card className="border-0 shadow-soft rounded-2xl">
+        <CardHeader>
+          <CardTitle className="font-heading flex items-center gap-2">
+            <ClipboardList className="h-5 w-5 text-secondary" />
+            Active Care Plan
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          {carePlan ? (
+            <div className="space-y-2">
+              <h4 className="text-lg font-semibold">{carePlan.title}</h4>
+              <p className="text-muted-foreground text-sm">{carePlan.notes || 'No additional notes provided.'}</p>
+              <p className="text-xs text-muted-foreground">Assigned caregiver: {carePlan.expand?.caregiver_id?.name || carePlan.expand?.caregiver_id?.email || 'Unassigned'}</p>
+            </div>
+          ) : (
+            <p className="text-muted-foreground text-center py-6">No active care plan yet.</p>
+          )}
+        </CardContent>
+      </Card>
 
       <div className="bg-card rounded-2xl shadow-soft border border-border p-6">
         <h3 className="text-xl font-heading font-bold mb-6">My Calendar</h3>

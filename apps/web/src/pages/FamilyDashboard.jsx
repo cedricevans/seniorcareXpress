@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet';
-import { Heart, Activity, Calendar, FileText, Clock } from 'lucide-react';
+import { Heart, Activity, Calendar, FileText, Clock, ClipboardList } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import pb from '@/lib/pocketbaseClient';
@@ -14,6 +14,7 @@ const FamilyDashboard = () => {
   const [careLogs, setCareLogs] = useState([]);
   const [medicalHistory, setMedicalHistory] = useState([]);
   const [appointments, setAppointments] = useState([]);
+  const [carePlan, setCarePlan] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -31,7 +32,7 @@ const FamilyDashboard = () => {
           setPatient(linkedPatient);
 
           // 2. Fetch related data in parallel
-          const [logsRes, historyRes, aptsRes] = await Promise.all([
+          const [logsRes, historyRes, aptsRes, planRes] = await Promise.all([
             pb.collection('care_updates').getFullList({
               filter: `patient_id="${linkedPatient.id}"`,
               sort: '-created',
@@ -48,12 +49,19 @@ const FamilyDashboard = () => {
               sort: 'appointment_date',
               expand: 'caregiver_id',
               $autoCancel: false
+            }),
+            pb.collection('care_plans').getList(1, 1, {
+              filter: `patient_id="${linkedPatient.id}" && status="active"`,
+              sort: '-created',
+              expand: 'caregiver_id',
+              $autoCancel: false
             })
           ]);
 
           setCareLogs(logsRes);
           setMedicalHistory(historyRes);
           setAppointments(aptsRes);
+          setCarePlan(planRes.items?.[0] || null);
         }
       } catch (error) {
         console.error("Error fetching family data:", error);
@@ -177,6 +185,26 @@ const FamilyDashboard = () => {
           </CardContent>
         </Card>
       </div>
+
+        <Card className="border-0 shadow-soft rounded-2xl">
+          <CardHeader>
+            <CardTitle className="font-heading flex items-center gap-2">
+              <ClipboardList className="h-5 w-5 text-secondary" />
+              Active Care Plan
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            {carePlan ? (
+              <div className="space-y-2">
+                <h4 className="text-lg font-semibold">{carePlan.title}</h4>
+                <p className="text-muted-foreground text-sm">{carePlan.notes || 'No additional notes provided.'}</p>
+                <p className="text-xs text-muted-foreground">Assigned caregiver: {carePlan.expand?.caregiver_id?.name || carePlan.expand?.caregiver_id?.email || 'Unassigned'}</p>
+              </div>
+            ) : (
+              <p className="text-muted-foreground text-center py-6">No active care plan yet.</p>
+            )}
+          </CardContent>
+        </Card>
 
       <Card className="border-0 shadow-soft rounded-2xl">
         <CardHeader>

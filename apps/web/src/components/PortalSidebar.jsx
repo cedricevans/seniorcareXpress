@@ -29,6 +29,9 @@ const PortalSidebar = ({ isOpen, onClose }) => {
           { name: 'Caregivers', path: '/admin/caregivers', icon: Activity },
           { name: 'Appointments', path: '/admin/appointments', icon: Calendar },
           { name: 'Assignments', path: '/admin/assignments', icon: UserCheck },
+          { name: 'Messages', path: '/admin/messages', icon: MessageSquare },
+          { name: 'Care Plans', path: '/admin/care-plans', icon: FileText },
+          { name: 'Reports', path: '/admin/reports', icon: PieChart },
           { name: 'Analytics', path: '/admin/analytics', icon: PieChart },
         ];
       case 'caregiver':
@@ -37,6 +40,7 @@ const PortalSidebar = ({ isOpen, onClose }) => {
           { name: 'My Patients', path: '/caregiver/patients', icon: Users },
           { name: 'Appointments', path: '/caregiver/appointments', icon: Calendar },
           { name: 'Availability', path: '/caregiver/availability', icon: Clock },
+          { name: 'Messages', path: '/caregiver/messages', icon: MessageSquare },
         ];
       case 'family':
         return [

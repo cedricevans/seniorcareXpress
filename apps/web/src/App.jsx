@@ -24,6 +24,10 @@ import AdminPatientList from './pages/AdminPatientList.jsx';
 import AdminCaregiverList from './pages/AdminCaregiverList.jsx';
 import AdminAppointmentsPage from './pages/AdminAppointmentsPage.jsx';
 import AdminAssignmentsPage from './pages/AdminAssignmentsPage.jsx';
+import MessagesPage from './pages/MessagesPage.jsx';
+import AdminCarePlansPage from './pages/AdminCarePlansPage.jsx';
+import FamilyBookAppointmentPage from './pages/FamilyBookAppointmentPage.jsx';
+import AdminReportsPage from './pages/AdminReportsPage.jsx';
 import CaregiverDashboard from './pages/CaregiverDashboard.jsx';
 import FamilyDashboard from './pages/FamilyDashboard.jsx';
 import PatientDashboard from './pages/PatientDashboard.jsx';
@@ -60,24 +64,28 @@ function App() {
           <Route path="/admin/appointments" element={<ProtectedRoute allowedRoles={['admin']}><PortalLayout><AdminAppointmentsPage /></PortalLayout></ProtectedRoute>} />
           <Route path="/admin/assignments" element={<ProtectedRoute allowedRoles={['admin']}><PortalLayout><AdminAssignmentsPage /></PortalLayout></ProtectedRoute>} />
           <Route path="/admin/analytics" element={<ProtectedRoute allowedRoles={['admin']}><PortalLayout><PlaceholderPage title="Analytics Dashboard" /></PortalLayout></ProtectedRoute>} />
+          <Route path="/admin/messages" element={<ProtectedRoute allowedRoles={['admin']}><PortalLayout><MessagesPage /></PortalLayout></ProtectedRoute>} />
+          <Route path="/admin/care-plans" element={<ProtectedRoute allowedRoles={['admin']}><PortalLayout><AdminCarePlansPage /></PortalLayout></ProtectedRoute>} />
+          <Route path="/admin/reports" element={<ProtectedRoute allowedRoles={['admin']}><PortalLayout><AdminReportsPage /></PortalLayout></ProtectedRoute>} />
 
           {/* Caregiver Portal Routes */}
           <Route path="/caregiver" element={<ProtectedRoute allowedRoles={['caregiver']}><PortalLayout><CaregiverDashboard /></PortalLayout></ProtectedRoute>} />
           <Route path="/caregiver/patients" element={<ProtectedRoute allowedRoles={['caregiver']}><PortalLayout><CaregiverDashboard /></PortalLayout></ProtectedRoute>} />
           <Route path="/caregiver/appointments" element={<ProtectedRoute allowedRoles={['caregiver']}><PortalLayout><CaregiverDashboard /></PortalLayout></ProtectedRoute>} />
           <Route path="/caregiver/availability" element={<ProtectedRoute allowedRoles={['caregiver']}><PortalLayout><PlaceholderPage title="Availability Settings" /></PortalLayout></ProtectedRoute>} />
+          <Route path="/caregiver/messages" element={<ProtectedRoute allowedRoles={['caregiver']}><PortalLayout><MessagesPage /></PortalLayout></ProtectedRoute>} />
 
           {/* Family Portal Routes */}
           <Route path="/family" element={<ProtectedRoute allowedRoles={['family']}><PortalLayout><FamilyDashboard /></PortalLayout></ProtectedRoute>} />
-          <Route path="/family/book-appointment" element={<ProtectedRoute allowedRoles={['family']}><PortalLayout><FamilyDashboard /></PortalLayout></ProtectedRoute>} />
+          <Route path="/family/book-appointment" element={<ProtectedRoute allowedRoles={['family']}><PortalLayout><FamilyBookAppointmentPage /></PortalLayout></ProtectedRoute>} />
           <Route path="/family/medical-records" element={<ProtectedRoute allowedRoles={['family']}><PortalLayout><FamilyDashboard /></PortalLayout></ProtectedRoute>} />
-          <Route path="/family/messages" element={<ProtectedRoute allowedRoles={['family']}><PortalLayout><PlaceholderPage title="Messages" /></PortalLayout></ProtectedRoute>} />
+          <Route path="/family/messages" element={<ProtectedRoute allowedRoles={['family']}><PortalLayout><MessagesPage /></PortalLayout></ProtectedRoute>} />
 
           {/* Patient Portal Routes */}
           <Route path="/patient" element={<ProtectedRoute allowedRoles={['patient', 'family']}><PortalLayout><PatientDashboard /></PortalLayout></ProtectedRoute>} />
           <Route path="/patient/appointments" element={<ProtectedRoute allowedRoles={['patient', 'family']}><PortalLayout><PatientDashboard /></PortalLayout></ProtectedRoute>} />
           <Route path="/patient/medical-records" element={<ProtectedRoute allowedRoles={['patient', 'family']}><PortalLayout><PatientDashboard /></PortalLayout></ProtectedRoute>} />
-          <Route path="/patient/messages" element={<ProtectedRoute allowedRoles={['patient', 'family']}><PortalLayout><PlaceholderPage title="Messages" /></PortalLayout></ProtectedRoute>} />
+          <Route path="/patient/messages" element={<ProtectedRoute allowedRoles={['patient', 'family']}><PortalLayout><MessagesPage /></PortalLayout></ProtectedRoute>} />
 
           {/* Fallback */}
           <Route path="*" element={

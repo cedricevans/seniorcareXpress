@@ -23,6 +23,7 @@ const CaregiverPatientsView = () => {
   const [careUpdates, setCareUpdates] = useState([]);
   const [logForm, setLogForm] = useState({ update_type: '', notes: '' });
   const [logSaving, setLogSaving] = useState(false);
+  const [carePlan, setCarePlan] = useState(null);
   const [checklist, setChecklist] = useState({
     recordId: null,
     date: new Date().toISOString().split('T')[0],
@@ -120,6 +121,18 @@ const CaregiverPatientsView = () => {
     } catch (err) {
       console.error('Error loading care updates:', err);
       setCareUpdates([]);
+    }
+    try {
+      const plans = await pb.collection('care_plans').getList(1, 1, {
+        filter: `patient_id=\"${patient.id}\" && status=\"active\"`,
+        sort: '-created',
+        expand: 'caregiver_id',
+        $autoCancel: false,
+      });
+      setCarePlan(plans.items[0] || null);
+    } catch (err) {
+      console.error('Error loading care plan:', err);
+      setCarePlan(null);
     }
     try {
       const today = new Date().toISOString().split('T')[0];
@@ -331,6 +344,25 @@ const CaregiverPatientsView = () => {
                   <p className="text-sm text-muted-foreground bg-muted/20 rounded-xl p-4">
                     {selectedPatient.medical_notes || 'No medical notes on file.'}
                   </p>
+                </div>
+
+                <div className="space-y-3">
+                  <h4 className="text-lg font-semibold flex items-center gap-2">
+                    <FileText className="h-5 w-5 text-primary" /> Care Plan Summary
+                  </h4>
+                  {carePlan ? (
+                    <div className="bg-muted/20 rounded-xl p-4 space-y-2">
+                      <p className="text-sm font-semibold">{carePlan.title}</p>
+                      <p className="text-sm text-muted-foreground">
+                        {carePlan.notes || 'No plan notes provided.'}
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        Assigned caregiver: {carePlan.expand?.caregiver_id?.name || carePlan.expand?.caregiver_id?.email || 'Unassigned'}
+                      </p>
+                    </div>
+                  ) : (
+                    <p className="text-sm text-muted-foreground">No active care plan yet.</p>
+                  )}
                 </div>
 
                 <div className="space-y-3">

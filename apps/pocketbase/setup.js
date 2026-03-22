@@ -163,8 +163,8 @@ async function createCollections() {
       },
       { name: 'phone', type: 'text' },
     ],
-    listRule: '@request.auth.id != "" && (@request.auth.role = "admin" || @request.auth.id = id)',
-    viewRule: '@request.auth.id != ""',
+  listRule: '@request.auth.id != ""',
+  viewRule: '@request.auth.id != ""',
     createRule: '@request.auth.role = "admin"',
     updateRule: '@request.auth.id = id || @request.auth.role = "admin"',
     deleteRule: '@request.auth.role = "admin"',
@@ -297,6 +297,26 @@ async function createCollections() {
     viewRule: '@request.auth.id != ""',
     createRule: '@request.auth.role = "caregiver" || @request.auth.role = "admin"',
     updateRule: '@request.auth.role = "admin" || caregiver_id = @request.auth.id',
+    deleteRule: '@request.auth.role = "admin"',
+  };
+
+  const carePlansSchema = {
+    name: 'care_plans',
+    type: 'base',
+    fields: [
+      { name: 'patient_id', type: 'relation', required: true, collectionId: 'patients', cascadeDelete: true, maxSelect: 1 },
+      { name: 'caregiver_id', type: 'relation', collectionId: 'users', cascadeDelete: false, maxSelect: 1 },
+      { name: 'title', type: 'text', required: true },
+      { name: 'start_date', type: 'date' },
+      { name: 'end_date', type: 'date' },
+      { name: 'schedule', type: 'json' },
+      { name: 'notes', type: 'text' },
+      { name: 'status', type: 'select', maxSelect: 1, values: ['active', 'paused', 'completed'] },
+    ],
+    listRule: '@request.auth.id != ""',
+    viewRule: '@request.auth.id != ""',
+    createRule: '@request.auth.role = "admin"',
+    updateRule: '@request.auth.role = "admin"',
     deleteRule: '@request.auth.role = "admin"',
   };
 
@@ -496,6 +516,7 @@ async function createCollections() {
   await createOrUpdateCollection({ schema: schemaWithoutRules(messagesSchema) });
   await createOrUpdateCollection({ schema: schemaWithoutRules(videoCallsSchema) });
   await createOrUpdateCollection({ schema: schemaWithoutRules(careChecklistsSchema) });
+  await createOrUpdateCollection({ schema: schemaWithoutRules(carePlansSchema) });
   await createOrUpdateCollection({ schema: schemaWithoutRules(appointmentsSchema) });
   await createOrUpdateCollection({ schema: schemaWithoutRules(medicalHistorySchema) });
   await createOrUpdateCollection({ schema: schemaWithoutRules(auditLogsSchema) });
@@ -508,6 +529,7 @@ async function createCollections() {
   await createOrUpdateCollection({ schema: messagesSchema });
   await createOrUpdateCollection({ schema: videoCallsSchema });
   await createOrUpdateCollection({ schema: careChecklistsSchema });
+  await createOrUpdateCollection({ schema: carePlansSchema });
   await createOrUpdateCollection({ schema: appointmentsSchema });
   await createOrUpdateCollection({ schema: medicalHistorySchema });
   await createOrUpdateCollection({ schema: auditLogsSchema });
