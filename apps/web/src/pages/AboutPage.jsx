@@ -80,7 +80,7 @@ const AboutPage = () => {
             >
               <div className="rounded-3xl overflow-hidden shadow-2xl">
                 <img
-                  src="http://www.seniorcarexpress.com/wp-content/uploads/2020/01/home-care-services-e1578767005218.jpg"
+                  src="/home-care-services.jpg"
                   alt="SeniorCare Xpress home care services"
                   className="w-full h-96 object-cover"
                 />
