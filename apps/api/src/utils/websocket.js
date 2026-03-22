@@ -18,6 +18,7 @@ if (typeof globalThis.EventSource === 'undefined') {
 
 let wss = null;
 const clients = new Map(); // Map of userId -> Set of WebSocket connections
+const enablePocketBaseRealtime = process.env.ENABLE_PB_REALTIME === 'true';
 
 const initWebSocket = (server) => {
   wss = new WebSocketServer({ server, path: '/ws/notifications' });
@@ -59,8 +60,13 @@ const initWebSocket = (server) => {
     });
   });
 
-  // Subscribe to PocketBase collection changes
-  subscribeToCollectionChanges();
+  // Subscribe to PocketBase collection changes only when explicitly enabled.
+  // This avoids container-specific runtime crashes in minimal Railway images.
+  if (enablePocketBaseRealtime) {
+    subscribeToCollectionChanges();
+  } else {
+    logger.info('PocketBase realtime subscriptions disabled (set ENABLE_PB_REALTIME=true to enable)');
+  }
 
   return wss;
 };
