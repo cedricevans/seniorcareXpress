@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext.jsx';
 import { Menu, LogOut, User } from 'lucide-react';
@@ -17,6 +17,7 @@ const Header = () => {
   const { isAuthenticated, role, currentUser, logout } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
+  const [drawerOpen, setDrawerOpen] = useState(false);
 
   const navLinks = [
     { name: 'Home', path: '/' },
@@ -112,7 +113,7 @@ const Header = () => {
           )}
 
           {/* Mobile Menu */}
-          <Drawer>
+          <Drawer open={drawerOpen} onOpenChange={setDrawerOpen}>
             <DrawerTrigger asChild className="md:hidden">
               <Button variant="ghost" size="icon" className="rounded-full">
                 <Menu className="h-6 w-6" />
@@ -124,6 +125,7 @@ const Header = () => {
                   <Link 
                     key={link.path} 
                     to={link.path}
+                    onClick={() => setDrawerOpen(false)}
                     className={`text-lg font-medium p-3 rounded-xl transition-colors ${
                       location.pathname === link.path ? 'bg-primary/10 text-primary' : 'hover:bg-muted'
                     }`}
@@ -134,15 +136,30 @@ const Header = () => {
                 <div className="h-px bg-border my-2" />
                 {isAuthenticated ? (
                   <>
-                    <Link to={getDashboardLink()} className="text-lg font-medium p-3 hover:bg-muted rounded-xl">
+                    <Link 
+                      to={getDashboardLink()} 
+                      onClick={() => setDrawerOpen(false)}
+                      className="text-lg font-medium p-3 hover:bg-muted rounded-xl"
+                    >
                       Dashboard
                     </Link>
-                    <Button variant="destructive" onClick={handleLogout} className="mt-4 rounded-xl h-12 text-lg">
+                    <Button 
+                      variant="destructive" 
+                      onClick={() => {
+                        handleLogout();
+                        setDrawerOpen(false);
+                      }} 
+                      className="mt-4 rounded-xl h-12 text-lg"
+                    >
                       Log out
                     </Button>
                   </>
                 ) : (
-                  <Link to="/login" className="w-full mt-2">
+                  <Link 
+                    to="/login" 
+                    onClick={() => setDrawerOpen(false)}
+                    className="w-full mt-2"
+                  >
                     <Button className="w-full font-medium rounded-xl h-12 text-lg">Access Care Portal</Button>
                   </Link>
                 )}
