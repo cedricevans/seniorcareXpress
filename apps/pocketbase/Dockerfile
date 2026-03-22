@@ -16,9 +16,16 @@ WORKDIR /app
 # Copy hooks and migrations
 COPY pb_hooks ./pb_hooks
 
-# PocketBase data will be in /app/pb_data (Railway volume)
-RUN mkdir -p /app/pb_data
+# Copy local database (includes superuser + collections)
+COPY pb_data ./pb_data
 
 EXPOSE 8090
 
-CMD ["/bin/sh", "-c", "/app/pocketbase serve --http=0.0.0.0:${PORT:-8090} --hooksDir=/app/pb_hooks --hooksWatch=false"]
+# Start PocketBase and auto-create superuser from env vars
+CMD ["/bin/sh", "-c", "\
+  /app/pocketbase serve --http=0.0.0.0:${PORT:-8090} --hooksDir=/app/pb_hooks --hooksWatch=false & \
+  PB_PID=$! && \
+  sleep 5 && \
+  /app/pocketbase superuser upsert ${PB_SUPERUSER_EMAIL:-admin@seniorcare.com} ${PB_SUPERUSER_PASSWORD:-Admin123!} && \
+  wait $PB_PID \
+"]

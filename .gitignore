@@ -14,9 +14,10 @@ apps/pocketbase/.env
 dist/
 build/
 
-# PocketBase data (local database - do not commit)
-apps/pocketbase/pb_data/
+# PocketBase data backups only
 apps/pocketbase/pb_data.bak/
+# Include pb_data/storage (user uploads) but not the db files
+apps/pocketbase/pb_data/storage/
 
 # PocketBase binaries
 apps/pocketbase/pocketbase
