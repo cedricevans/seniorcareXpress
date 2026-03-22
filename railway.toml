@@ -1,0 +1,11 @@
+# Root Railway fallback config for monorepo deployments
+# Service-specific deployments should still use the configs under apps/*.
+# If Railway is pointed at the repo root, this prevents it from booting the local-only `npm run dev` command.
+
+[build]
+builder = "NIXPACKS"
+
+[deploy]
+startCommand = "npm run start"
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 3
