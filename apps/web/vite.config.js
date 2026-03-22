@@ -293,18 +293,6 @@ export default defineConfig({
 			'Cross-Origin-Embedder-Policy': 'credentialless',
 		},
 		allowedHosts: true,
-		proxy: {
-			// Proxy PocketBase API requests to avoid CORS in dev
-			'/api': {
-				target: 'http://localhost:8090',
-				changeOrigin: true,
-				rewrite: (path) => path.replace(/^\/api/, '/api'),
-			},
-			'/_': {
-				target: 'http://localhost:8090',
-				changeOrigin: true,
-			},
-		},
 	},
 	resolve: {
 		extensions: ['.jsx', '.js', '.tsx', '.ts', '.json', ],

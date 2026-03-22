@@ -4,7 +4,7 @@ import { Helmet } from 'react-helmet';
 import { useLocation } from 'react-router-dom';
 import CaregiverLayout from '@/components/CaregiverLayout.jsx';
 import CaregiverDashboardView from '@/components/CaregiverDashboardView.jsx';
-import CaregiverPatientList from '@/pages/CaregiverPatientList.jsx';
+import CaregiverPatientsView from '@/components/CaregiverPatientsView.jsx';
 import CaregiverAppointmentsView from '@/components/CaregiverAppointmentsView.jsx';
 import CaregiverAvailabilityView from '@/components/CaregiverAvailabilityView.jsx';
 
@@ -32,7 +32,7 @@ const CaregiverDashboard = () => {
   const renderView = () => {
     switch(currentView) {
       case 'patients': 
-        return <CaregiverPatientList />;
+        return <CaregiverPatientsView />;
       case 'appointments': 
         return <CaregiverAppointmentsView />;
       case 'availability': 

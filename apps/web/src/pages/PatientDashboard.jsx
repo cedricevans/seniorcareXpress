@@ -18,30 +18,25 @@ const PatientDashboard = () => {
   useEffect(() => {
     const fetchPatientData = async () => {
       try {
+        // Try to find patient record linked to this user via email or family_links proxy
         let linkedPatient = null;
+        
+        // First try to find a patient with matching email (if email was added to patients)
+        // Since schema doesn't have email, we rely on family_links as a proxy for this demo
+        const links = await pb.collection('family_links').getFullList({
+          filter: `family_user_id="${currentUser.id}"`,
+          expand: 'patient_id',
+          $autoCancel: false
+        });
 
-        // Strategy 1: patient role — find patient record by user_id field
-        try {
-          const directRecords = await pb.collection('patients').getList(1, 1, {
-            filter: `user_id="${currentUser.id}"`,
-            $autoCancel: false
-          });
-          if (directRecords.items.length > 0) {
-            linkedPatient = directRecords.items[0];
-          }
-        } catch (e) {
-          // user_id field may not exist in older schemas
-        }
-
-        // Strategy 2: family role — find patient via family_links
-        if (!linkedPatient) {
-          const links = await pb.collection('family_links').getFullList({
-            filter: `family_user_id="${currentUser.id}"`,
-            expand: 'patient_id',
-            $autoCancel: false
-          });
-          if (links.length > 0 && links[0].expand?.patient_id) {
-            linkedPatient = links[0].expand.patient_id;
+        if (links.length > 0 && links[0].expand?.patient_id) {
+          linkedPatient = links[0].expand.patient_id;
+        } else {
+          // Fallback: try to fetch a patient record directly if ID matches
+          try {
+            linkedPatient = await pb.collection('patients').getOne(currentUser.id, { $autoCancel: false });
+          } catch (e) {
+            // Not found directly
           }
         }
 

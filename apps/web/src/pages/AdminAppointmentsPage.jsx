@@ -1,287 +1,289 @@
-
-import React, { useState, useEffect, useCallback } from 'react';
-import pb from '@/lib/pocketbaseClient';
+import { useState, useEffect } from 'react';
+import { pocketbaseClient as pb } from '@/lib/pocketbaseClient';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Skeleton } from '@/components/ui/skeleton';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Calendar, Clock, User, Edit, Trash2, Plus, CheckCircle2, XCircle, AlertCircle } from 'lucide-react';
-import { toast } from 'sonner';
-import AppointmentScheduler from '@/components/AppointmentScheduler.jsx';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from '@/components/ui/dialog';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
-const STATUS_OPTIONS = ['scheduled', 'completed', 'canceled', 'no-show'];
-
-const getStatusBadge = (status) => {
-  switch (status) {
-    case 'scheduled':  return <Badge className="bg-green-100 text-green-700 border-0">Scheduled</Badge>;
-    case 'completed':  return <Badge className="bg-blue-100 text-blue-700 border-0">Completed</Badge>;
-    case 'canceled':   return <Badge className="bg-red-100 text-red-700 border-0">Canceled</Badge>;
-    case 'no-show':    return <Badge className="bg-gray-100 text-gray-700 border-0">No-Show</Badge>;
-    default:           return <Badge variant="outline">{status}</Badge>;
-  }
+const STATUS_COLORS = {
+  scheduled: 'bg-blue-100 text-blue-800',
+  completed: 'bg-green-100 text-green-800',
+  cancelled: 'bg-red-100 text-red-800',
+  'no-show': 'bg-yellow-100 text-yellow-800',
 };
 
-const AdminAppointmentsPage = () => {
+const EMPTY_FORM = {
+  title: '',
+  description: '',
+  appointment_date: '',
+  appointment_time: '',
+  duration_minutes: 60,
+  status: 'scheduled',
+  appointment_type: 'check-up',
+  patient_id: '',
+  caregiver_id: '',
+};
+
+export default function AdminAppointmentsPage() {
   const [appointments, setAppointments] = useState([]);
+  const [patients, setPatients] = useState([]);
+  const [caregivers, setCaregivers] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [statusFilter, setStatusFilter] = useState('all');
+  const [search, setSearch] = useState('');
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [editId, setEditId] = useState(null);
+  const [form, setForm] = useState(EMPTY_FORM);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState('');
 
-  const [isSchedulerOpen, setIsSchedulerOpen] = useState(false);
-  const [editTarget, setEditTarget] = useState(null);
-  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
-  const [deleteTarget, setDeleteTarget] = useState(null);
+  useEffect(() => {
+    loadAll();
+  }, []);
 
-  const fetchAppointments = useCallback(async () => {
+  async function loadAll() {
     setLoading(true);
     try {
-      const filter = statusFilter !== 'all' ? `status = "${statusFilter}"` : '';
-      const records = await pb.collection('appointments').getList(1, 100, {
-        filter,
-        expand: 'patient_id,caregiver_id',
-        sort: '-appointment_date',
-        $autoCancel: false,
-      });
-      setAppointments(records.items);
-    } catch (err) {
-      console.error(err);
-      toast.error('Failed to load appointments');
+      const [appts, pts, cgs] = await Promise.all([
+        pb.collection('appointments').getFullList({ sort: '-appointment_date', expand: 'patient_id,caregiver_id' }),
+        pb.collection('patients').getFullList({ sort: 'first_name' }),
+        pb.collection('users').getFullList({ filter: 'role = "caregiver"', sort: 'name' }),
+      ]);
+      setAppointments(appts);
+      setPatients(pts);
+      setCaregivers(cgs);
+    } catch (e) {
+      setError('Failed to load appointments: ' + e.message);
     } finally {
       setLoading(false);
     }
-  }, [statusFilter]);
+  }
 
-  useEffect(() => {
-    fetchAppointments();
-  }, [fetchAppointments]);
+  function openCreate() {
+    setForm(EMPTY_FORM);
+    setEditId(null);
+    setDialogOpen(true);
+  }
 
-  const handleOpenCreate = () => {
-    setEditTarget(null);
-    setIsSchedulerOpen(true);
-  };
+  function openEdit(appt) {
+    setForm({
+      title: appt.title || '',
+      description: appt.description || '',
+      appointment_date: appt.appointment_date?.split(' ')[0] || '',
+      appointment_time: appt.appointment_time || '',
+      duration_minutes: appt.duration_minutes || 60,
+      status: appt.status || 'scheduled',
+      appointment_type: appt.appointment_type || 'check-up',
+      patient_id: appt.patient_id || '',
+      caregiver_id: appt.caregiver_id || '',
+    });
+    setEditId(appt.id);
+    setDialogOpen(true);
+  }
 
-  const handleOpenEdit = (apt) => {
-    setEditTarget(apt);
-    setIsSchedulerOpen(true);
-  };
-
-  const handleOpenDelete = (apt) => {
-    setDeleteTarget(apt);
-    setIsDeleteOpen(true);
-  };
-
-  const handleDelete = async () => {
-    try {
-      await pb.collection('appointments').delete(deleteTarget.id, { $autoCancel: false });
-      toast.success('Appointment deleted');
-      setIsDeleteOpen(false);
-      fetchAppointments();
-    } catch (err) {
-      toast.error('Failed to delete appointment');
+  async function handleSave() {
+    if (!form.title || !form.appointment_date || !form.patient_id) {
+      setError('Title, date, and patient are required.');
+      return;
     }
-  };
-
-  const handleStatusChange = async (id, newStatus) => {
+    setSaving(true);
+    setError('');
     try {
-      await pb.collection('appointments').update(id, { status: newStatus }, { $autoCancel: false });
-      toast.success(`Status updated to ${newStatus}`);
-      fetchAppointments();
-    } catch (err) {
-      toast.error('Failed to update status');
+      if (editId) {
+        await pb.collection('appointments').update(editId, form);
+      } else {
+        await pb.collection('appointments').create(form);
+      }
+      setDialogOpen(false);
+      loadAll();
+    } catch (e) {
+      setError(e.message);
+    } finally {
+      setSaving(false);
     }
-  };
+  }
+
+  async function handleDelete(id) {
+    if (!confirm('Delete this appointment?')) return;
+    try {
+      await pb.collection('appointments').delete(id);
+      setAppointments(prev => prev.filter(a => a.id !== id));
+    } catch (e) {
+      alert('Delete failed: ' + e.message);
+    }
+  }
+
+  async function handleStatusChange(id, status) {
+    try {
+      await pb.collection('appointments').update(id, { status });
+      setAppointments(prev => prev.map(a => a.id === id ? { ...a, status } : a));
+    } catch (e) {
+      alert('Update failed: ' + e.message);
+    }
+  }
+
+  const filtered = appointments.filter(a =>
+    a.title?.toLowerCase().includes(search.toLowerCase()) ||
+    a.expand?.patient_id?.first_name?.toLowerCase().includes(search.toLowerCase()) ||
+    a.expand?.caregiver_id?.name?.toLowerCase().includes(search.toLowerCase())
+  );
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <div>
-          <h2 className="text-2xl font-heading font-bold text-foreground">Appointments</h2>
-          <p className="text-muted-foreground">Schedule and manage all patient appointments.</p>
-        </div>
-        <Button className="gap-2" onClick={handleOpenCreate}>
-          <Plus className="h-4 w-4" /> Schedule Appointment
-        </Button>
+    <div className="p-6 space-y-4">
+      <div className="flex items-center justify-between">
+        <h1 className="text-2xl font-bold">Appointments</h1>
+        <Button onClick={openCreate}>+ Schedule Appointment</Button>
       </div>
 
-      {/* Filter Bar */}
-      <div className="flex items-center gap-3">
-        <span className="text-sm font-medium text-muted-foreground">Filter by status:</span>
-        <Select value={statusFilter} onValueChange={setStatusFilter}>
-          <SelectTrigger className="w-44 bg-white">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All</SelectItem>
-            {STATUS_OPTIONS.map(s => (
-              <SelectItem key={s} value={s} className="capitalize">{s}</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-        <Button variant="outline" size="sm" onClick={fetchAppointments} disabled={loading}>Refresh</Button>
-      </div>
+      <Input
+        placeholder="Search by title, patient, or caregiver..."
+        value={search}
+        onChange={e => setSearch(e.target.value)}
+        className="max-w-sm"
+      />
 
-      {/* Table */}
-      <div className="bg-white rounded-xl shadow-soft border overflow-hidden">
-        <div className="overflow-x-auto">
-          <Table>
-            <TableHeader>
-              <TableRow className="bg-muted/50">
-                <TableHead>Date</TableHead>
-                <TableHead>Time</TableHead>
-                <TableHead>Patient</TableHead>
-                <TableHead>Caregiver</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
+      {error && <p className="text-red-500 text-sm">{error}</p>}
+
+      {loading ? (
+        <p className="text-muted-foreground">Loading...</p>
+      ) : (
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Title</TableHead>
+              <TableHead>Patient</TableHead>
+              <TableHead>Caregiver</TableHead>
+              <TableHead>Date</TableHead>
+              <TableHead>Time</TableHead>
+              <TableHead>Type</TableHead>
+              <TableHead>Status</TableHead>
+              <TableHead>Actions</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {filtered.length === 0 && (
+              <TableRow>
+                <TableCell colSpan={8} className="text-center text-muted-foreground py-8">
+                  No appointments found.
+                </TableCell>
               </TableRow>
-            </TableHeader>
-            <TableBody>
-              {loading ? (
-                Array.from({ length: 5 }).map((_, i) => (
-                  <TableRow key={i}>
-                    {Array.from({ length: 6 }).map((__, j) => (
-                      <TableCell key={j}><Skeleton className="h-6 w-full" /></TableCell>
-                    ))}
-                  </TableRow>
-                ))
-              ) : appointments.length === 0 ? (
-                <TableRow>
-                  <TableCell colSpan={6} className="text-center py-12 text-muted-foreground">
-                    <div className="flex flex-col items-center gap-2">
-                      <Calendar className="h-8 w-8 opacity-30" />
-                      No appointments found.
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ) : (
-                appointments.map((apt) => (
-                  <TableRow key={apt.id} className="hover:bg-muted/30 transition-colors">
-                    <TableCell>
-                      <div className="flex items-center gap-2 font-medium">
-                        <Calendar className="h-4 w-4 text-muted-foreground" />
-                        {new Date(apt.appointment_date).toLocaleDateString()}
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex items-center gap-2 text-muted-foreground">
-                        <Clock className="h-4 w-4" />
-                        {apt.appointment_time}
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex items-center gap-2">
-                        <User className="h-4 w-4 text-muted-foreground" />
-                        {apt.expand?.patient_id?.name || apt.patient_id}
-                      </div>
-                    </TableCell>
-                    <TableCell className="text-muted-foreground">
-                      {apt.expand?.caregiver_id?.name || apt.expand?.caregiver_id?.email || apt.caregiver_id}
-                    </TableCell>
-                    <TableCell>{getStatusBadge(apt.status)}</TableCell>
-                    <TableCell className="text-right">
-                      <div className="flex justify-end items-center gap-1">
-                        {apt.status === 'scheduled' && (
-                          <>
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              title="Mark Complete"
-                              className="text-green-600 hover:text-green-700 hover:bg-green-50"
-                              onClick={() => handleStatusChange(apt.id, 'completed')}
-                            >
-                              <CheckCircle2 className="h-4 w-4" />
-                            </Button>
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              title="Mark Canceled"
-                              className="text-orange-500 hover:text-orange-600 hover:bg-orange-50"
-                              onClick={() => handleStatusChange(apt.id, 'canceled')}
-                            >
-                              <XCircle className="h-4 w-4" />
-                            </Button>
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              title="Mark No-Show"
-                              className="text-muted-foreground hover:text-foreground"
-                              onClick={() => handleStatusChange(apt.id, 'no-show')}
-                            >
-                              <AlertCircle className="h-4 w-4" />
-                            </Button>
-                          </>
-                        )}
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          title="Edit"
-                          className="text-muted-foreground hover:text-primary"
-                          onClick={() => handleOpenEdit(apt)}
-                        >
-                          <Edit className="h-4 w-4" />
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          title="Delete"
-                          className="text-muted-foreground hover:text-destructive"
-                          onClick={() => handleOpenDelete(apt)}
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                ))
-              )}
-            </TableBody>
-          </Table>
-        </div>
-      </div>
+            )}
+            {filtered.map(appt => (
+              <TableRow key={appt.id}>
+                <TableCell className="font-medium">{appt.title}</TableCell>
+                <TableCell>
+                  {appt.expand?.patient_id
+                    ? `${appt.expand.patient_id.first_name} ${appt.expand.patient_id.last_name}`
+                    : '—'}
+                </TableCell>
+                <TableCell>{appt.expand?.caregiver_id?.name || '—'}</TableCell>
+                <TableCell>{appt.appointment_date?.split(' ')[0] || '—'}</TableCell>
+                <TableCell>{appt.appointment_time || '—'}</TableCell>
+                <TableCell className="capitalize">{appt.appointment_type?.replace('-', ' ') || '—'}</TableCell>
+                <TableCell>
+                  <Select value={appt.status} onValueChange={v => handleStatusChange(appt.id, v)}>
+                    <SelectTrigger className="w-32 h-7 text-xs">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {['scheduled', 'completed', 'cancelled', 'no-show'].map(s => (
+                        <SelectItem key={s} value={s}>{s}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </TableCell>
+                <TableCell className="flex gap-2">
+                  <Button size="sm" variant="outline" onClick={() => openEdit(appt)}>Edit</Button>
+                  <Button size="sm" variant="destructive" onClick={() => handleDelete(appt.id)}>Delete</Button>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      )}
 
-      {/* Schedule / Edit Dialog */}
-      <Dialog open={isSchedulerOpen} onOpenChange={setIsSchedulerOpen}>
-        <DialogContent className="sm:max-w-[600px]">
+      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+        <DialogContent className="max-w-lg">
           <DialogHeader>
-            <DialogTitle>{editTarget ? 'Edit Appointment' : 'Schedule New Appointment'}</DialogTitle>
+            <DialogTitle>{editId ? 'Edit Appointment' : 'Schedule Appointment'}</DialogTitle>
           </DialogHeader>
-          <div className="mt-2">
-            <AppointmentScheduler
-              initialData={editTarget}
-              onSuccess={() => {
-                setIsSchedulerOpen(false);
-                fetchAppointments();
-              }}
-              onCancel={() => setIsSchedulerOpen(false)}
+          <div className="space-y-3 py-2">
+            {error && <p className="text-red-500 text-sm">{error}</p>}
+            <Input placeholder="Title *" value={form.title} onChange={e => setForm(p => ({ ...p, title: e.target.value }))} />
+            <Input placeholder="Description" value={form.description} onChange={e => setForm(p => ({ ...p, description: e.target.value }))} />
+            <div className="grid grid-cols-2 gap-3">
+              <Input type="date" value={form.appointment_date} onChange={e => setForm(p => ({ ...p, appointment_date: e.target.value }))} />
+              <Input type="time" value={form.appointment_time} onChange={e => setForm(p => ({ ...p, appointment_time: e.target.value }))} />
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              <Select value={form.patient_id} onValueChange={v => setForm(p => ({ ...p, patient_id: v }))}>
+                <SelectTrigger><SelectValue placeholder="Patient *" /></SelectTrigger>
+                <SelectContent>
+                  {patients.map(p => (
+                    <SelectItem key={p.id} value={p.id}>{p.first_name} {p.last_name}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <Select value={form.caregiver_id} onValueChange={v => setForm(p => ({ ...p, caregiver_id: v }))}>
+                <SelectTrigger><SelectValue placeholder="Caregiver" /></SelectTrigger>
+                <SelectContent>
+                  {caregivers.map(c => (
+                    <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              <Select value={form.appointment_type} onValueChange={v => setForm(p => ({ ...p, appointment_type: v }))}>
+                <SelectTrigger><SelectValue placeholder="Type" /></SelectTrigger>
+                <SelectContent>
+                  {['check-up', 'medication', 'therapy', 'specialist', 'emergency', 'other'].map(t => (
+                    <SelectItem key={t} value={t}>{t}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <Select value={form.status} onValueChange={v => setForm(p => ({ ...p, status: v }))}>
+                <SelectTrigger><SelectValue placeholder="Status" /></SelectTrigger>
+                <SelectContent>
+                  {['scheduled', 'completed', 'cancelled', 'no-show'].map(s => (
+                    <SelectItem key={s} value={s}>{s}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <Input
+              type="number"
+              placeholder="Duration (minutes)"
+              value={form.duration_minutes}
+              onChange={e => setForm(p => ({ ...p, duration_minutes: parseInt(e.target.value) || 60 }))}
             />
           </div>
-        </DialogContent>
-      </Dialog>
-
-      {/* Delete Confirmation */}
-      <Dialog open={isDeleteOpen} onOpenChange={setIsDeleteOpen}>
-        <DialogContent className="sm:max-w-[400px]">
-          <DialogHeader>
-            <DialogTitle>Delete Appointment</DialogTitle>
-          </DialogHeader>
-          <div className="py-4 text-muted-foreground">
-            Are you sure you want to delete this appointment for{' '}
-            <strong className="text-foreground">
-              {deleteTarget?.expand?.patient_id?.name || 'this patient'}
-            </strong>{' '}
-            on{' '}
-            <strong className="text-foreground">
-              {deleteTarget ? new Date(deleteTarget.appointment_date).toLocaleDateString() : ''}
-            </strong>?
-          </div>
-          <div className="flex justify-end gap-2">
-            <Button variant="outline" onClick={() => setIsDeleteOpen(false)}>Cancel</Button>
-            <Button variant="destructive" onClick={handleDelete}>Delete</Button>
-          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setDialogOpen(false)}>Cancel</Button>
+            <Button onClick={handleSave} disabled={saving}>{saving ? 'Saving...' : 'Save'}</Button>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
     </div>
   );
-};
-
-export default AdminAppointmentsPage;
+}

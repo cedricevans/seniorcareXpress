@@ -1,0 +1,9 @@
+# Railway config for React/Vite web frontend
+[build]
+builder = "NIXPACKS"
+buildCommand = "npm install && npm run build"
+
+[deploy]
+startCommand = "npx serve -s ../../dist/apps/web -l ${PORT:-3000}"
+healthcheckTimeout = 30
+restartPolicyType = "ON_FAILURE"

@@ -1,26 +1,24 @@
 FROM alpine:3.19
 
-# Install ca-certificates for HTTPS
+# Install required libs
 RUN apk add --no-cache ca-certificates wget unzip
 
-# Download PocketBase binary for linux/amd64
+# Download PocketBase (linux amd64 for Railway)
 ARG PB_VERSION=0.25.4
 RUN wget -q https://github.com/pocketbase/pocketbase/releases/download/v${PB_VERSION}/pocketbase_${PB_VERSION}_linux_amd64.zip \
-    && unzip pocketbase_${PB_VERSION}_linux_amd64.zip -d /pb \
-    && rm pocketbase_${PB_VERSION}_linux_amd64.zip
+    -O /tmp/pocketbase.zip && \
+    unzip /tmp/pocketbase.zip -d /app && \
+    rm /tmp/pocketbase.zip && \
+    chmod +x /app/pocketbase
 
-# Copy migrations and hooks
-COPY pb_migrations /pb/pb_migrations
-COPY pb_hooks /pb/pb_hooks
+WORKDIR /app
 
-# Persistent data volume
-VOLUME /pb/pb_data
+# Copy hooks and migrations
+COPY pb_hooks ./pb_hooks
+
+# PocketBase data will be in /app/pb_data (Railway volume)
+RUN mkdir -p /app/pb_data
 
 EXPOSE 8090
 
-CMD ["/pb/pocketbase", "serve", \
-     "--http=0.0.0.0:8090", \
-     "--dir=/pb/pb_data", \
-     "--migrationsDir=/pb/pb_migrations", \
-     "--hooksDir=/pb/pb_hooks", \
-     "--hooksWatch=false"]
+CMD ["/bin/sh", "-c", "/app/pocketbase serve --http=0.0.0.0:${PORT:-8090} --hooksDir=/app/pb_hooks --hooksWatch=false"]
