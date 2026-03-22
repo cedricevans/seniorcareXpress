@@ -8,7 +8,9 @@
     "build": "node tools/generate-llms.js || true && vite build --outDir ../../dist/apps/web",
     "start": "vite preview --outDir ../../dist/apps/web --host :: --port 3000",
     "lint": "eslint . --quiet",
-    "lint:warn": "eslint ."
+    "lint:warn": "eslint .",
+    "build:railway": "node tools/generate-llms.js || true && vite build --outDir ./dist",
+    "start:railway": "serve -s ./dist -l ${PORT:-3000}"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
@@ -63,7 +65,8 @@
     "tailwind-merge": "^2.6.0",
     "tailwindcss-animate": "^1.0.7",
     "vaul": "^1.1.2",
-    "zod": "^4.3.6"
+    "zod": "^4.3.6",
+    "serve": "^14.2.4"
   },
   "devDependencies": {
     "@babel/generator": "^7.26.3",
