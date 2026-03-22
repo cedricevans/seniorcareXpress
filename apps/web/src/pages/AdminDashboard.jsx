@@ -8,7 +8,7 @@ import pb from '@/lib/pocketbaseClient';
 import AppointmentScheduler from '@/components/AppointmentScheduler.jsx';
 
 const AdminDashboard = () => {
-  const [stats, setStats] = useState({ patients: 0, caregivers: 0, appointments: 0, encounters: 0 });
+  const [stats, setStats] = useState({ patients: 0, caregivers: 0, appointments: 0, careUpdates: 0 });
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -16,18 +16,18 @@ const AdminDashboard = () => {
       try {
         const today = new Date().toISOString().split('T')[0];
         
-        const [patients, caregivers, appointments, encounters] = await Promise.all([
+        const [patients, caregivers, appointments, careUpdates] = await Promise.all([
           pb.collection('patients').getList(1, 1, { $autoCancel: false }),
           pb.collection('users').getList(1, 1, { filter: 'role="caregiver"', $autoCancel: false }),
           pb.collection('appointments').getList(1, 1, { filter: `appointment_date >= "${today}"`, $autoCancel: false }),
-          pb.collection('encounters').getList(1, 1, { $autoCancel: false })
+          pb.collection('care_updates').getList(1, 1, { $autoCancel: false })
         ]);
         
         setStats({
           patients: patients.totalItems,
           caregivers: caregivers.totalItems,
           appointments: appointments.totalItems,
-          encounters: encounters.totalItems
+          careUpdates: careUpdates.totalItems
         });
       } catch (error) {
         console.error("Error fetching stats:", error);
@@ -43,7 +43,7 @@ const AdminDashboard = () => {
     { title: 'Total Patients', value: stats.patients, icon: Users, color: 'text-blue-600', bg: 'bg-blue-100' },
     { title: 'Active Caregivers', value: stats.caregivers, icon: Activity, color: 'text-green-600', bg: 'bg-green-100' },
     { title: 'Upcoming Appointments', value: stats.appointments, icon: Calendar, color: 'text-purple-600', bg: 'bg-purple-100' },
-    { title: 'Total Encounters', value: stats.encounters, icon: TrendingUp, color: 'text-orange-600', bg: 'bg-orange-100' },
+    { title: 'Care Updates Logged', value: stats.careUpdates, icon: TrendingUp, color: 'text-orange-600', bg: 'bg-orange-100' },
   ];
 
   return (

@@ -21,14 +21,15 @@ const AppointmentScheduler = ({ onSuccess, initialData = null, onCancel = null }
     caregiver_id: initialData?.caregiver_id || '',
     appointment_date: initialData?.appointment_date ? initialData.appointment_date.split(' ')[0] : '',
     appointment_time: initialData?.appointment_time || '',
-    notes: initialData?.notes || ''
+    title: initialData?.title || '',
+    description: initialData?.description || ''
   });
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const [patientsRes, caregiversRes] = await Promise.all([
-          pb.collection('patients').getFullList({ sort: 'name', $autoCancel: false }),
+          pb.collection('patients').getFullList({ sort: 'last_name,first_name', $autoCancel: false }),
           pb.collection('users').getFullList({ filter: 'role="caregiver"', sort: 'name', $autoCancel: false })
         ]);
         setPatients(patientsRes);
@@ -45,7 +46,7 @@ const AppointmentScheduler = ({ onSuccess, initialData = null, onCancel = null }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!formData.patient_id || !formData.caregiver_id || !formData.appointment_date || !formData.appointment_time) {
+    if (!formData.patient_id || !formData.caregiver_id || !formData.appointment_date || !formData.appointment_time || !formData.title) {
       toast.error('Please fill in all required fields');
       return;
     }
@@ -53,10 +54,13 @@ const AppointmentScheduler = ({ onSuccess, initialData = null, onCancel = null }
     setLoading(true);
     try {
       const payload = {
-        ...formData,
         appointment_date: `${formData.appointment_date} 00:00:00.000Z`,
-        status: initialData?.status || 'scheduled',
-        reminder_sent: initialData?.reminder_sent || false
+        appointment_time: formData.appointment_time,
+        patient_id: formData.patient_id,
+        caregiver_id: formData.caregiver_id,
+        title: formData.title,
+        description: formData.description,
+        status: initialData?.status || 'scheduled'
       };
 
       if (initialData?.id) {
@@ -73,7 +77,8 @@ const AppointmentScheduler = ({ onSuccess, initialData = null, onCancel = null }
           caregiver_id: '',
           appointment_date: '',
           appointment_time: '',
-          notes: ''
+          title: '',
+          description: ''
         });
       }
       if (onSuccess) onSuccess();
@@ -108,7 +113,7 @@ const AppointmentScheduler = ({ onSuccess, initialData = null, onCancel = null }
                 </SelectTrigger>
                 <SelectContent>
                   {patients.map(p => (
-                    <SelectItem key={p.id} value={p.id}>{p.name}</SelectItem>
+                    <SelectItem key={p.id} value={p.id}>{p.first_name} {p.last_name}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>
@@ -152,11 +157,22 @@ const AppointmentScheduler = ({ onSuccess, initialData = null, onCancel = null }
           </div>
 
           <div className="space-y-2">
-            <Label>Notes</Label>
+            <Label>Title *</Label>
+            <Input
+              value={formData.title}
+              onChange={(e) => setFormData({...formData, title: e.target.value})}
+              className="bg-white"
+              placeholder="Appointment title"
+              required
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label>Description</Label>
             <Textarea 
               placeholder="Any special instructions or notes for this appointment..."
-              value={formData.notes}
-              onChange={(e) => setFormData({...formData, notes: e.target.value})}
+              value={formData.description}
+              onChange={(e) => setFormData({...formData, description: e.target.value})}
               className="bg-white resize-none"
               rows={3}
             />

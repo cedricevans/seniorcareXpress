@@ -35,11 +35,12 @@ const AppointmentCalendar = ({ filterCaregiverId = null, filterPatientId = null,
       const formattedEvents = records.map(record => {
         const dateStr = `${record.appointment_date.split(' ')[0]}T${record.appointment_time}`;
         const startDate = new Date(dateStr);
-        const endDate = new Date(startDate.getTime() + 60 * 60 * 1000); // Assume 1 hour duration
+        const durationMinutes = record.duration_minutes || 60;
+        const endDate = new Date(startDate.getTime() + durationMinutes * 60 * 1000);
 
         return {
           id: record.id,
-          title: `${record.expand?.patient_id?.name || 'Patient'} w/ ${record.expand?.caregiver_id?.name || 'Caregiver'}`,
+          title: `${record.title || 'Appointment'} — ${record.expand?.patient_id ? `${record.expand.patient_id.first_name} ${record.expand.patient_id.last_name}` : 'Patient'}`,
           start: startDate,
           end: endDate,
           resource: record
@@ -92,11 +93,11 @@ const AppointmentCalendar = ({ filterCaregiverId = null, filterPatientId = null,
               views={['month', 'week', 'day']}
               defaultView="week"
               onSelectEvent={(event) => setSelectedEvent(event)}
-              tooltipAccessor={(event) => `${event.title}\nStatus: ${event.resource.status}\nNotes: ${event.resource.notes || 'None'}`}
+              tooltipAccessor={(event) => `${event.title}\nStatus: ${event.resource.status}\nDetails: ${event.resource.description || 'None'}`}
               eventPropGetter={(event) => {
                 let backgroundColor = '#1e40af'; // primary
                 if (event.resource.status === 'completed') backgroundColor = '#16a34a';
-                if (event.resource.status === 'canceled') backgroundColor = '#dc2626';
+                if (event.resource.status === 'cancelled') backgroundColor = '#dc2626';
                 return { style: { backgroundColor, borderRadius: '6px', border: 'none', cursor: 'pointer' } };
               }}
             />
@@ -131,7 +132,7 @@ const AppointmentCalendar = ({ filterCaregiverId = null, filterPatientId = null,
                     <User className="h-5 w-5 text-muted-foreground" />
                     <div>
                       <p className="text-sm text-muted-foreground">Patient</p>
-                      <p className="font-medium">{selectedEvent.resource.expand?.patient_id?.name || 'Unknown'}</p>
+                        <p className="font-medium">{selectedEvent.resource.expand?.patient_id ? `${selectedEvent.resource.expand.patient_id.first_name} ${selectedEvent.resource.expand.patient_id.last_name}` : 'Unknown'}</p>
                     </div>
                   </div>
                   
@@ -160,10 +161,10 @@ const AppointmentCalendar = ({ filterCaregiverId = null, filterPatientId = null,
                     </div>
                   </div>
 
-                  {selectedEvent.resource.notes && (
+                  {selectedEvent.resource.description && (
                     <div className="p-3 bg-muted/30 rounded-xl border">
-                      <p className="text-sm text-muted-foreground mb-1">Notes</p>
-                      <p className="text-sm">{selectedEvent.resource.notes}</p>
+                      <p className="text-sm text-muted-foreground mb-1">Description</p>
+                      <p className="text-sm">{selectedEvent.resource.description}</p>
                     </div>
                   )}
                   
@@ -171,7 +172,7 @@ const AppointmentCalendar = ({ filterCaregiverId = null, filterPatientId = null,
                     <span className="text-sm text-muted-foreground">Status</span>
                     <span className={`px-2 py-1 rounded-full text-xs font-medium capitalize ${
                       selectedEvent.resource.status === 'completed' ? 'bg-green-100 text-green-700' :
-                      selectedEvent.resource.status === 'canceled' ? 'bg-red-100 text-red-700' :
+                      selectedEvent.resource.status === 'cancelled' ? 'bg-red-100 text-red-700' :
                       'bg-blue-100 text-blue-700'
                     }`}>
                       {selectedEvent.resource.status}

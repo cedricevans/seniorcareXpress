@@ -95,10 +95,10 @@ const CaregiverPatientsView = () => {
                     <User className="h-6 w-6 text-primary group-hover:text-primary-foreground" />
                   </div>
                   <div>
-                    <CardTitle className="text-xl">{patient.name}</CardTitle>
+                    <CardTitle className="text-xl">{patient.first_name} {patient.last_name}</CardTitle>
                     <div className="flex items-center gap-2 text-sm text-muted-foreground mt-1">
                       <Calendar className="h-3.5 w-3.5" />
-                      {calculateAge(patient.dob)} years old
+                      {calculateAge(patient.date_of_birth)} years old
                     </div>
                   </div>
                 </div>
@@ -109,7 +109,7 @@ const CaregiverPatientsView = () => {
                     <Activity className="h-4 w-4 text-secondary" /> Medical Conditions
                   </div>
                   <p className="text-sm text-foreground line-clamp-2 bg-muted/30 p-2.5 rounded-lg">
-                    {patient.medical_conditions || 'None recorded'}
+                    {patient.medical_notes || 'None recorded'}
                   </p>
                 </div>
                 <div>

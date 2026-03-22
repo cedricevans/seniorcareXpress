@@ -56,7 +56,7 @@ const CaregiverAppointmentsView = () => {
     switch (status) {
       case 'scheduled': return <Badge className="bg-green-100 text-green-700 hover:bg-green-200 border-0">Scheduled</Badge>;
       case 'completed': return <Badge className="bg-blue-100 text-blue-700 hover:bg-blue-200 border-0">Completed</Badge>;
-      case 'canceled': return <Badge className="bg-red-100 text-red-700 hover:bg-red-200 border-0">Canceled</Badge>;
+  case 'cancelled': return <Badge className="bg-red-100 text-red-700 hover:bg-red-200 border-0">Cancelled</Badge>;
       case 'no-show': return <Badge className="bg-gray-100 text-gray-700 hover:bg-gray-200 border-0">No-Show</Badge>;
       default: return <Badge variant="outline">{status}</Badge>;
     }
@@ -117,15 +117,15 @@ const CaregiverAppointmentsView = () => {
                     <div className="flex justify-between items-start mb-2">
                       <div className="flex items-center gap-2">
                         <User className="w-5 h-5 text-muted-foreground" />
-                        <h3 className="text-lg font-bold">{apt.expand?.patient_id?.name || 'Unknown Patient'}</h3>
+                        <h3 className="text-lg font-bold">{apt.expand?.patient_id ? `${apt.expand.patient_id.first_name} ${apt.expand.patient_id.last_name}` : 'Unknown Patient'}</h3>
                       </div>
                       {getStatusBadge(apt.status)}
                     </div>
                     
-                    {apt.notes && (
+                    {(apt.description || apt.title) && (
                       <div className="flex items-start gap-2 mt-3 text-sm text-muted-foreground bg-muted/20 p-3 rounded-lg">
                         <FileText className="w-4 h-4 shrink-0 mt-0.5" />
-                        <p>{apt.notes}</p>
+                        <p>{apt.description || apt.title}</p>
                       </div>
                     )}
                   </div>
@@ -145,7 +145,7 @@ const CaregiverAppointmentsView = () => {
                           size="sm" 
                           variant="outline" 
                           className="w-full gap-2 text-destructive hover:text-destructive hover:bg-destructive/10"
-                          onClick={() => handleStatusUpdate(apt.id, 'canceled')}
+                          onClick={() => handleStatusUpdate(apt.id, 'cancelled')}
                         >
                           <XCircle className="w-4 h-4" /> Cancel
                         </Button>

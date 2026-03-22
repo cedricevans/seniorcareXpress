@@ -34,7 +34,7 @@ const FamilyDashboard = () => {
           const [logsRes, historyRes, aptsRes] = await Promise.all([
             pb.collection('care_updates').getFullList({
               filter: `patient_id="${linkedPatient.id}"`,
-              sort: '-time_logged',
+              sort: '-created',
               expand: 'caregiver_id',
               limit: 10,
               $autoCancel: false
@@ -107,9 +107,9 @@ const FamilyDashboard = () => {
           </div>
           <div>
             <p className="text-primary-foreground/80 font-medium mb-1">Caring for</p>
-            <h2 className="text-2xl font-bold">{patient.name}</h2>
+            <h2 className="text-2xl font-bold">{patient.first_name} {patient.last_name}</h2>
             <p className="text-sm mt-2 bg-white/20 inline-block px-3 py-1 rounded-full backdrop-blur-sm">
-              DOB: {new Date(patient.dob).toLocaleDateString()}
+              DOB: {patient.date_of_birth ? new Date(patient.date_of_birth).toLocaleDateString() : 'Not provided'}
             </p>
           </div>
         </CardContent>
@@ -132,10 +132,10 @@ const FamilyDashboard = () => {
                   <div key={log.id} className="relative pl-6">
                     <div className="absolute -left-[9px] top-1 w-4 h-4 rounded-full bg-primary ring-4 ring-background" />
                     <p className="text-sm text-muted-foreground mb-1">
-                      {new Date(log.time_logged).toLocaleString()}
+                      {new Date(log.created).toLocaleString()}
                     </p>
                     <h4 className="font-bold text-foreground mb-2 capitalize">{log.update_type}</h4>
-                    <p className="text-muted-foreground text-sm mb-2">{log.description}</p>
+                    <p className="text-muted-foreground text-sm mb-2">{log.notes || 'No details provided.'}</p>
                     <p className="text-xs font-medium text-primary">
                       Logged by {log.expand?.caregiver_id?.name || log.expand?.caregiver_id?.email || 'Caregiver'}
                     </p>
@@ -161,13 +161,13 @@ const FamilyDashboard = () => {
                 {medicalHistory.map((item) => (
                   <div key={item.id} className="p-4 rounded-xl border border-border bg-muted/30">
                     <div className="flex justify-between items-start mb-2">
-                      <h4 className="font-bold text-lg">{item.condition_name}</h4>
+                      <h4 className="font-bold text-lg">{item.condition}</h4>
                       <span className={`text-xs px-2 py-1 rounded-full ${item.status === 'active' ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'}`}>
                         {item.status}
                       </span>
                     </div>
-                    {item.diagnosis_date && (
-                      <p className="text-sm text-muted-foreground mb-2">Diagnosed: {new Date(item.diagnosis_date).toLocaleDateString()}</p>
+                    {item.diagnosed_date && (
+                      <p className="text-sm text-muted-foreground mb-2">Diagnosed: {new Date(item.diagnosed_date).toLocaleDateString()}</p>
                     )}
                     {item.notes && <p className="text-sm">{item.notes}</p>}
                   </div>

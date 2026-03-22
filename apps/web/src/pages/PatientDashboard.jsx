@@ -12,7 +12,7 @@ const PatientDashboard = () => {
   const { currentUser } = useAuth();
   const [patient, setPatient] = useState(null);
   const [appointments, setAppointments] = useState([]);
-  const [encounters, setEncounters] = useState([]);
+  const [careUpdates, setCareUpdates] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -32,27 +32,26 @@ const PatientDashboard = () => {
         if (links.length > 0 && links[0].expand?.patient_id) {
           linkedPatient = links[0].expand.patient_id;
         } else {
-          // Fallback: try to fetch a patient record directly if ID matches
-          try {
-            linkedPatient = await pb.collection('patients').getOne(currentUser.id, { $autoCancel: false });
-          } catch (e) {
-            // Not found directly
-          }
+          const patientRecords = await pb.collection('patients').getFullList({
+            filter: `user_id="${currentUser.id}"`,
+            $autoCancel: false
+          });
+          linkedPatient = patientRecords[0] || null;
         }
 
         if (linkedPatient) {
           setPatient(linkedPatient);
 
-          const [aptsRes, encountersRes] = await Promise.all([
+          const [aptsRes, careUpdatesRes] = await Promise.all([
             pb.collection('appointments').getFullList({
               filter: `patient_id="${linkedPatient.id}"`,
               sort: 'appointment_date',
               expand: 'caregiver_id',
               $autoCancel: false
             }),
-            pb.collection('encounters').getFullList({
+            pb.collection('care_updates').getFullList({
               filter: `patient_id="${linkedPatient.id}"`,
-              sort: '-encounter_date',
+              sort: '-created',
               expand: 'caregiver_id',
               limit: 5,
               $autoCancel: false
@@ -60,7 +59,7 @@ const PatientDashboard = () => {
           ]);
 
           setAppointments(aptsRes);
-          setEncounters(encountersRes);
+          setCareUpdates(careUpdatesRes);
         }
       } catch (error) {
         console.error("Error fetching patient data:", error);
@@ -103,7 +102,7 @@ const PatientDashboard = () => {
 
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-heading font-bold text-foreground">Welcome Back, {patient.name.split(' ')[0]}</h1>
+          <h1 className="text-3xl font-heading font-bold text-foreground">Welcome Back, {patient.first_name}</h1>
           <p className="text-muted-foreground mt-1">Access your appointments and records easily.</p>
         </div>
       </div>
@@ -143,23 +142,23 @@ const PatientDashboard = () => {
           <CardHeader>
             <CardTitle className="font-heading flex items-center gap-2">
               <Activity className="h-5 w-5 text-primary" />
-              Recent Encounters
+              Recent Care Updates
             </CardTitle>
           </CardHeader>
           <CardContent>
-            {encounters.length === 0 ? (
-              <p className="text-muted-foreground text-center py-8">No recent encounters found.</p>
+            {careUpdates.length === 0 ? (
+              <p className="text-muted-foreground text-center py-8">No recent care updates found.</p>
             ) : (
               <div className="space-y-4">
-                {encounters.map((enc) => (
-                  <div key={enc.id} className="p-4 rounded-xl border border-border bg-muted/10">
+                {careUpdates.map((update) => (
+                  <div key={update.id} className="p-4 rounded-xl border border-border bg-muted/10">
                     <div className="flex justify-between items-start mb-2">
-                      <h4 className="font-bold">Visit on {new Date(enc.encounter_date).toLocaleDateString()}</h4>
+                      <h4 className="font-bold capitalize">{update.update_type} update</h4>
                       <span className="text-xs text-muted-foreground">
-                        Caregiver: {enc.expand?.caregiver_id?.name || 'Staff'}
+                        Caregiver: {update.expand?.caregiver_id?.name || 'Staff'}
                       </span>
                     </div>
-                    <p className="text-sm text-foreground">{enc.visit_notes}</p>
+                    <p className="text-sm text-foreground">{update.notes || 'No details provided.'}</p>
                   </div>
                 ))}
               </div>

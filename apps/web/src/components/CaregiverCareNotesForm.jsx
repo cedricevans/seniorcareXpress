@@ -44,17 +44,15 @@ const CaregiverCareNotesForm = ({ patients, onSuccess }) => {
       await pb.collection('care_updates').create({
         patient_id: formData.patient_id,
         caregiver_id: currentUser.id,
-        update_type: formData.update_type,
-        description: formData.note_text,
-        time_logged: new Date().toISOString(),
+        update_type: formData.update_type === 'feeding' ? 'activity' : formData.update_type === 'other' ? 'general' : formData.update_type,
+        notes: formData.note_text,
       }, { $autoCancel: false });
       
-      // Also save to caregiver_notes if needed, but care_updates is more comprehensive
       await pb.collection('caregiver_notes').create({
         patient_id: formData.patient_id,
         caregiver_id: currentUser.id,
-        note_text: formData.note_text,
-        is_urgent: formData.is_urgent
+        note: `${formData.is_urgent ? '[URGENT] ' : ''}${formData.note_text}`,
+        note_type: formData.update_type === 'feeding' ? 'nutrition' : formData.update_type === 'exercise' ? 'activity' : formData.update_type === 'other' ? 'general' : formData.update_type
       }, { $autoCancel: false });
       
       toast.success('Care note added successfully');
@@ -91,7 +89,7 @@ const CaregiverCareNotesForm = ({ patients, onSuccess }) => {
               </SelectTrigger>
               <SelectContent>
                 {patients.map(p => (
-                  <SelectItem key={p.id} value={p.id}>{p.name}</SelectItem>
+                  <SelectItem key={p.id} value={p.id}>{p.first_name} {p.last_name}</SelectItem>
                 ))}
               </SelectContent>
             </Select>
