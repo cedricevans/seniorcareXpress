@@ -67,10 +67,10 @@ const HomePage = () => {
       </ParallaxSection>
 
       {/* SERVICES SECTION */}
-      <section ref={servicesRef} className="py-24 md:py-32 bg-slate-950 relative overflow-hidden">
-        {/* Subtle background texture */}
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-primary/10 via-transparent to-transparent pointer-events-none" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,_var(--tw-gradient-stops))] from-secondary/5 via-transparent to-transparent pointer-events-none" />
+      <section ref={servicesRef} className="py-24 md:py-32 bg-white relative overflow-hidden">
+        {/* Decorative background blobs */}
+        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-primary/5 rounded-full blur-3xl -mr-64 -mt-64 pointer-events-none" />
+        <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-secondary/10 rounded-full blur-3xl -ml-48 -mb-48 pointer-events-none" />
 
         <div className="container mx-auto px-4 relative z-10">
           <div className="text-center max-w-3xl mx-auto mb-20">
@@ -79,7 +79,7 @@ const HomePage = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5 }}
-              className="text-secondary font-medium tracking-widest uppercase text-sm mb-4"
+              className="text-primary font-semibold tracking-widest uppercase text-sm mb-4"
             >
               What We Offer
             </motion.p>
@@ -88,23 +88,23 @@ const HomePage = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.1 }}
-              className="text-4xl md:text-5xl font-heading font-bold text-white mb-6"
+              className="text-4xl md:text-5xl font-heading font-bold text-slate-900 mb-6"
             >
-              Support for an Active, <span className="text-secondary italic font-normal">Fulfilling Life</span>
+              Support for an Active, <span className="text-primary italic font-normal">Fulfilling Life</span>
             </motion.h2>
             <motion.p
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.2 }}
-              className="text-lg text-slate-400"
+              className="text-lg text-slate-500"
             >
               Tailored companionship and assistance designed to maintain dignity, encourage mobility, and foster everyday joy.
             </motion.p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-12 gap-6 max-w-6xl mx-auto">
-            {/* Large Card 1 */}
+            {/* Large Card 1 — Image + text */}
             <motion.div
               style={{ y: y1 }}
               initial={{ opacity: 0, y: 40 }}
@@ -113,26 +113,29 @@ const HomePage = () => {
               transition={{ duration: 0.7 }}
               className="md:col-span-7 h-full"
             >
-              <div className="h-full overflow-hidden group rounded-3xl border border-white/10 bg-slate-900 shadow-2xl">
-                <div className="relative h-64 overflow-hidden">
-                  <div className="absolute inset-0 bg-gradient-to-b from-transparent to-slate-900/80 z-10" />
+              <div className="h-full overflow-hidden group rounded-3xl border border-slate-100 bg-white shadow-xl hover:shadow-2xl transition-shadow duration-300">
+                <div className="relative h-64 overflow-hidden rounded-t-3xl">
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate-900/40 to-transparent z-10" />
                   <img
                     src="https://images.unsplash.com/photo-1603129473525-4cd6f36fe057?q=80&w=1000&auto=format&fit=crop"
                     alt="Positive Caregiver Moments"
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                   />
+                  <div className="absolute bottom-4 left-6 z-20">
+                    <span className="bg-white/90 backdrop-blur-sm text-primary text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-full">Lifestyle</span>
+                  </div>
                 </div>
                 <div className="p-8">
-                  <div className="w-12 h-12 rounded-2xl bg-primary/20 flex items-center justify-center mb-6 border border-primary/30">
+                  <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center mb-5">
                     <Sun className="w-6 h-6 text-primary" />
                   </div>
-                  <h3 className="text-2xl font-heading font-bold mb-3 text-white">Wellness & Lifestyle Support</h3>
-                  <p className="text-slate-400 leading-relaxed">Personalized assistance that respects daily routines, encouraging independence while ensuring comfort. We focus on what our clients can do, celebrating every achievement.</p>
+                  <h3 className="text-2xl font-heading font-bold mb-3 text-slate-900">Wellness & Lifestyle Support</h3>
+                  <p className="text-slate-500 leading-relaxed">Personalized assistance that respects daily routines, encouraging independence while ensuring comfort. We focus on what our clients can do, celebrating every achievement.</p>
                 </div>
               </div>
             </motion.div>
 
-            {/* Small Card 1 */}
+            {/* Accent Card — colored */}
             <motion.div
               style={{ y: y2 }}
               initial={{ opacity: 0, y: 40 }}
@@ -141,19 +144,31 @@ const HomePage = () => {
               transition={{ duration: 0.7, delay: 0.1 }}
               className="md:col-span-5 h-full"
             >
-              <div className="h-full rounded-3xl bg-gradient-to-br from-primary to-primary/70 border border-primary/30 shadow-2xl shadow-primary/20 overflow-hidden relative p-8 flex flex-col justify-center">
-                <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full blur-3xl -mr-20 -mt-20" />
+              <div className="h-full rounded-3xl bg-gradient-to-br from-primary via-primary to-primary/80 shadow-2xl shadow-primary/30 overflow-hidden relative p-8 flex flex-col justify-between">
+                <div className="absolute top-0 right-0 w-56 h-56 bg-white/10 rounded-full blur-2xl -mr-16 -mt-16" />
+                <div className="absolute bottom-0 left-0 w-40 h-40 bg-black/10 rounded-full blur-2xl -ml-10 -mb-10" />
                 <div className="relative z-10">
-                  <div className="w-12 h-12 rounded-2xl bg-white/20 flex items-center justify-center mb-6 backdrop-blur-sm border border-white/20">
-                    <Sparkles className="w-6 h-6 text-secondary" />
+                  <div className="w-12 h-12 rounded-2xl bg-white/20 flex items-center justify-center mb-6 backdrop-blur-sm">
+                    <Sparkles className="w-6 h-6 text-yellow-300" />
                   </div>
                   <h3 className="text-2xl font-heading font-bold mb-3 text-white">Health Routine Management</h3>
-                  <p className="text-primary-foreground/80 leading-relaxed">Seamless support for daily health routines and wellness goals, providing peace of mind so you can focus on enjoying life's beautiful moments.</p>
+                  <p className="text-white/75 leading-relaxed">Seamless support for daily health routines and wellness goals, providing peace of mind so you can focus on enjoying life's beautiful moments.</p>
+                </div>
+                <div className="relative z-10 mt-8">
+                  <div className="h-px bg-white/20 mb-6" />
+                  <div className="flex items-center gap-3">
+                    <CheckCircle2 className="w-5 h-5 text-white/60 shrink-0" />
+                    <span className="text-white/70 text-sm">Personalized health plans</span>
+                  </div>
+                  <div className="flex items-center gap-3 mt-2">
+                    <CheckCircle2 className="w-5 h-5 text-white/60 shrink-0" />
+                    <span className="text-white/70 text-sm">Medication reminders</span>
+                  </div>
                 </div>
               </div>
             </motion.div>
 
-            {/* Small Card 2 */}
+            {/* Small stat card */}
             <motion.div
               style={{ y: y3 }}
               initial={{ opacity: 0, y: 40 }}
@@ -162,16 +177,20 @@ const HomePage = () => {
               transition={{ duration: 0.7, delay: 0.2 }}
               className="md:col-span-4 h-full"
             >
-              <div className="h-full rounded-3xl border border-white/10 bg-slate-900 shadow-2xl p-8 hover:-translate-y-2 transition-transform duration-300">
-                <div className="w-12 h-12 rounded-2xl bg-secondary/20 flex items-center justify-center mb-6 border border-secondary/30">
-                  <Shield className="w-6 h-6 text-secondary" />
+              <div className="h-full rounded-3xl border border-slate-100 bg-gradient-to-br from-slate-50 to-white shadow-xl p-8 hover:-translate-y-2 transition-transform duration-300">
+                <div className="w-12 h-12 rounded-2xl bg-secondary/20 flex items-center justify-center mb-6">
+                  <Shield className="w-6 h-6 text-primary" />
                 </div>
-                <h3 className="text-xl font-heading font-bold mb-3 text-white">24/7 Peace of Mind</h3>
-                <p className="text-slate-400 text-sm leading-relaxed">Always-available support ensuring safety and confidence, empowering a worry-free, independent lifestyle for your loved ones.</p>
+                <h3 className="text-xl font-heading font-bold mb-3 text-slate-900">24/7 Peace of Mind</h3>
+                <p className="text-slate-500 text-sm leading-relaxed mb-6">Always-available support ensuring safety and confidence, empowering a worry-free, independent lifestyle.</p>
+                <div className="flex items-center gap-2 text-primary font-semibold text-sm">
+                  <span>Always available</span>
+                  <ArrowRight className="w-4 h-4" />
+                </div>
               </div>
             </motion.div>
 
-            {/* Large Card 2 */}
+            {/* Wide image card */}
             <motion.div
               style={{ y: y1 }}
               initial={{ opacity: 0, y: 40 }}
@@ -180,9 +199,8 @@ const HomePage = () => {
               transition={{ duration: 0.7, delay: 0.3 }}
               className="md:col-span-8 h-full"
             >
-              <div className="h-full overflow-hidden rounded-3xl border border-white/10 bg-slate-900 shadow-2xl group flex flex-col sm:flex-row">
-                <div className="sm:w-2/5 relative overflow-hidden min-h-[200px]">
-                  <div className="absolute inset-0 bg-gradient-to-r from-transparent to-slate-900/60 z-10" />
+              <div className="h-full overflow-hidden rounded-3xl border border-slate-100 bg-white shadow-xl hover:shadow-2xl transition-shadow duration-300 group flex flex-col sm:flex-row">
+                <div className="sm:w-2/5 relative overflow-hidden min-h-[220px] rounded-l-3xl">
                   <img
                     src="https://images.unsplash.com/photo-1654702761561-d6d64d4227a1?q=80&w=800&auto=format&fit=crop"
                     alt="Family Communication"
@@ -190,32 +208,41 @@ const HomePage = () => {
                   />
                 </div>
                 <div className="p-8 sm:w-3/5 flex flex-col justify-center">
-                  <div className="w-12 h-12 rounded-2xl bg-primary/20 flex items-center justify-center mb-6 border border-primary/30">
+                  <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center mb-5">
                     <MessageSquare className="w-6 h-6 text-primary" />
                   </div>
-                  <h3 className="text-2xl font-heading font-bold mb-3 text-white">Connected Care</h3>
-                  <p className="text-slate-400 leading-relaxed">Stay close to the moments that matter. Share updates, photos, and joy seamlessly with our dedicated family portal, keeping everyone in the loop.</p>
+                  <h3 className="text-2xl font-heading font-bold mb-3 text-slate-900">Connected Care</h3>
+                  <p className="text-slate-500 leading-relaxed">Stay close to the moments that matter. Share updates, photos, and joy seamlessly with our dedicated family portal.</p>
+                  <div className="mt-5 flex items-center gap-2 text-primary font-semibold text-sm">
+                    <span>Explore the portal</span>
+                    <ArrowRight className="w-4 h-4" />
+                  </div>
                 </div>
               </div>
             </motion.div>
 
-            {/* Bottom Card */}
+            {/* Bottom full-width card */}
             <motion.div
               style={{ y: y2 }}
               initial={{ opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.7, delay: 0.4 }}
-              className="md:col-span-12 lg:col-span-8 lg:col-start-3 mt-2"
+              className="md:col-span-12 lg:col-span-8 lg:col-start-3"
             >
-              <div className="rounded-3xl border border-white/10 bg-slate-900 shadow-2xl hover:border-secondary/30 transition-colors duration-300">
+              <div className="rounded-3xl border border-slate-100 bg-gradient-to-r from-secondary/10 via-white to-primary/5 shadow-xl hover:shadow-2xl transition-shadow duration-300">
                 <div className="p-8 flex flex-col sm:flex-row items-center gap-6 text-center sm:text-left">
-                  <div className="w-16 h-16 rounded-full bg-secondary/20 flex items-center justify-center shrink-0 border border-secondary/30">
-                    <Users className="w-8 h-8 text-secondary" />
+                  <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                    <Users className="w-8 h-8 text-primary" />
                   </div>
-                  <div>
-                    <h3 className="text-2xl font-heading font-bold mb-2 text-white">Active Living & Joy</h3>
-                    <p className="text-slate-400">Engaging experiences, hobbies, and meaningful companionship designed to inspire joy, maintain mobility, and cultivate a vibrant daily life.</p>
+                  <div className="flex-1">
+                    <h3 className="text-2xl font-heading font-bold mb-2 text-slate-900">Active Living & Joy</h3>
+                    <p className="text-slate-500">Engaging experiences, hobbies, and meaningful companionship designed to inspire joy, maintain mobility, and cultivate a vibrant daily life.</p>
+                  </div>
+                  <div className="shrink-0">
+                    <Link to="/services">
+                      <Button className="rounded-full px-6 shadow-md">Learn More</Button>
+                    </Link>
                   </div>
                 </div>
               </div>
