@@ -7,7 +7,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '
 import { Label } from '@/components/ui/label';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Search, Plus, User, Activity, Phone, Calendar, Edit, Trash2 } from 'lucide-react';
+import { Search, Plus, User, Activity, Phone, Calendar, Edit, Trash2, UserCheck, UserX } from 'lucide-react';
 import { toast } from 'sonner';
 
 const EMPTY_FORM = {
@@ -28,6 +28,14 @@ const AdminPatientList = () => {
   const [patientDetails, setPatientDetails] = useState(null);
   const [loadingDetails, setLoadingDetails] = useState(false);
   const [formData, setFormData] = useState(EMPTY_FORM);
+
+  // Assign-caregiver state
+  // caregiverUsers: all users with role='caregiver' — loaded once when details dialog opens
+  // selectedCaregiverId: the caregiver user ID the admin picks from the dropdown
+  // assignLoading: tracks the save operation
+  const [caregiverUsers, setCaregiverUsers] = useState([]);
+  const [selectedCaregiverId, setSelectedCaregiverId] = useState('');
+  const [assignLoading, setAssignLoading] = useState(false);
 
   const fetchPatients = async () => {
     setLoading(true);
@@ -152,12 +160,17 @@ const AdminPatientList = () => {
     setSelectedPatient(patient);
     setViewDetailsDialogOpen(true);
     setLoadingDetails(true);
+    setPatientDetails(null);
+    setSelectedCaregiverId('');
     try {
-      // Fetch comprehensive details
-      const [assignments, appointments, careUpdates, medicalHistory, careNotes] = await Promise.all([
+      // Load patient details AND all caregiver-role users in parallel.
+      // Caregiver users are identified by role='caregiver' — we use their record ID
+      // to build the patient_assignments record, never their name string.
+      const [assignments, appointments, careUpdates, medicalHistory, careNotes, caregiverRes] = await Promise.all([
         pb.collection('patient_assignments').getFullList({
           filter: `patient_id = "${patient.id}"`,
           expand: 'caregiver_id',
+          sort: '-created',
           $autoCancel: false
         }),
         pb.collection('appointments').getFullList({
@@ -181,9 +194,23 @@ const AdminPatientList = () => {
           sort: '-created',
           expand: 'caregiver_id',
           $autoCancel: false
+        }),
+        // Fetch only users whose role is exactly 'caregiver' — role is a field on the users record
+        pb.collection('users').getFullList({
+          filter: `role = "caregiver"`,
+          sort: 'name',
+          $autoCancel: false
         })
       ]);
-      
+
+      setCaregiverUsers(caregiverRes);
+
+      // Pre-select the currently active caregiver in the dropdown, if any
+      const activeAssignment = assignments.find(a => a.status === 'active');
+      if (activeAssignment?.caregiver_id) {
+        setSelectedCaregiverId(activeAssignment.caregiver_id);
+      }
+
       setPatientDetails({
         ...patient,
         assignments,
@@ -197,6 +224,82 @@ const AdminPatientList = () => {
       toast.error('Failed to load patient details');
     } finally {
       setLoadingDetails(false);
+    }
+  };
+
+  // The core assignment handler.
+  // This creates a patient_assignments record using:
+  //   patient_id  = patient.id  (the patients record ID)
+  //   caregiver_id = selectedCaregiverId (the users record ID, verified to have role='caregiver')
+  // We never store names — only IDs. The expand on fetch resolves the names for display.
+  const handleAssignCaregiver = async () => {
+    if (!selectedCaregiverId || !selectedPatient) return;
+
+    // Verify the selected user is genuinely a caregiver by checking the loaded list
+    const verified = caregiverUsers.find(u => u.id === selectedCaregiverId);
+    if (!verified) {
+      toast.error('Selected user is not a caregiver. Please select a valid caregiver.');
+      return;
+    }
+    if (verified.role !== 'caregiver') {
+      toast.error(`Cannot assign: ${verified.name} has role '${verified.role}', not 'caregiver'.`);
+      return;
+    }
+
+    setAssignLoading(true);
+    try {
+      // Deactivate any existing active assignments for this patient first
+      const existing = await pb.collection('patient_assignments').getFullList({
+        filter: `patient_id = "${selectedPatient.id}" && status = "active"`,
+        $autoCancel: false
+      });
+      for (const old of existing) {
+        await pb.collection('patient_assignments').update(old.id, { status: 'inactive' }, { $autoCancel: false });
+      }
+
+      // Check if this exact patient ↔ caregiver pair already has a record (any status)
+      const existingPair = await pb.collection('patient_assignments').getList(1, 1, {
+        filter: `patient_id = "${selectedPatient.id}" && caregiver_id = "${selectedCaregiverId}"`,
+        $autoCancel: false
+      });
+
+      if (existingPair.items.length > 0) {
+        // Re-activate the existing record
+        await pb.collection('patient_assignments').update(
+          existingPair.items[0].id,
+          { status: 'active', start_date: new Date().toISOString().split('T')[0] },
+          { $autoCancel: false }
+        );
+      } else {
+        // Create new assignment using record IDs only — patient ID and caregiver user ID
+        await pb.collection('patient_assignments').create({
+          patient_id: selectedPatient.id,
+          caregiver_id: selectedCaregiverId,   // users record ID, role='caregiver' verified above
+          start_date: new Date().toISOString().split('T')[0],
+          status: 'active',
+        }, { $autoCancel: false });
+      }
+
+      toast.success(`${verified.name} assigned to ${selectedPatient.first_name} ${selectedPatient.last_name}`);
+      // Refresh details panel and patient list stats
+      await handleViewDetails(selectedPatient);
+      fetchPatients();
+    } catch (error) {
+      console.error('Assign caregiver error:', error);
+      toast.error(error?.message || 'Failed to assign caregiver');
+    } finally {
+      setAssignLoading(false);
+    }
+  };
+
+  const handleRemoveAssignment = async (assignmentId, caregiverName) => {
+    try {
+      await pb.collection('patient_assignments').update(assignmentId, { status: 'inactive' }, { $autoCancel: false });
+      toast.success(`Removed ${caregiverName}`);
+      await handleViewDetails(selectedPatient);
+      fetchPatients();
+    } catch (error) {
+      toast.error('Failed to remove assignment');
     }
   };
 
@@ -437,27 +540,88 @@ const AdminPatientList = () => {
                   </div>
                 </div>
 
-                {/* Assigned Caregivers */}
+                {/* Assign Caregiver — connects patient record ID to caregiver user ID */}
+                <div className="p-4 border-2 border-primary/20 rounded-lg bg-primary/5">
+                  <h3 className="font-semibold mb-1 flex items-center gap-2">
+                    <UserCheck className="h-5 w-5 text-primary" />
+                    Assign Caregiver
+                  </h3>
+                  <p className="text-xs text-muted-foreground mb-3">
+                    Select a caregiver to link to this patient. The connection is stored by user ID — not by name or role label.
+                  </p>
+                  <div className="flex gap-2 items-center">
+                    <Select
+                      value={selectedCaregiverId}
+                      onValueChange={setSelectedCaregiverId}
+                    >
+                      <SelectTrigger className="flex-1">
+                        <SelectValue placeholder={
+                          caregiverUsers.length === 0
+                            ? 'No caregiver accounts found'
+                            : 'Select caregiver…'
+                        } />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {caregiverUsers.map(u => (
+                          // Each item shows: Name — email  (role confirmed = 'caregiver')
+                          // The VALUE is u.id — the actual users record ID stored in patient_assignments
+                          <SelectItem key={u.id} value={u.id}>
+                            <span className="font-medium">{u.name}</span>
+                            <span className="text-muted-foreground ml-2 text-xs">{u.email}</span>
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <Button
+                      onClick={handleAssignCaregiver}
+                      disabled={!selectedCaregiverId || assignLoading}
+                      size="sm"
+                    >
+                      {assignLoading ? 'Saving…' : 'Assign'}
+                    </Button>
+                  </div>
+                </div>
+
+                {/* Current Assignments */}
                 <div>
                   <h3 className="font-semibold mb-3 flex items-center gap-2">
                     <Activity className="h-5 w-5" />
-                    Assigned Caregivers
+                    Current Assignments
                   </h3>
                   {patientDetails.assignments.length === 0 ? (
                     <p className="text-sm text-muted-foreground">No caregivers assigned yet</p>
                   ) : (
                     <div className="space-y-2">
-                      {patientDetails.assignments.map((assignment) => (
-                        <div key={assignment.id} className="p-3 border rounded-lg flex justify-between items-center">
-                          <div>
-                            <p className="font-medium">{assignment.expand?.caregiver_id?.name || 'Unknown'}</p>
-                            <p className="text-sm text-muted-foreground">Since: {assignment.start_date || 'N/A'}</p>
+                      {patientDetails.assignments.map((assignment) => {
+                        const cgUser = assignment.expand?.caregiver_id;
+                        return (
+                          <div key={assignment.id} className="p-3 border rounded-lg flex justify-between items-center">
+                            <div>
+                              {/* Show name for readability but the actual link is by ID */}
+                              <p className="font-medium">{cgUser?.name || 'Unknown'}</p>
+                              <p className="text-xs text-muted-foreground">
+                                ID: {assignment.caregiver_id} • Since: {assignment.start_date || 'N/A'}
+                              </p>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <span className={`px-2 py-1 rounded-full text-xs ${assignment.status === 'active' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}`}>
+                                {assignment.status}
+                              </span>
+                              {assignment.status === 'active' && (
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  className="h-7 w-7 hover:text-destructive"
+                                  title="Remove assignment"
+                                  onClick={() => handleRemoveAssignment(assignment.id, cgUser?.name || 'caregiver')}
+                                >
+                                  <UserX className="h-4 w-4" />
+                                </Button>
+                              )}
+                            </div>
                           </div>
-                          <span className={`px-2 py-1 rounded-full text-xs ${assignment.status === 'active' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}`}>
-                            {assignment.status}
-                          </span>
-                        </div>
-                      ))}
+                        );
+                      })}
                     </div>
                   )}
                 </div>

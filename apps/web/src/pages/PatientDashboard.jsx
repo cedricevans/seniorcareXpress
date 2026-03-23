@@ -20,26 +20,22 @@ const PatientDashboard = () => {
   useEffect(() => {
     const fetchPatientData = async () => {
       try {
-        // Try to find patient record linked to this user via email or family_links proxy
+        // Safety guard: this dashboard is ONLY for users with role='patient'.
+        // Patient records are linked via patients.user_id = currentUser.id.
+        // We never look through family_links here — that table is for family-role users only.
+        if (currentUser.role !== 'patient') {
+          console.warn('PatientDashboard rendered for non-patient role:', currentUser.role);
+          setLoading(false);
+          return;
+        }
+
         let linkedPatient = null;
-        
-        // First try to find a patient with matching email (if email was added to patients)
-        // Since schema doesn't have email, we rely on family_links as a proxy for this demo
-        const links = await pb.collection('family_links').getFullList({
-          filter: `family_user_id="${currentUser.id}"`,
-          expand: 'patient_id',
+
+        const patientRecords = await pb.collection('patients').getFullList({
+          filter: `user_id="${currentUser.id}"`,
           $autoCancel: false
         });
-
-        if (links.length > 0 && links[0].expand?.patient_id) {
-          linkedPatient = links[0].expand.patient_id;
-        } else {
-          const patientRecords = await pb.collection('patients').getFullList({
-            filter: `user_id="${currentUser.id}"`,
-            $autoCancel: false
-          });
-          linkedPatient = patientRecords[0] || null;
-        }
+        linkedPatient = patientRecords[0] || null;
 
         if (linkedPatient) {
           setPatient(linkedPatient);
