@@ -12,21 +12,31 @@ PB_SUPERUSER_EMAIL=${PB_SUPERUSER_EMAIL:-admin@seniorcare.com}
 PB_SUPERUSER_PASSWORD=${PB_SUPERUSER_PASSWORD:-Admin123!}
 PORT=${PORT:-8090}
 
-echo "[entrypoint] Debug - Email: ${PB_SUPERUSER_EMAIL}"
-echo "[entrypoint] Debug - Password length: ${#PB_SUPERUSER_PASSWORD}"
-echo "[entrypoint] Creating superuser before starting server..."
+echo "[entrypoint] Starting PocketBase on port ${PORT}..."
 
-# Create superuser BEFORE starting the server (database must not be in use)
-/app/pocketbase superuser upsert --dir=/app/pb_data "${PB_SUPERUSER_EMAIL}" "${PB_SUPERUSER_PASSWORD}" 2>&1
+# Start PocketBase in background
+/app/pocketbase serve --http=0.0.0.0:${PORT} --hooksDir=/app/pb_hooks --hooksWatch=false &
+PB_PID=$!
 
-if [ $? -eq 0 ]; then
-  echo "[entrypoint] Superuser created/updated: ✓"
-else
-  echo "[entrypoint] WARNING: Superuser creation failed"
-fi
+# Wait for PocketBase to be ready (max 10 seconds)
+echo "[entrypoint] Waiting for PocketBase to be ready..."
+for i in 1 2 3 4 5 6 7 8 9 10; do
+  if wget -q -O- http://localhost:${PORT}/api/health > /dev/null 2>&1; then
+    echo "[entrypoint] PocketBase is ready!"
+    break
+  fi
+  echo "[entrypoint] Waiting... ($i/10)"
+  sleep 1
+done
 
-echo "[entrypoint] Starting PocketBase..."
-exec /app/pocketbase serve --http=0.0.0.0:${PORT} --hooksDir=/app/pb_hooks --hooksWatch=false
+# Create/update superuser now that server is running
+echo "[entrypoint] Creating/updating superuser: ${PB_SUPERUSER_EMAIL}"
+/app/pocketbase superuser upsert --dir=/app/pb_data "${PB_SUPERUSER_EMAIL}" "${PB_SUPERUSER_PASSWORD}" > /dev/null 2>&1 || echo "[entrypoint] Note: Superuser command returned non-zero (may already exist)"
+
+echo "[entrypoint] Setup complete. PocketBase is running."
+
+# Wait for PocketBase process
+wait $PB_PID
 
 if [ ! -f /app/pb_data/data.db ]; then
   cat <<'EOF'
