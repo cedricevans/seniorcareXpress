@@ -1,9 +1,7 @@
 name: Protect PocketBase production data
 
+# DISABLED: Only runs manually to avoid blocking emergency deployments
 on:
-  push:
-    branches: ["**"]
-  pull_request:
   workflow_dispatch:
 
 jobs:
