@@ -24,6 +24,11 @@ const AdminCaregiverList = () => {
   const [caregiverPatients, setCaregiverPatients] = useState([]);
   const [loadingPatients, setLoadingPatients] = useState(false);
   
+  const [patientDetailsDialogOpen, setPatientDetailsDialogOpen] = useState(false);
+  const [selectedPatient, setSelectedPatient] = useState(null);
+  const [patientDetails, setPatientDetails] = useState(null);
+  const [loadingPatientDetails, setLoadingPatientDetails] = useState(false);
+  
   const [formData, setFormData] = useState({
     name: '', email: '', password: ''
   });
@@ -175,6 +180,50 @@ const AdminCaregiverList = () => {
       toast.error('Failed to load assigned patients');
     } finally {
       setLoadingPatients(false);
+    }
+  };
+
+  const handleViewPatientDetails = async (patient) => {
+    setSelectedPatient(patient);
+    setPatientDetailsDialogOpen(true);
+    setLoadingPatientDetails(true);
+    try {
+      const [assignments, appointments, medicalHistory, careNotes] = await Promise.all([
+        pb.collection('patient_assignments').getFullList({
+          filter: `patient_id = "${patient.id}"`,
+          expand: 'caregiver_id',
+          $autoCancel: false
+        }),
+        pb.collection('appointments').getList(1, 10, {
+          filter: `patient_id = "${patient.id}"`,
+          sort: '-appointment_date',
+          expand: 'caregiver_id',
+          $autoCancel: false
+        }),
+        pb.collection('medical_history').getFullList({
+          filter: `patient_id = "${patient.id}"`,
+          sort: '-date',
+          $autoCancel: false
+        }),
+        pb.collection('caregiver_notes').getList(1, 5, {
+          filter: `patient_id = "${patient.id}"`,
+          sort: '-created',
+          expand: 'caregiver_id',
+          $autoCancel: false
+        })
+      ]);
+
+      setPatientDetails({
+        assignments: assignments,
+        appointments: appointments.items,
+        medicalHistory: medicalHistory,
+        careNotes: careNotes.items
+      });
+    } catch (error) {
+      console.error('Failed to load patient details:', error);
+      toast.error('Failed to load patient details');
+    } finally {
+      setLoadingPatientDetails(false);
     }
   };
 
@@ -352,7 +401,11 @@ const AdminCaregiverList = () => {
                 {caregiverPatients.map((assignment) => {
                   const patient = assignment.expand?.patient_id;
                   return (
-                    <div key={assignment.id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/30 cursor-pointer transition-colors" onClick={() => window.location.href = `/admin/patients`}>
+                    <div 
+                      key={assignment.id} 
+                      className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/30 cursor-pointer transition-colors" 
+                      onClick={() => handleViewPatientDetails(patient)}
+                    >
                       <div className="flex-1">
                         <div className="flex items-center gap-3 mb-2">
                           <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
@@ -383,6 +436,164 @@ const AdminCaregiverList = () => {
           </div>
           <DialogFooter>
             <Button onClick={() => setViewPatientsDialogOpen(false)}>Close</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Patient Details Dialog */}
+      <Dialog open={patientDetailsDialogOpen} onOpenChange={setPatientDetailsDialogOpen}>
+        <DialogContent className="sm:max-w-[700px] max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>
+              {selectedPatient?.first_name} {selectedPatient?.last_name} - Patient Details
+            </DialogTitle>
+          </DialogHeader>
+          {loadingPatientDetails ? (
+            <div className="space-y-4 py-4">
+              <Skeleton className="h-20 w-full" />
+              <Skeleton className="h-32 w-full" />
+              <Skeleton className="h-32 w-full" />
+            </div>
+          ) : patientDetails ? (
+            <div className="space-y-6 py-4">
+              {/* Basic Info */}
+              <div className="bg-muted/30 rounded-lg p-4">
+                <h4 className="font-semibold mb-3 text-foreground">Basic Information</h4>
+                <div className="grid grid-cols-2 gap-4 text-sm">
+                  <div>
+                    <span className="text-muted-foreground">Age:</span>{' '}
+                    <span className="font-medium">
+                      {selectedPatient?.date_of_birth 
+                        ? Math.floor((new Date() - new Date(selectedPatient.date_of_birth)) / 31557600000) 
+                        : 'N/A'}
+                    </span>
+                  </div>
+                  <div>
+                    <span className="text-muted-foreground">Gender:</span>{' '}
+                    <span className="font-medium">{selectedPatient?.gender || 'N/A'}</span>
+                  </div>
+                  <div>
+                    <span className="text-muted-foreground">Status:</span>{' '}
+                    <Badge variant="outline" className="ml-2">{selectedPatient?.status || 'active'}</Badge>
+                  </div>
+                  <div>
+                    <span className="text-muted-foreground">Contact:</span>{' '}
+                    <span className="font-medium">{selectedPatient?.phone || 'N/A'}</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Assigned Caregivers */}
+              <div>
+                <h4 className="font-semibold mb-3 text-foreground flex items-center gap-2">
+                  <Users className="h-4 w-4" />
+                  Assigned Caregivers ({patientDetails.assignments?.length || 0})
+                </h4>
+                {patientDetails.assignments?.length > 0 ? (
+                  <div className="space-y-2">
+                    {patientDetails.assignments.map(assignment => (
+                      <div key={assignment.id} className="flex items-center justify-between p-3 bg-muted/30 rounded-lg">
+                        <div className="flex items-center gap-3">
+                          <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
+                            <HeartHandshake className="h-4 w-4 text-primary" />
+                          </div>
+                          <div>
+                            <p className="font-medium text-sm">{assignment.expand?.caregiver_id?.name || 'Unknown'}</p>
+                            <p className="text-xs text-muted-foreground">Since {assignment.start_date || 'N/A'}</p>
+                          </div>
+                        </div>
+                        <Badge variant="outline" className="text-xs">{assignment.status}</Badge>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-sm text-muted-foreground">No caregivers assigned yet.</p>
+                )}
+              </div>
+
+              {/* Recent Appointments */}
+              <div>
+                <h4 className="font-semibold mb-3 text-foreground flex items-center gap-2">
+                  <Calendar className="h-4 w-4" />
+                  Recent Appointments ({patientDetails.appointments?.length || 0})
+                </h4>
+                {patientDetails.appointments?.length > 0 ? (
+                  <div className="space-y-2">
+                    {patientDetails.appointments.map(apt => (
+                      <div key={apt.id} className="flex items-center justify-between p-3 bg-muted/30 rounded-lg">
+                        <div className="flex items-center gap-3">
+                          <Clock className="h-4 w-4 text-muted-foreground" />
+                          <div>
+                            <p className="font-medium text-sm">{apt.appointment_date}</p>
+                            <p className="text-xs text-muted-foreground">
+                              {apt.appointment_time} - {apt.expand?.caregiver_id?.name || 'N/A'}
+                            </p>
+                          </div>
+                        </div>
+                        <Badge variant="outline" className="text-xs">{apt.status}</Badge>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-sm text-muted-foreground">No appointments scheduled.</p>
+                )}
+              </div>
+
+              {/* Medical History */}
+              <div>
+                <h4 className="font-semibold mb-3 text-foreground flex items-center gap-2">
+                  <FileText className="h-4 w-4" />
+                  Medical History ({patientDetails.medicalHistory?.length || 0})
+                </h4>
+                {patientDetails.medicalHistory?.length > 0 ? (
+                  <div className="space-y-2">
+                    {patientDetails.medicalHistory.map(record => (
+                      <div key={record.id} className="p-3 bg-muted/30 rounded-lg">
+                        <div className="flex items-start justify-between mb-1">
+                          <p className="font-medium text-sm">{record.condition || 'Medical Record'}</p>
+                          <span className="text-xs text-muted-foreground">{record.date}</span>
+                        </div>
+                        {record.notes && (
+                          <p className="text-sm text-muted-foreground">{record.notes}</p>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-sm text-muted-foreground">No medical history recorded.</p>
+                )}
+              </div>
+
+              {/* Recent Care Notes */}
+              <div>
+                <h4 className="font-semibold mb-3 text-foreground flex items-center gap-2">
+                  <Activity className="h-4 w-4" />
+                  Recent Care Notes ({patientDetails.careNotes?.length || 0})
+                </h4>
+                {patientDetails.careNotes?.length > 0 ? (
+                  <div className="space-y-2">
+                    {patientDetails.careNotes.map(note => (
+                      <div key={note.id} className="p-3 bg-muted/30 rounded-lg">
+                        <div className="flex items-start justify-between mb-1">
+                          <p className="font-medium text-sm">{note.expand?.caregiver_id?.name || 'Caregiver'}</p>
+                          <span className="text-xs text-muted-foreground">
+                            {new Date(note.created).toLocaleDateString()}
+                          </span>
+                        </div>
+                        <p className="text-sm text-muted-foreground">{note.note_text}</p>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-sm text-muted-foreground">No care notes yet.</p>
+                )}
+              </div>
+            </div>
+          ) : (
+            <p className="text-center py-8 text-muted-foreground">Failed to load patient details.</p>
+          )}
+          <DialogFooter>
+            <Button onClick={() => setPatientDetailsDialogOpen(false)}>Close</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
