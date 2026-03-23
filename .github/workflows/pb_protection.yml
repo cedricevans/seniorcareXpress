@@ -1,12 +1,44 @@
-name: Protect PocketBase data and PB_SEED
+name: Protect PocketBase production data
 
-# Disabled from automatic runs — will not block any push or PR
 on:
+  push:
+    branches: ["**"]
+  pull_request:
   workflow_dispatch:
 
 jobs:
-  guard-pb-data:
+  guard-pocketbase:
     runs-on: ubuntu-latest
     steps:
-      - name: Info
-        run: echo "This workflow is disabled from automatic runs. Trigger manually if needed."
+      - uses: actions/checkout@v4
+
+      - name: Fail if pb_data is tracked in git
+        shell: bash
+        run: |
+          set -euo pipefail
+          tracked="$(git ls-files apps/pocketbase/pb_data || true)"
+          if [[ -n "${tracked}" ]]; then
+            echo ""
+            echo "ERROR: PocketBase runtime data is tracked in git (apps/pocketbase/pb_data)."
+            echo "This will overwrite production data on deploy if the PocketBase service is not using a persistent disk."
+            echo ""
+            echo "Fix:"
+            echo "  - Run: tools/remove_pb_data_from_git.sh"
+            echo "  - Or:  git rm -r --cached apps/pocketbase/pb_data"
+            echo ""
+            echo "Tracked files:"
+            echo "${tracked}"
+            exit 1
+          fi
+
+      - name: Fail if PocketBase Dockerfile copies pb_data
+        shell: bash
+        run: |
+          set -euo pipefail
+          if grep -nE '^\s*COPY\s+pb_data\b' apps/pocketbase/Dockerfile; then
+            echo ""
+            echo "ERROR: apps/pocketbase/Dockerfile copies pb_data into the image."
+            echo "That resets the PocketBase DB on every deploy."
+            echo "Remove the COPY pb_data line and rely on a persistent disk mounted at /app/pb_data."
+            exit 1
+          fi

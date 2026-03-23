@@ -4,6 +4,12 @@ import 'dotenv/config';
 
 const PB_URL = process.env.PB_URL || 'http://localhost:8090';
 
+if (process.env.CONFIRM_RESET_COLLECTIONS !== 'true') {
+  console.error('Refusing to run: this script DELETES PocketBase collections and data.');
+  console.error('Set CONFIRM_RESET_COLLECTIONS=true to continue.');
+  process.exit(1);
+}
+
 const authRes = await fetch(`${PB_URL}/api/collections/_superusers/auth-with-password`, {
   method: 'POST',
   headers: { 'Content-Type': 'application/json' },

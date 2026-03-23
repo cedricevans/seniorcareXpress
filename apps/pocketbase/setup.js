@@ -20,6 +20,47 @@ const SUPERUSER_PASSWORD = process.env.PB_SUPERUSER_PASSWORD || 'Admin123!';
 let token = '';
 const collectionCache = new Map();
 
+function isLocalUrl(url) {
+  try {
+    const u = new URL(url);
+    return u.hostname === 'localhost' || u.hostname === '127.0.0.1';
+  } catch {
+    return false;
+  }
+}
+
+async function readJsonFromEnvOrFile(envJsonKey, envFileKey) {
+  const jsonText = process.env[envJsonKey];
+  const filePath = process.env[envFileKey];
+
+  if (jsonText) {
+    return JSON.parse(jsonText);
+  }
+
+  if (filePath) {
+    const fs = await import('node:fs/promises');
+    const contents = await fs.readFile(filePath, 'utf8');
+    return JSON.parse(contents);
+  }
+
+  return null;
+}
+
+const IS_LOCAL = isLocalUrl(PB_URL);
+
+if (!IS_LOCAL) {
+  // Safety rails: refuse to run with demo defaults against a remote/prod instance.
+  if (!process.env.PB_URL) {
+    throw new Error('Refusing to run against remote PocketBase without explicit PB_URL');
+  }
+  if (!process.env.PB_SUPERUSER_EMAIL || !process.env.PB_SUPERUSER_PASSWORD) {
+    throw new Error('Refusing to run against remote PocketBase without PB_SUPERUSER_EMAIL and PB_SUPERUSER_PASSWORD');
+  }
+  if (process.env.PB_SEED === 'true' && process.env.CONFIRM_PB_SEED !== 'true') {
+    throw new Error('PB_SEED=true requires CONFIRM_PB_SEED=true for remote/prod targets');
+  }
+}
+
 async function pb(method, path, body) {
   const res = await fetch(`${PB_URL}${path}`, {
     method,
@@ -38,6 +79,16 @@ async function pb(method, path, body) {
     throw new Error(`${method} ${path} → ${res.status}: ${JSON.stringify(json)}`);
   }
   return json;
+}
+
+function escapePbFilterValue(value) {
+  return String(value).replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+}
+
+async function findFirstRecord(collectionName, filter) {
+  const encoded = encodeURIComponent(filter);
+  const res = await pb('GET', `/api/collections/${collectionName}/records?perPage=1&filter=${encoded}`);
+  return res.items?.[0] ?? null;
 }
 
 async function getCollection(name) {
@@ -85,12 +136,24 @@ async function auth() {
     console.log('  · Superuser already exists');
   }
 
-  const data = await pb('POST', '/api/collections/_superusers/auth-with-password', {
-    identity: SUPERUSER_EMAIL,
-    password: SUPERUSER_PASSWORD,
-  });
-  token = data.token;
-  console.log('  ✓ Authenticated');
+  try {
+    const data = await pb('POST', '/api/collections/_superusers/auth-with-password', {
+      identity: SUPERUSER_EMAIL,
+      password: SUPERUSER_PASSWORD,
+    });
+    token = data.token;
+    console.log('  ✓ Authenticated');
+  } catch (err) {
+    throw new Error(
+      [
+        `Superuser auth failed for ${SUPERUSER_EMAIL}.`,
+        `If you don't know the current PocketBase superuser password, reset it on the server with:`,
+        `  pocketbase superuser upsert "${SUPERUSER_EMAIL}" "<new_password>"`,
+        `Then rerun this script with PB_SUPERUSER_PASSWORD set to that new password.`,
+        `Original error: ${err.message}`,
+      ].join('\n'),
+    );
+  }
 }
 
 // ─── 2. Create Collections ───────────────────────────────────────────────────
@@ -558,7 +621,7 @@ let createdUsers = {};
 let patientId = '';
 
 async function seedUsers() {
-  console.log('\n[3/3] Seeding demo data (users NOT overwritten)...');
+  console.log('\n[3/3] Seeding users (NOT overwritten)...');
 
   const users = [
     { email: 'admin@seniorcare.com',    password: 'Admin123!', name: 'Admin User',    role: 'admin' },
@@ -567,14 +630,47 @@ async function seedUsers() {
     { email: 'patient@seniorcare.com',  password: 'Admin123!', name: 'John Smith',    role: 'patient' },
   ];
 
+  // App admins (these were previously part of production and are safe to recreate if missing).
+  // Only add these automatically when targeting a non-local PocketBase instance.
+  if (!IS_LOCAL) {
+    users.push(
+      { email: 'cedric.evans@gmail.com', password: 'Admin123!', name: 'Cedric Evans', role: 'admin' },
+      { email: '1bassdebi@gmail.com', password: 'Admin123!', name: 'Debi Bass', role: 'admin' },
+    );
+  }
+
+  // Optional: provide additional app users without hardcoding real emails into the repo.
+  // Example:
+  //   PB_EXTRA_USERS_JSON='[{"email":"person@example.com","password":"Temp123!","name":"Person","role":"admin"}]'
+  // or:
+  //   PB_EXTRA_USERS_FILE=./users.json
+  const extra = await readJsonFromEnvOrFile('PB_EXTRA_USERS_JSON', 'PB_EXTRA_USERS_FILE');
+  if (Array.isArray(extra) && extra.length > 0) {
+    for (const u of extra) {
+      if (!u?.email) continue;
+      users.push({
+        email: String(u.email),
+        password: u.password ? String(u.password) : '',
+        name: u.name ? String(u.name) : String(u.email),
+        role: u.role ? String(u.role) : 'family',
+        phone: u.phone ? String(u.phone) : undefined,
+      });
+    }
+    console.log(`  · Extra users provided: ${extra.length}`);
+  }
+
   for (const u of users) {
     try {
       // IMPORTANT: Always check if user exists FIRST — never create/overwrite
-      const res = await pb('GET', `/api/collections/users/records?filter=email='${u.email}'`);
-      if (res.items?.[0]) {
-        createdUsers[u.role] = res.items[0].id;
+      const existing = await findFirstRecord('users', `email='${escapePbFilterValue(u.email)}'`);
+      if (existing) {
+        createdUsers[u.role] = existing.id;
         console.log(`  · User exists: ${u.email}`);
       } else {
+        if (!u.password) {
+          console.log(`  ⚠ Skipping create for ${u.email} (missing password)`);
+          continue;
+        }
         // Only create if doesn't exist
         const rec = await pb('POST', '/api/collections/users/records', {
           email: u.email,
@@ -582,6 +678,7 @@ async function seedUsers() {
           passwordConfirm: u.password,
           name: u.name,
           role: u.role,
+          ...(u.phone ? { phone: u.phone } : {}),
           emailVisibility: true,
         });
         createdUsers[u.role] = rec.id;
@@ -611,9 +708,9 @@ async function seedPatient() {
     console.log(`  ✓ Patient created: John Smith (${patientId})`);
   } catch (err) {
     try {
-      const res = await pb('GET', '/api/collections/patients/records?filter=first_name="John"');
-      if (res.items?.[0]) {
-        patientId = res.items[0].id;
+      const existing = await findFirstRecord('patients', `first_name='John' && last_name='Smith'`);
+      if (existing) {
+        patientId = existing.id;
         console.log(`  · Patient exists: John Smith`);
       }
     } catch {}
@@ -625,24 +722,40 @@ async function seedAssignmentsAndLinks() {
 
   // Patient assignment
   try {
-    await pb('POST', '/api/collections/patient_assignments/records', {
-      patient_id: patientId,
-      caregiver_id: createdUsers['caregiver'],
-      start_date: '2026-01-01',
-      status: 'active',
-    });
-    console.log('  ✓ Patient assignment created');
+    const existing = await findFirstRecord(
+      'patient_assignments',
+      `patient_id='${escapePbFilterValue(patientId)}' && caregiver_id='${escapePbFilterValue(createdUsers['caregiver'])}'`,
+    );
+    if (existing) {
+      console.log('  · Assignment exists');
+    } else {
+      await pb('POST', '/api/collections/patient_assignments/records', {
+        patient_id: patientId,
+        caregiver_id: createdUsers['caregiver'],
+        start_date: '2026-01-01',
+        status: 'active',
+      });
+      console.log('  ✓ Patient assignment created');
+    }
   } catch { console.log('  · Assignment exists'); }
 
   // Family link
   if (createdUsers['family']) {
     try {
-      await pb('POST', '/api/collections/family_links/records', {
-        patient_id: patientId,
-        family_user_id: createdUsers['family'],
-        relationship: 'daughter',
-      });
-      console.log('  ✓ Family link created');
+      const existing = await findFirstRecord(
+        'family_links',
+        `patient_id='${escapePbFilterValue(patientId)}' && family_user_id='${escapePbFilterValue(createdUsers['family'])}'`,
+      );
+      if (existing) {
+        console.log('  · Family link exists');
+      } else {
+        await pb('POST', '/api/collections/family_links/records', {
+          patient_id: patientId,
+          family_user_id: createdUsers['family'],
+          relationship: 'daughter',
+        });
+        console.log('  ✓ Family link created');
+      }
     } catch { console.log('  · Family link exists'); }
   }
 
@@ -653,12 +766,20 @@ async function seedAssignmentsAndLinks() {
   ];
   for (const appt of appointments) {
     try {
-      await pb('POST', '/api/collections/appointments/records', {
-        ...appt,
-        patient_id: patientId,
-        caregiver_id: createdUsers['caregiver'],
-      });
-      console.log(`  ✓ Appointment: ${appt.title}`);
+      const existing = await findFirstRecord(
+        'appointments',
+        `patient_id='${escapePbFilterValue(patientId)}' && title='${escapePbFilterValue(appt.title)}' && appointment_date='${escapePbFilterValue(appt.appointment_date)}'`,
+      );
+      if (existing) {
+        console.log(`  · Appointment exists: ${appt.title}`);
+      } else {
+        await pb('POST', '/api/collections/appointments/records', {
+          ...appt,
+          patient_id: patientId,
+          caregiver_id: createdUsers['caregiver'],
+        });
+        console.log(`  ✓ Appointment: ${appt.title}`);
+      }
     } catch { console.log(`  · Appointment exists: ${appt.title}`); }
   }
 
@@ -669,22 +790,104 @@ async function seedAssignmentsAndLinks() {
   ];
   for (const c of conditions) {
     try {
-      await pb('POST', '/api/collections/medical_history/records', { ...c, patient_id: patientId });
-      console.log(`  ✓ Medical history: ${c.condition}`);
+      const existing = await findFirstRecord(
+        'medical_history',
+        `patient_id='${escapePbFilterValue(patientId)}' && condition='${escapePbFilterValue(c.condition)}'`,
+      );
+      if (existing) {
+        console.log(`  · Condition exists: ${c.condition}`);
+      } else {
+        await pb('POST', '/api/collections/medical_history/records', { ...c, patient_id: patientId });
+        console.log(`  ✓ Medical history: ${c.condition}`);
+      }
     } catch { console.log(`  · Condition exists: ${c.condition}`); }
   }
 
   // Care update
   try {
-    await pb('POST', '/api/collections/care_updates/records', {
-      patient_id: patientId,
-      caregiver_id: createdUsers['caregiver'],
-      update_type: 'vitals',
-      notes: 'Patient in good spirits. BP normal. Ate full breakfast.',
-      vitals: { bp: '120/80', pulse: 72, temp: 98.6, weight: 165 },
-    });
-    console.log('  ✓ Care update created');
+    const existing = await findFirstRecord(
+      'care_updates',
+      `patient_id='${escapePbFilterValue(patientId)}' && update_type='vitals'`,
+    );
+    if (existing) {
+      console.log('  · Care update exists');
+    } else {
+      await pb('POST', '/api/collections/care_updates/records', {
+        patient_id: patientId,
+        caregiver_id: createdUsers['caregiver'],
+        update_type: 'vitals',
+        notes: 'Patient in good spirits. BP normal. Ate full breakfast.',
+        vitals: { bp: '120/80', pulse: 72, temp: 98.6, weight: 165 },
+      });
+      console.log('  ✓ Care update created');
+    }
   } catch { console.log('  · Care update exists'); }
+
+  // Care plan (for Patient/Family/Admin views)
+  try {
+    const existing = await findFirstRecord(
+      'care_plans',
+      `patient_id='${escapePbFilterValue(patientId)}' && title='Demo Care Plan'`,
+    );
+    if (existing) {
+      console.log('  · Care plan exists');
+    } else {
+      await pb('POST', '/api/collections/care_plans/records', {
+        patient_id: patientId,
+        caregiver_id: createdUsers['caregiver'],
+        title: 'Demo Care Plan',
+        start_date: '2026-03-01',
+        status: 'active',
+        schedule: {
+          monday: ['Vitals check', 'Medication reminder'],
+          wednesday: ['Mobility exercise'],
+          friday: ['Weekly check-in'],
+        },
+        notes: 'Demo plan for portal walkthrough. Safe to delete after onboarding.',
+      });
+      console.log('  ✓ Care plan created');
+    }
+  } catch { console.log('  · Care plan exists'); }
+
+  // Caregiver note
+  try {
+    const existing = await findFirstRecord(
+      'caregiver_notes',
+      `patient_id='${escapePbFilterValue(patientId)}' && note_type='general'`,
+    );
+    if (existing) {
+      console.log('  · Caregiver note exists');
+    } else {
+      await pb('POST', '/api/collections/caregiver_notes/records', {
+        patient_id: patientId,
+        caregiver_id: createdUsers['caregiver'],
+        note_type: 'general',
+        note: 'Demo note: patient rested well overnight and is in good spirits.',
+      });
+      console.log('  ✓ Caregiver note created');
+    }
+  } catch { console.log('  · Caregiver note exists'); }
+
+  // Message (for messaging page demo)
+  if (createdUsers['family']) {
+    try {
+      const existing = await findFirstRecord(
+        'messages',
+        `sender_id='${escapePbFilterValue(createdUsers['family'])}' && recipient_id='${escapePbFilterValue(createdUsers['caregiver'])}' && content~'Demo message:'`,
+      );
+      if (existing) {
+        console.log('  · Demo message exists');
+      } else {
+        await pb('POST', '/api/collections/messages/records', {
+          sender_id: createdUsers['family'],
+          recipient_id: createdUsers['caregiver'],
+          content: 'Demo message: Hi Sarah — thanks for today. Any recommendations for hydration?',
+          read: false,
+        });
+        console.log('  ✓ Demo message created');
+      }
+    } catch { console.log('  · Demo message exists'); }
+  }
 }
 
 // ─── Main ────────────────────────────────────────────────────────────────────
@@ -697,31 +900,39 @@ async function main() {
   //   PB_URL=https://your-pb node setup.js
   //   PB_SEED=true PB_URL=https://your-pb node setup.js
   //
-  // Default: only auth + collections are created/updated. Seeding (demo users,
-  // demo patient, appointments, etc.) runs only when PB_SEED=true.
+  // Default: only auth + collections are created/updated.
+  //
+  // - PB_SEED=true: ensures required app users exist.
+  // - PB_SEED_DEMO=true: additionally seeds demo patient/appointments/etc.
+  //
+  // Local dev convenience: when targeting localhost, PB_SEED=true implies
+  // PB_SEED_DEMO=true.
   const SHOULD_SEED = process.env.PB_SEED === 'true';
+  const SHOULD_SEED_DEMO = process.env.PB_SEED_DEMO === 'true' || (IS_LOCAL && SHOULD_SEED);
 
   try {
     await auth();
     await createCollections();
 
     if (SHOULD_SEED) {
-      console.log('\n[SEED] PB_SEED=true — running demo seeding...');
+      console.log(`\n[SEED] PB_SEED=true — ensuring app users exist${SHOULD_SEED_DEMO ? ' + seeding demo data' : ''}...`);
       await seedUsers();
-      await seedPatient();
-      await seedAssignmentsAndLinks();
 
-      console.log('\n✅ Setup + seeding complete!\n');
-      console.log('   Demo accounts (password: Admin123!):');
-      console.log('   · admin@seniorcare.com     → Admin portal');
-      console.log('   · caregiver@seniorcare.com → Caregiver portal');
-      console.log('   · family@seniorcare.com    → Family portal');
-      console.log('   · patient@seniorcare.com   → Patient portal');
+      if (SHOULD_SEED_DEMO) {
+        await seedPatient();
+        await seedAssignmentsAndLinks();
+      } else {
+        console.log('  · PB_SEED_DEMO is not true — demo patient/data seeding skipped.');
+        console.log('    To also seed demo patient data run: PB_SEED_DEMO=true PB_SEED=true node setup.js');
+      }
+
+      console.log('\n✅ Setup complete!\n');
       console.log(`\n   Admin UI: ${PB_URL}/_/\n`);
     } else {
       console.log('\n⚠ PB_SEED is not true — seeding skipped.');
       console.log('   Collections and auth have been created/updated.');
-      console.log('   To seed demo content run: PB_SEED=true node setup.js');
+      console.log('   To ensure required app users exist run: PB_SEED=true node setup.js');
+      console.log('   To also seed demo patient data run: PB_SEED=true PB_SEED_DEMO=true node setup.js');
       console.log(`\n   Admin UI: ${PB_URL}/_/\n`);
     }
   } catch (err) {

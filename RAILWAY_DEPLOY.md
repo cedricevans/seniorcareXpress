@@ -33,4 +33,33 @@ On Railway:
 
 		 PB_URL=https://your-pb-url.railway.app node apps/pocketbase/setup.js
 
-This repo now avoids copying any committed `pb_data` into the image and ignores `apps/pocketbase/pb_data` by default. If you accidentally committed `pb_data`, run `tools/remove_pb_data_from_git.sh` from the repo root to stop tracking it and commit the removal.
+This repo is intentionally configured so PocketBase deploys do **not** ship `pb_data` inside the image. Production data must live on the Railway disk mounted at `/app/pb_data`.
+
+If you accidentally committed `pb_data`, run `tools/remove_pb_data_from_git.sh` from the repo root (or `git rm -r --cached apps/pocketbase/pb_data`) and commit the removal.
+
+Recovery + seeding runbook
+--------------------------
+
+### If production users/data disappear after a deploy
+
+This almost always means the PocketBase service is **not** using a persistent disk at `/app/pb_data` (or it’s mounted to the wrong path). Fix the disk mount first, then restore.
+
+1) In Railway → PocketBase service → Disks: ensure a disk exists and is mounted at `/app/pb_data`.
+2) Redeploy PocketBase.
+3) Recreate the PocketBase superuser if needed (the container entrypoint will do this automatically from `PB_SUPERUSER_EMAIL` / `PB_SUPERUSER_PASSWORD`).
+
+### Seed demo flows (safe, opt-in)
+
+The setup script creates/updates collections every run, but **demo seeding only runs when** `PB_SEED=true` and it will not overwrite existing users (it checks by email first):
+
+	PB_URL=https://your-pb-url.railway.app PB_SEED=true node apps/pocketbase/setup.js
+
+### Upsert “real” user accounts (safe, non-destructive by default)
+
+Use `apps/pocketbase/upsert-users.mjs` to create missing accounts without modifying existing ones:
+
+	PB_URL=https://your-pb-url.railway.app \
+	PB_SUPERUSER_EMAIL=... \
+	PB_SUPERUSER_PASSWORD=... \
+	USERS_JSON='[{"email":"you@example.com","password":"Temp123!","name":"You","role":"admin"}]' \
+	node apps/pocketbase/upsert-users.mjs

@@ -1,10 +1,19 @@
-const PB_URL = process.env.PB_URL || 'https://pocketbase-production-489c.up.railway.app';
-const NEW_PASSWORD = 'Admin123!';
+const PB_URL = process.env.PB_URL || 'http://localhost:8090';
+const NEW_PASSWORD = process.env.NEW_PASSWORD || 'Admin123!';
+
+if (process.env.CONFIRM_RESET_PASSWORDS !== 'true') {
+  console.error('Refusing to run: this script resets user passwords.');
+  console.error('Set CONFIRM_RESET_PASSWORDS=true to continue.');
+  process.exit(1);
+}
 
 const authRes = await fetch(`${PB_URL}/api/collections/_superusers/auth-with-password`, {
   method: 'POST',
   headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify({ identity: 'admin@seniorcare.com', password: 'Admin123!' })
+  body: JSON.stringify({
+    identity: process.env.PB_SUPERUSER_EMAIL || 'admin@seniorcare.com',
+    password: process.env.PB_SUPERUSER_PASSWORD || 'Admin123!',
+  }),
 });
 const auth = await authRes.json();
 const token = auth.token;
@@ -27,4 +36,4 @@ for (const u of (users.items || [])) {
   console.log(r.status === 200 ? '✓' : '✗', u.email, result.id ? 'password reset' : JSON.stringify(result));
 }
 
-console.log('\nAll done — password for all users is now: Admin123!');
+console.log(`\nAll done — password for all users is now: ${NEW_PASSWORD}`);

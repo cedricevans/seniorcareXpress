@@ -15,17 +15,12 @@ WORKDIR /app
 
 # Copy hooks and migrations
 COPY pb_hooks ./pb_hooks
+COPY pb_migrations ./pb_migrations
 
 # Copy a safe entrypoint to handle superuser creation at runtime and avoid
 # accidentally running seeding that could overwrite a persisted DB.
 COPY entrypoint.sh /app/entrypoint.sh
 RUN chmod +x /app/entrypoint.sh
-
-# NOTE: we intentionally do NOT copy a committed pb_data snapshot into the image here.
-# Committing pb_data into the image causes any runtime changes (users, records)
-# to be overwritten every time the image is rebuilt. Instead, persist `pb_data`
-# with a mounted volume in your hosting environment (or run the setup/seed
-# scripts once after first deploy to create collections).
 
 EXPOSE 8090
 
