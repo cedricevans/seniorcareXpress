@@ -17,9 +17,8 @@ WORKDIR /app
 COPY pb_hooks ./pb_hooks
 COPY pb_migrations ./pb_migrations
 
-# TEMPORARY: Bootstrap production with local database (one-time seed)
-# After successful deploy, this should be removed and Railway persistent volume added
-COPY pb_data ./pb_data
+# DO NOT COPY pb_data — let PocketBase create a fresh database
+# The entrypoint.sh will create the superuser from Railway env vars
 
 # Copy a safe entrypoint to handle superuser creation at runtime
 COPY entrypoint.sh /app/entrypoint.sh
