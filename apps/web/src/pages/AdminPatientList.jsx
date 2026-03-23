@@ -18,11 +18,15 @@ const EMPTY_FORM = {
 
 const AdminPatientList = () => {
   const [patients, setPatients] = useState([]);
+  const [patientStats, setPatientStats] = useState({});
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [selectedPatient, setSelectedPatient] = useState(null);
+  const [viewDetailsDialogOpen, setViewDetailsDialogOpen] = useState(false);
+  const [patientDetails, setPatientDetails] = useState(null);
+  const [loadingDetails, setLoadingDetails] = useState(false);
   const [formData, setFormData] = useState(EMPTY_FORM);
 
   const fetchPatients = async () => {
@@ -33,6 +37,43 @@ const AdminPatientList = () => {
         $autoCancel: false,
       });
       setPatients(records.items);
+      
+      // Fetch stats for each patient
+      const stats = {};
+      for (const patient of records.items) {
+        try {
+          // Get assigned caregiver
+          const assignments = await pb.collection('patient_assignments').getFullList({
+            filter: `patient_id = "${patient.id}" && status = "active"`,
+            expand: 'caregiver_id',
+            $autoCancel: false
+          });
+          
+          // Get upcoming appointments
+          const today = new Date().toISOString().split('T')[0];
+          const appointments = await pb.collection('appointments').getFullList({
+            filter: `patient_id = "${patient.id}" && appointment_date >= "${today}" && status = "scheduled"`,
+            $autoCancel: false
+          });
+          
+          // Get recent care updates
+          const updates = await pb.collection('care_updates').getList(1, 1, {
+            filter: `patient_id = "${patient.id}"`,
+            sort: '-created',
+            $autoCancel: false
+          });
+          
+          stats[patient.id] = {
+            caregiver: assignments[0]?.expand?.caregiver_id?.name || 'Unassigned',
+            upcomingAppointments: appointments.length,
+            lastUpdate: updates.items[0]?.created || null
+          };
+        } catch (err) {
+          console.error(`Failed to fetch stats for ${patient.first_name}:`, err);
+          stats[patient.id] = { caregiver: 'Unassigned', upcomingAppointments: 0, lastUpdate: null };
+        }
+      }
+      setPatientStats(stats);
     } catch (error) {
       console.error('Failed to load patients:', error);
       toast.error(`Failed to load patients: ${error?.message || 'Check your connection and permissions'}`);
@@ -107,6 +148,58 @@ const AdminPatientList = () => {
     }
   };
 
+  const handleViewDetails = async (patient) => {
+    setSelectedPatient(patient);
+    setViewDetailsDialogOpen(true);
+    setLoadingDetails(true);
+    try {
+      // Fetch comprehensive details
+      const [assignments, appointments, careUpdates, medicalHistory, careNotes] = await Promise.all([
+        pb.collection('patient_assignments').getFullList({
+          filter: `patient_id = "${patient.id}"`,
+          expand: 'caregiver_id',
+          $autoCancel: false
+        }),
+        pb.collection('appointments').getFullList({
+          filter: `patient_id = "${patient.id}"`,
+          sort: '-appointment_date',
+          expand: 'caregiver_id',
+          $autoCancel: false
+        }),
+        pb.collection('care_updates').getList(1, 5, {
+          filter: `patient_id = "${patient.id}"`,
+          sort: '-created',
+          expand: 'caregiver_id',
+          $autoCancel: false
+        }),
+        pb.collection('medical_history').getFullList({
+          filter: `patient_id = "${patient.id}"`,
+          $autoCancel: false
+        }),
+        pb.collection('caregiver_notes').getList(1, 5, {
+          filter: `patient_id = "${patient.id}"`,
+          sort: '-created',
+          expand: 'caregiver_id',
+          $autoCancel: false
+        })
+      ]);
+      
+      setPatientDetails({
+        ...patient,
+        assignments,
+        appointments,
+        careUpdates: careUpdates.items,
+        medicalHistory,
+        careNotes: careNotes.items
+      });
+    } catch (error) {
+      console.error('Failed to load patient details:', error);
+      toast.error('Failed to load patient details');
+    } finally {
+      setLoadingDetails(false);
+    }
+  };
+
   const filtered = patients.filter(p =>
     `${p.first_name} ${p.last_name}`.toLowerCase().includes(search.toLowerCase())
   );
@@ -137,12 +230,11 @@ const AdminPatientList = () => {
           <Table>
             <TableHeader>
               <TableRow className="bg-muted/50">
-                <TableHead>Name</TableHead>
-                <TableHead>Date of Birth</TableHead>
-                <TableHead>Gender</TableHead>
-                <TableHead>Phone</TableHead>
+                <TableHead>Patient</TableHead>
+                <TableHead>Caregiver</TableHead>
+                <TableHead>Appointments</TableHead>
+                <TableHead>Last Update</TableHead>
                 <TableHead>Status</TableHead>
-                <TableHead>Medical Notes</TableHead>
                 <TableHead className="text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
@@ -150,69 +242,72 @@ const AdminPatientList = () => {
               {loading ? (
                 Array.from({ length: 3 }).map((_, i) => (
                   <TableRow key={i}>
-                    {Array.from({ length: 7 }).map((_, j) => (
+                    {Array.from({ length: 6 }).map((_, j) => (
                       <TableCell key={j}><Skeleton className="h-6 w-full" /></TableCell>
                     ))}
                   </TableRow>
                 ))
               ) : filtered.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={7} className="text-center py-10 text-muted-foreground">
+                  <TableCell colSpan={6} className="text-center py-10 text-muted-foreground">
                     No patients found. Click "Add Patient" to create one.
                   </TableCell>
                 </TableRow>
               ) : (
-                filtered.map((patient) => (
-                  <TableRow key={patient.id} className="hover:bg-muted/30">
-                    <TableCell className="font-medium">
-                      <div className="flex items-center gap-3">
-                        <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
-                          <User className="h-4 w-4 text-primary" />
+                filtered.map((patient) => {
+                  const stats = patientStats[patient.id] || { caregiver: 'Unassigned', upcomingAppointments: 0, lastUpdate: null };
+                  const age = patient.date_of_birth ? Math.floor((new Date() - new Date(patient.date_of_birth)) / 31557600000) : null;
+                  return (
+                    <TableRow key={patient.id} className="hover:bg-muted/30 cursor-pointer" onClick={() => handleViewDetails(patient)}>
+                      <TableCell className="font-medium">
+                        <div className="flex flex-col gap-1">
+                          <div className="flex items-center gap-2">
+                            <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                              <User className="h-4 w-4 text-primary" />
+                            </div>
+                            <span>{patient.first_name} {patient.last_name}</span>
+                          </div>
+                          <div className="text-sm text-muted-foreground ml-10">
+                            {age ? `${age} years old` : 'Age unknown'} • {patient.gender || 'Gender not specified'}
+                          </div>
                         </div>
-                        {patient.first_name} {patient.last_name}
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex items-center gap-2 text-muted-foreground">
-                        <Calendar className="h-4 w-4" />
-                        {patient.date_of_birth ? new Date(patient.date_of_birth).toLocaleDateString() : '—'}
-                      </div>
-                    </TableCell>
-                    <TableCell className="capitalize">{patient.gender || '—'}</TableCell>
-                    <TableCell>
-                      <div className="flex items-center gap-2 text-muted-foreground">
-                        <Phone className="h-4 w-4" />
-                        {patient.phone || '—'}
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                        patient.status === 'active' ? 'bg-green-100 text-green-800' :
-                        patient.status === 'inactive' ? 'bg-yellow-100 text-yellow-800' :
-                        'bg-gray-100 text-gray-800'
-                      }`}>
-                        {patient.status || 'active'}
-                      </span>
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex items-center gap-2 text-muted-foreground max-w-[180px] truncate">
-                        <Activity className="h-4 w-4 shrink-0" />
-                        <span className="truncate">{patient.medical_notes || 'None'}</span>
-                      </div>
-                    </TableCell>
-                    <TableCell className="text-right">
-                      <div className="flex justify-end gap-2">
-                        <Button variant="ghost" size="icon" onClick={() => handleOpenEdit(patient)}>
-                          <Edit className="h-4 w-4" />
-                        </Button>
-                        <Button variant="ghost" size="icon" onClick={() => { setSelectedPatient(patient); setIsDeleteDialogOpen(true); }}
-                          className="hover:text-destructive">
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                ))
+                      </TableCell>
+                      <TableCell>
+                        <span className="text-sm text-muted-foreground">{stats.caregiver}</span>
+                      </TableCell>
+                      <TableCell>
+                        <span className="text-sm text-muted-foreground">
+                          {stats.upcomingAppointments} upcoming
+                        </span>
+                      </TableCell>
+                      <TableCell>
+                        <span className="text-sm text-muted-foreground">
+                          {stats.lastUpdate ? new Date(stats.lastUpdate).toLocaleDateString() : 'No updates yet'}
+                        </span>
+                      </TableCell>
+                      <TableCell>
+                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                          patient.status === 'active' ? 'bg-green-100 text-green-800' :
+                          patient.status === 'inactive' ? 'bg-yellow-100 text-yellow-800' :
+                          'bg-gray-100 text-gray-800'
+                        }`}>
+                          {patient.status || 'active'}
+                        </span>
+                      </TableCell>
+                      <TableCell className="text-right" onClick={(e) => e.stopPropagation()}>
+                        <div className="flex justify-end gap-2">
+                          <Button variant="ghost" size="icon" onClick={() => handleOpenEdit(patient)}>
+                            <Edit className="h-4 w-4" />
+                          </Button>
+                          <Button variant="ghost" size="icon" onClick={() => { setSelectedPatient(patient); setIsDeleteDialogOpen(true); }}
+                            className="hover:text-destructive">
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })
               )}
             </TableBody>
           </Table>
@@ -298,6 +393,160 @@ const AdminPatientList = () => {
           <DialogFooter>
             <Button variant="outline" onClick={() => setIsDeleteDialogOpen(false)}>Cancel</Button>
             <Button variant="destructive" onClick={handleDelete}>Delete</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Patient Details Dialog */}
+      <Dialog open={viewDetailsDialogOpen} onOpenChange={setViewDetailsDialogOpen}>
+        <DialogContent className="sm:max-w-[800px] max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="text-2xl flex items-center gap-2">
+              <User className="h-6 w-6 text-primary" />
+              {selectedPatient?.first_name} {selectedPatient?.last_name}
+            </DialogTitle>
+          </DialogHeader>
+          <div className="space-y-6 py-4">
+            {loadingDetails ? (
+              <div className="space-y-4">
+                {Array.from({ length: 4 }).map((_, i) => (
+                  <Skeleton key={i} className="h-24 w-full" />
+                ))}
+              </div>
+            ) : patientDetails ? (
+              <>
+                {/* Basic Info */}
+                <div className="grid grid-cols-2 gap-4 p-4 bg-muted/30 rounded-lg">
+                  <div>
+                    <p className="text-sm text-muted-foreground">Age</p>
+                    <p className="font-medium">
+                      {patientDetails.date_of_birth ? Math.floor((new Date() - new Date(patientDetails.date_of_birth)) / 31557600000) : 'Unknown'}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-muted-foreground">Gender</p>
+                    <p className="font-medium capitalize">{patientDetails.gender || 'Not specified'}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-muted-foreground">Phone</p>
+                    <p className="font-medium">{patientDetails.phone || 'Not provided'}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-muted-foreground">Status</p>
+                    <p className="font-medium capitalize">{patientDetails.status || 'active'}</p>
+                  </div>
+                </div>
+
+                {/* Assigned Caregivers */}
+                <div>
+                  <h3 className="font-semibold mb-3 flex items-center gap-2">
+                    <Activity className="h-5 w-5" />
+                    Assigned Caregivers
+                  </h3>
+                  {patientDetails.assignments.length === 0 ? (
+                    <p className="text-sm text-muted-foreground">No caregivers assigned yet</p>
+                  ) : (
+                    <div className="space-y-2">
+                      {patientDetails.assignments.map((assignment) => (
+                        <div key={assignment.id} className="p-3 border rounded-lg flex justify-between items-center">
+                          <div>
+                            <p className="font-medium">{assignment.expand?.caregiver_id?.name || 'Unknown'}</p>
+                            <p className="text-sm text-muted-foreground">Since: {assignment.start_date || 'N/A'}</p>
+                          </div>
+                          <span className={`px-2 py-1 rounded-full text-xs ${assignment.status === 'active' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}`}>
+                            {assignment.status}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                {/* Recent Appointments */}
+                <div>
+                  <h3 className="font-semibold mb-3 flex items-center gap-2">
+                    <Calendar className="h-5 w-5" />
+                    Recent Appointments
+                  </h3>
+                  {patientDetails.appointments.length === 0 ? (
+                    <p className="text-sm text-muted-foreground">No appointments scheduled</p>
+                  ) : (
+                    <div className="space-y-2">
+                      {patientDetails.appointments.slice(0, 5).map((appt) => (
+                        <div key={appt.id} className="p-3 border rounded-lg">
+                          <div className="flex justify-between items-start">
+                            <div>
+                              <p className="font-medium">{appt.title}</p>
+                              <p className="text-sm text-muted-foreground">
+                                {appt.appointment_date} at {appt.appointment_time}
+                              </p>
+                            </div>
+                            <span className={`px-2 py-1 rounded-full text-xs ${
+                              appt.status === 'scheduled' ? 'bg-blue-100 text-blue-800' :
+                              appt.status === 'completed' ? 'bg-green-100 text-green-800' :
+                              'bg-gray-100 text-gray-800'
+                            }`}>
+                              {appt.status}
+                            </span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                {/* Medical History */}
+                <div>
+                  <h3 className="font-semibold mb-3 flex items-center gap-2">
+                    <Activity className="h-5 w-5" />
+                    Medical History
+                  </h3>
+                  {patientDetails.medicalHistory.length === 0 ? (
+                    <p className="text-sm text-muted-foreground">No medical history recorded</p>
+                  ) : (
+                    <div className="space-y-2">
+                      {patientDetails.medicalHistory.map((history) => (
+                        <div key={history.id} className="p-3 border rounded-lg">
+                          <p className="font-medium">{history.condition}</p>
+                          <p className="text-sm text-muted-foreground">{history.notes || 'No notes'}</p>
+                          <span className={`inline-block mt-2 px-2 py-1 rounded-full text-xs ${
+                            history.status === 'active' ? 'bg-red-100 text-red-800' :
+                            history.status === 'chronic' ? 'bg-orange-100 text-orange-800' :
+                            'bg-green-100 text-green-800'
+                          }`}>
+                            {history.status}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                {/* Recent Care Notes */}
+                <div>
+                  <h3 className="font-semibold mb-3">Recent Care Notes</h3>
+                  {patientDetails.careNotes.length === 0 ? (
+                    <p className="text-sm text-muted-foreground">No care notes yet</p>
+                  ) : (
+                    <div className="space-y-2">
+                      {patientDetails.careNotes.map((note) => (
+                        <div key={note.id} className="p-3 border rounded-lg">
+                          <p className="text-sm">{note.note}</p>
+                          <p className="text-xs text-muted-foreground mt-2">
+                            By: {note.expand?.caregiver_id?.name || 'Unknown'} • {new Date(note.created).toLocaleDateString()}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </>
+            ) : (
+              <p className="text-center text-muted-foreground py-8">Failed to load patient details</p>
+            )}
+          </div>
+          <DialogFooter>
+            <Button onClick={() => setViewDetailsDialogOpen(false)}>Close</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
