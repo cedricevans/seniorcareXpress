@@ -22,7 +22,7 @@ echo "[entrypoint] Ensuring superuser exists for ${PB_SUPERUSER_EMAIL}..."
 # Retry a few times in case the DB is still initializing or locked.
 attempt=1
 while [ $attempt -le 5 ]; do
-  if /app/pocketbase superuser upsert "$PB_SUPERUSER_EMAIL" "$PB_SUPERUSER_PASSWORD"; then
+  if /app/pocketbase superuser upsert --dir=/app/pb_data "$PB_SUPERUSER_EMAIL" "$PB_SUPERUSER_PASSWORD"; then
     echo "[entrypoint] Superuser upsert: ✓"
     break
   fi
