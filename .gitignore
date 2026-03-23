@@ -19,6 +19,9 @@ apps/pocketbase/pb_data.bak/
 # Include pb_data/storage (user uploads) but not the db files
 apps/pocketbase/pb_data/storage/
 
+# Ignore local PocketBase runtime DB folder so it isn't accidentally committed
+apps/pocketbase/pb_data/
+
 # PocketBase binaries
 apps/pocketbase/pocketbase
 apps/pocketbase/pocketbase.linux-x86

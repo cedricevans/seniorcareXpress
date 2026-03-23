@@ -16,16 +16,18 @@ WORKDIR /app
 # Copy hooks and migrations
 COPY pb_hooks ./pb_hooks
 
-# Copy local database (includes superuser + collections)
-COPY pb_data ./pb_data
+# Copy a safe entrypoint to handle superuser creation at runtime and avoid
+# accidentally running seeding that could overwrite a persisted DB.
+COPY entrypoint.sh /app/entrypoint.sh
+RUN chmod +x /app/entrypoint.sh
+
+# NOTE: we intentionally do NOT copy a committed pb_data snapshot into the image here.
+# Committing pb_data into the image causes any runtime changes (users, records)
+# to be overwritten every time the image is rebuilt. Instead, persist `pb_data`
+# with a mounted volume in your hosting environment (or run the setup/seed
+# scripts once after first deploy to create collections).
 
 EXPOSE 8090
 
 # Start PocketBase and auto-create superuser from env vars
-CMD ["/bin/sh", "-c", "\
-  /app/pocketbase serve --http=0.0.0.0:${PORT:-8090} --hooksDir=/app/pb_hooks --hooksWatch=false & \
-  PB_PID=$! && \
-  sleep 5 && \
-  /app/pocketbase superuser upsert ${PB_SUPERUSER_EMAIL:-admin@seniorcare.com} ${PB_SUPERUSER_PASSWORD:-Admin123!} && \
-  wait $PB_PID \
-"]
+CMD ["/bin/sh", "-c", "/app/entrypoint.sh"]

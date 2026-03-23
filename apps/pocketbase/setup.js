@@ -691,21 +691,39 @@ async function seedAssignmentsAndLinks() {
 async function main() {
   console.log(`\n🏥 Senior Care Xpress — PocketBase Setup`);
   console.log(`   Target: ${PB_URL}\n`);
+  // Make seeding opt-in. In production we should NOT seed automatically on every
+  // deploy. To seed demo data, run with PB_SEED=true:
+  //
+  //   PB_URL=https://your-pb node setup.js
+  //   PB_SEED=true PB_URL=https://your-pb node setup.js
+  //
+  // Default: only auth + collections are created/updated. Seeding (demo users,
+  // demo patient, appointments, etc.) runs only when PB_SEED=true.
+  const SHOULD_SEED = process.env.PB_SEED === 'true';
 
   try {
     await auth();
     await createCollections();
-    await seedUsers();
-    await seedPatient();
-    await seedAssignmentsAndLinks();
 
-    console.log('\n✅ Setup complete!\n');
-    console.log('   Demo accounts (password: Admin123!):');
-    console.log('   · admin@seniorcare.com     → Admin portal');
-    console.log('   · caregiver@seniorcare.com → Caregiver portal');
-    console.log('   · family@seniorcare.com    → Family portal');
-    console.log('   · patient@seniorcare.com   → Patient portal');
-    console.log(`\n   Admin UI: ${PB_URL}/_/\n`);
+    if (SHOULD_SEED) {
+      console.log('\n[SEED] PB_SEED=true — running demo seeding...');
+      await seedUsers();
+      await seedPatient();
+      await seedAssignmentsAndLinks();
+
+      console.log('\n✅ Setup + seeding complete!\n');
+      console.log('   Demo accounts (password: Admin123!):');
+      console.log('   · admin@seniorcare.com     → Admin portal');
+      console.log('   · caregiver@seniorcare.com → Caregiver portal');
+      console.log('   · family@seniorcare.com    → Family portal');
+      console.log('   · patient@seniorcare.com   → Patient portal');
+      console.log(`\n   Admin UI: ${PB_URL}/_/\n`);
+    } else {
+      console.log('\n⚠ PB_SEED is not true — seeding skipped.');
+      console.log('   Collections and auth have been created/updated.');
+      console.log('   To seed demo content run: PB_SEED=true node setup.js');
+      console.log(`\n   Admin UI: ${PB_URL}/_/\n`);
+    }
   } catch (err) {
     console.error('\n❌ Setup failed:', err.message);
     process.exit(1);

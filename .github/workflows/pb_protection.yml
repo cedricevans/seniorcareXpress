@@ -1,0 +1,59 @@
+name: Protect PocketBase data and PB_SEED
+
+on:
+  push:
+    branches: ['**']
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  guard-pb-data:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Fail if pb_data committed or PB_SEED=true introduced
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          # Determine diff range depending on event
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            BASE_REF="${{ github.event.pull_request.base.ref }}"
+            echo "Pull request against $BASE_REF"
+            git fetch origin "$BASE_REF":refs/remotes/origin/$BASE_REF || true
+            DIFF_RANGE="origin/$BASE_REF...HEAD"
+          else
+            # For push events, compare the previous commit to HEAD. If this is the first push
+            # of a branch, fall back to comparing HEAD~1..HEAD if possible.
+            if [ "${{ github.event.before }}" = "0000000000000000000000000000000000000000" ]; then
+              DIFF_RANGE="HEAD~1...HEAD" || DIFF_RANGE="HEAD"
+            else
+              DIFF_RANGE="${{ github.event.before }}...${{ github.sha }}"
+            fi
+          fi
+
+          echo "Using diff range: $DIFF_RANGE"
+
+          # List changed files
+          changed_files=$(git diff --name-only $DIFF_RANGE || true)
+          echo "Changed files:\n$changed_files"
+
+          # Fail if any changed file is inside apps/pocketbase/pb_data
+          echo "$changed_files" | grep -E '^apps/pocketbase/pb_data(/|$)' && {
+            echo "\nERROR: Commit/PR modifies files under apps/pocketbase/pb_data — pb_data must not be tracked or committed." >&2
+            echo "Please remove pb_data from the commit and ensure persistent storage is used in production." >&2
+            exit 1
+          } || true
+
+          # Fail if PB_SEED=true appears in the diff (added or changed to true)
+          # This checks added lines (+) in the diff for PB_SEED and the value 'true'.
+          if git diff $DIFF_RANGE | grep -E '^\+.*PB_SEED.*(=|:).*true' >/dev/null; then
+            echo "\nERROR: PB_SEED=true was added or set to true in this change. Seeding production is forbidden unless explicitly requested." >&2
+            exit 1
+          fi
+
+          echo "No pb_data commits or PB_SEED=true changes detected."
