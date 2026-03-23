@@ -14,8 +14,8 @@
 import 'dotenv/config';
 
 const PB_URL = process.env.PB_URL || 'http://localhost:8090';
-const SUPERUSER_EMAIL = process.env.PB_SUPERUSER_EMAIL || 'admin@seniorcare.com';
-const SUPERUSER_PASSWORD = process.env.PB_SUPERUSER_PASSWORD || 'Admin123!';
+const SUPERUSER_EMAIL = process.env.PB_SUPERUSER_EMAIL || 'cedric.evans@gmail.com';
+const SUPERUSER_PASSWORD = process.env.PB_SUPERUSER_PASSWORD || 'Evans123@E';
 
 let token = '';
 const collectionCache = new Map();
@@ -624,9 +624,11 @@ let createdUsers = {};
 let patientId = '';
 
 async function seedUsers() {
-  console.log('\n[3/3] Seeding users (NOT overwritten)...');
+  console.log('\n[3/3] Seeding demo data (users NOT overwritten)...');
 
   const users = [
+    { email: 'cedric.evans@gmail.com',  password: 'pa55word',  name: 'Cedric Evans',  role: 'admin' },
+    { email: '1bassdebi@gmail.com',     password: 'pa55word',  name: 'Debi Bass',     role: 'admin' },
     { email: 'admin@seniorcare.com',    password: 'Admin123!', name: 'Admin User',    role: 'admin' },
     { email: 'caregiver@seniorcare.com', password: 'Admin123!', name: 'Sarah Johnson', role: 'caregiver' },
     { email: 'family@seniorcare.com',   password: 'Admin123!', name: 'Jane Smith',    role: 'family' },
