@@ -13,9 +13,8 @@ RUN wget -q https://github.com/pocketbase/pocketbase/releases/download/v${PB_VER
 
 WORKDIR /app
 
-# Copy hooks and migrations
+# Copy hooks only (not migrations - collections already exist in persistent volume)
 COPY pb_hooks ./pb_hooks
-COPY pb_migrations ./pb_migrations
 
 # Copy a safe entrypoint to handle superuser creation at runtime
 COPY entrypoint.sh /app/entrypoint.sh
