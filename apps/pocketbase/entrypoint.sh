@@ -12,14 +12,17 @@ PB_SUPERUSER_EMAIL=${PB_SUPERUSER_EMAIL:-admin@seniorcare.com}
 PB_SUPERUSER_PASSWORD=${PB_SUPERUSER_PASSWORD:-Admin123!}
 PORT=${PORT:-8090}
 
-echo "[entrypoint] Creating superuser ${PB_SUPERUSER_EMAIL} before starting server..."
+echo "[entrypoint] Debug - Email: ${PB_SUPERUSER_EMAIL}"
+echo "[entrypoint] Debug - Password length: ${#PB_SUPERUSER_PASSWORD}"
+echo "[entrypoint] Creating superuser before starting server..."
+
 # Create superuser BEFORE starting the server (database must not be in use)
-/app/pocketbase superuser upsert --dir=/app/pb_data "$PB_SUPERUSER_EMAIL" "$PB_SUPERUSER_PASSWORD"
+/app/pocketbase superuser upsert --dir=/app/pb_data "${PB_SUPERUSER_EMAIL}" "${PB_SUPERUSER_PASSWORD}" 2>&1
 
 if [ $? -eq 0 ]; then
   echo "[entrypoint] Superuser created/updated: ✓"
 else
-  echo "[entrypoint] WARNING: Could not create superuser"
+  echo "[entrypoint] WARNING: Superuser creation failed"
 fi
 
 echo "[entrypoint] Starting PocketBase..."
