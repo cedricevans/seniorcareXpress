@@ -4,6 +4,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
+    "check-superuser": "node check-superuser.mjs",
     "dev": "./pocketbase serve --http=0.0.0.0:8090 --hooksWatch=false",
     "start": "./pocketbase serve --http=0.0.0.0:${PORT:-8090} --hooksDir=./pb_hooks --hooksWatch=false"
   }

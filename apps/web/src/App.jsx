@@ -29,6 +29,7 @@ import AdminCarePlansPage from './pages/AdminCarePlansPage.jsx';
 import FamilyBookAppointmentPage from './pages/FamilyBookAppointmentPage.jsx';
 import AdminReportsPage from './pages/AdminReportsPage.jsx';
 import CaregiverDashboard from './pages/CaregiverDashboard.jsx';
+import CaregiverSchedulePage from './pages/CaregiverSchedulePage.jsx';
 import FamilyDashboard from './pages/FamilyDashboard.jsx';
 import PatientDashboard from './pages/PatientDashboard.jsx';
 import PlaceholderPage from './pages/PlaceholderPage.jsx';
@@ -72,7 +73,7 @@ function App() {
           <Route path="/caregiver" element={<ProtectedRoute allowedRoles={['caregiver']}><PortalLayout><CaregiverDashboard /></PortalLayout></ProtectedRoute>} />
           <Route path="/caregiver/patients" element={<ProtectedRoute allowedRoles={['caregiver']}><PortalLayout><CaregiverDashboard /></PortalLayout></ProtectedRoute>} />
           <Route path="/caregiver/appointments" element={<ProtectedRoute allowedRoles={['caregiver']}><PortalLayout><CaregiverDashboard /></PortalLayout></ProtectedRoute>} />
-          <Route path="/caregiver/availability" element={<ProtectedRoute allowedRoles={['caregiver']}><PortalLayout><PlaceholderPage title="Availability Settings" /></PortalLayout></ProtectedRoute>} />
+          <Route path="/caregiver/availability" element={<ProtectedRoute allowedRoles={['caregiver']}><PortalLayout><CaregiverSchedulePage /></PortalLayout></ProtectedRoute>} />
           <Route path="/caregiver/messages" element={<ProtectedRoute allowedRoles={['caregiver']}><PortalLayout><MessagesPage /></PortalLayout></ProtectedRoute>} />
 
           {/* Family Portal Routes */}

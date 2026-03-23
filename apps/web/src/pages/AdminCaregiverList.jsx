@@ -13,12 +13,16 @@ import { toast } from 'sonner';
 
 const AdminCaregiverList = () => {
   const [caregivers, setCaregivers] = useState([]);
+  const [caregiverStats, setCaregiverStats] = useState({});
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [selectedCaregiver, setSelectedCaregiver] = useState(null);
+  const [viewPatientsDialogOpen, setViewPatientsDialogOpen] = useState(false);
+  const [caregiverPatients, setCaregiverPatients] = useState([]);
+  const [loadingPatients, setLoadingPatients] = useState(false);
   
   const [formData, setFormData] = useState({
     name: '', email: '', password: ''
@@ -33,6 +37,46 @@ const AdminCaregiverList = () => {
         $autoCancel: false
       });
       setCaregivers(records.items);
+      
+      // Fetch stats for each caregiver
+      const stats = {};
+      for (const caregiver of records.items) {
+        try {
+          // Get patient count
+          const assignments = await pb.collection('patient_assignments').getFullList({
+            filter: `caregiver_id = "${caregiver.id}" && status = "active"`,
+            $autoCancel: false
+          });
+          
+          // Get appointments this week
+          const weekStart = new Date();
+          weekStart.setDate(weekStart.getDate() - weekStart.getDay());
+          const weekEnd = new Date(weekStart);
+          weekEnd.setDate(weekEnd.getDate() + 7);
+          
+          const appointments = await pb.collection('appointments').getFullList({
+            filter: `caregiver_id = "${caregiver.id}" && appointment_date >= "${weekStart.toISOString().split('T')[0]}" && appointment_date <= "${weekEnd.toISOString().split('T')[0]}"`,
+            $autoCancel: false
+          });
+          
+          // Get recent care updates
+          const recentUpdates = await pb.collection('care_updates').getList(1, 1, {
+            filter: `caregiver_id = "${caregiver.id}"`,
+            sort: '-created',
+            $autoCancel: false
+          });
+          
+          stats[caregiver.id] = {
+            patientCount: assignments.length,
+            appointmentsThisWeek: appointments.length,
+            lastUpdate: recentUpdates.items[0]?.created || null
+          };
+        } catch (err) {
+          console.error(`Failed to fetch stats for ${caregiver.name}:`, err);
+          stats[caregiver.id] = { patientCount: 0, appointmentsThisWeek: 0, lastUpdate: null };
+        }
+      }
+      setCaregiverStats(stats);
     } catch (error) {
       console.error('Failed to load caregivers:', error);
       toast.error(`Failed to load caregivers: ${error?.message || 'Check your connection and permissions'}`);
@@ -115,6 +159,25 @@ const AdminCaregiverList = () => {
     }
   };
 
+  const handleViewPatients = async (caregiver) => {
+    setSelectedCaregiver(caregiver);
+    setViewPatientsDialogOpen(true);
+    setLoadingPatients(true);
+    try {
+      const assignments = await pb.collection('patient_assignments').getFullList({
+        filter: `caregiver_id = "${caregiver.id}" && status = "active"`,
+        expand: 'patient_id',
+        $autoCancel: false
+      });
+      setCaregiverPatients(assignments);
+    } catch (error) {
+      console.error('Failed to load patients:', error);
+      toast.error('Failed to load assigned patients');
+    } finally {
+      setLoadingPatients(false);
+    }
+  };
+
   const filteredCaregivers = caregivers.filter(c => 
     (c.name || '').toLowerCase().includes(search.toLowerCase()) || 
     c.email.toLowerCase().includes(search.toLowerCase())
@@ -148,8 +211,9 @@ const AdminCaregiverList = () => {
             <TableHeader>
               <TableRow className="bg-muted/50">
                 <TableHead>Caregiver</TableHead>
-                <TableHead>Email</TableHead>
-                <TableHead>Status</TableHead>
+                <TableHead>Patients</TableHead>
+                <TableHead>Appointments</TableHead>
+                <TableHead>Last Activity</TableHead>
                 <TableHead className="text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
@@ -158,48 +222,64 @@ const AdminCaregiverList = () => {
                 Array.from({ length: 3 }).map((_, i) => (
                   <TableRow key={i}>
                     <TableCell><Skeleton className="h-10 w-48" /></TableCell>
-                    <TableCell><Skeleton className="h-6 w-32" /></TableCell>
                     <TableCell><Skeleton className="h-6 w-16" /></TableCell>
+                    <TableCell><Skeleton className="h-6 w-16" /></TableCell>
+                    <TableCell><Skeleton className="h-6 w-32" /></TableCell>
                     <TableCell><Skeleton className="h-8 w-24 ml-auto" /></TableCell>
                   </TableRow>
                 ))
               ) : filteredCaregivers.length === 0 ? (
-                <TableRow><TableCell colSpan={4} className="text-center py-8 text-muted-foreground">No caregivers found.</TableCell></TableRow>
+                <TableRow><TableCell colSpan={5} className="text-center py-8 text-muted-foreground">No caregivers found.</TableCell></TableRow>
               ) : (
-                filteredCaregivers.map((caregiver) => (
-                  <TableRow key={caregiver.id} className="hover:bg-muted/30 transition-colors">
-                    <TableCell className="font-medium">
-                      <div className="flex items-center gap-3">
-                        <div className="h-8 w-8 rounded-full bg-secondary/10 flex items-center justify-center">
-                          <HeartHandshake className="h-4 w-4 text-secondary" />
+                filteredCaregivers.map((caregiver) => {
+                  const stats = caregiverStats[caregiver.id] || { patientCount: 0, appointmentsThisWeek: 0, lastUpdate: null };
+                  return (
+                    <TableRow key={caregiver.id} className="hover:bg-muted/30 transition-colors">
+                      <TableCell className="font-medium">
+                        <div className="flex flex-col gap-1">
+                          <div className="flex items-center gap-2">
+                            <div className="h-8 w-8 rounded-full bg-secondary/10 flex items-center justify-center shrink-0">
+                              <HeartHandshake className="h-4 w-4 text-secondary" />
+                            </div>
+                            <span>{caregiver.name || 'Unnamed Caregiver'}</span>
+                          </div>
+                          <div className="flex items-center gap-2 text-sm text-muted-foreground ml-10">
+                            <Mail className="h-3 w-3" />
+                            {caregiver.email}
+                          </div>
                         </div>
-                        {caregiver.name || 'Unnamed Caregiver'}
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex items-center gap-2 text-muted-foreground">
-                        <Mail className="h-4 w-4" />
-                        {caregiver.email}
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">Active</Badge>
-                    </TableCell>
-                    <TableCell className="text-right">
-                      <div className="flex justify-end gap-2">
-                        <Button variant="ghost" size="icon" onClick={() => toast('View patients feature coming soon')} className="text-muted-foreground hover:text-primary" title="View Assigned Patients">
-                          <Users className="h-4 w-4" />
-                        </Button>
-                        <Button variant="ghost" size="icon" onClick={() => handleOpenEdit(caregiver)} className="text-muted-foreground hover:text-primary">
-                          <Edit className="h-4 w-4" />
-                        </Button>
-                        <Button variant="ghost" size="icon" onClick={() => handleOpenDelete(caregiver)} className="text-muted-foreground hover:text-destructive">
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                ))
+                      </TableCell>
+                      <TableCell>
+                        <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
+                          {stats.patientCount} {stats.patientCount === 1 ? 'patient' : 'patients'}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>
+                        <span className="text-sm text-muted-foreground">
+                          {stats.appointmentsThisWeek} this week
+                        </span>
+                      </TableCell>
+                      <TableCell>
+                        <span className="text-sm text-muted-foreground">
+                          {stats.lastUpdate ? new Date(stats.lastUpdate).toLocaleDateString() : 'No activity'}
+                        </span>
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <div className="flex justify-end gap-2">
+                          <Button variant="ghost" size="icon" onClick={() => handleViewPatients(caregiver)} className="text-muted-foreground hover:text-primary" title="View Assigned Patients">
+                            <Users className="h-4 w-4" />
+                          </Button>
+                          <Button variant="ghost" size="icon" onClick={() => handleOpenEdit(caregiver)} className="text-muted-foreground hover:text-primary">
+                            <Edit className="h-4 w-4" />
+                          </Button>
+                          <Button variant="ghost" size="icon" onClick={() => handleOpenDelete(caregiver)} className="text-muted-foreground hover:text-destructive">
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })
               )}
             </TableBody>
           </Table>
@@ -245,6 +325,64 @@ const AdminCaregiverList = () => {
           <DialogFooter>
             <Button variant="outline" onClick={() => setIsDeleteDialogOpen(false)}>Cancel</Button>
             <Button variant="destructive" onClick={handleDelete}>Delete</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* View Patients Dialog */}
+      <Dialog open={viewPatientsDialogOpen} onOpenChange={setViewPatientsDialogOpen}>
+        <DialogContent className="sm:max-w-[600px]">
+          <DialogHeader>
+            <DialogTitle>Patients Assigned to {selectedCaregiver?.name || selectedCaregiver?.email}</DialogTitle>
+          </DialogHeader>
+          <div className="py-4">
+            {loadingPatients ? (
+              <div className="space-y-3">
+                {Array.from({ length: 3 }).map((_, i) => (
+                  <Skeleton key={i} className="h-16 w-full" />
+                ))}
+              </div>
+            ) : caregiverPatients.length === 0 ? (
+              <div className="text-center py-8 text-muted-foreground">
+                <Users className="h-12 w-12 mx-auto mb-3 text-muted-foreground/40" />
+                <p>No patients currently assigned to this caregiver.</p>
+              </div>
+            ) : (
+              <div className="space-y-3 max-h-[400px] overflow-y-auto">
+                {caregiverPatients.map((assignment) => {
+                  const patient = assignment.expand?.patient_id;
+                  return (
+                    <div key={assignment.id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/30 cursor-pointer transition-colors" onClick={() => window.location.href = `/admin/patients`}>
+                      <div className="flex-1">
+                        <div className="flex items-center gap-3 mb-2">
+                          <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
+                            <Users className="h-5 w-5 text-primary" />
+                          </div>
+                          <div>
+                            <p className="font-medium text-lg">{patient?.first_name} {patient?.last_name}</p>
+                            <p className="text-sm text-muted-foreground">Assigned: {assignment.start_date || 'N/A'}</p>
+                          </div>
+                        </div>
+                        <div className="ml-13 grid grid-cols-2 gap-2 text-sm">
+                          <div className="flex items-center gap-1 text-muted-foreground">
+                            <span className="font-medium">Status:</span> {patient?.status || 'active'}
+                          </div>
+                          <div className="flex items-center gap-1 text-muted-foreground">
+                            <span className="font-medium">Age:</span> {patient?.date_of_birth ? Math.floor((new Date() - new Date(patient.date_of_birth)) / 31557600000) : 'N/A'}
+                          </div>
+                        </div>
+                      </div>
+                      <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
+                        {assignment.status}
+                      </Badge>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+          <DialogFooter>
+            <Button onClick={() => setViewPatientsDialogOpen(false)}>Close</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
