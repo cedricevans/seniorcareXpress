@@ -2,6 +2,7 @@
 [build]
 builder = "DOCKERFILE"
 dockerfilePath = "Dockerfile"
+watchPaths = ["apps/pocketbase/**"]
 
 [deploy]
 startCommand = "/bin/sh -c '/app/entrypoint.sh'"
