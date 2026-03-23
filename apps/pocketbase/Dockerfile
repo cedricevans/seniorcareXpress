@@ -17,9 +17,8 @@ WORKDIR /app
 COPY pb_hooks ./pb_hooks
 COPY pb_migrations ./pb_migrations
 
-# Copy bootstrap DB — contains initial users and collections
-# WARNING: This will reset the DB on every deploy unless a persistent volume is mounted at /app/pb_data
-COPY pb_data ./pb_data
+# NOTE: pb_data is NOT copied - it must be a mounted persistent volume in Railway
+# The entrypoint.sh will create the superuser automatically on first boot
 
 # Copy a safe entrypoint to handle superuser creation at runtime
 COPY entrypoint.sh /app/entrypoint.sh
