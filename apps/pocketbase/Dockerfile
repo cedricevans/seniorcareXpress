@@ -17,9 +17,6 @@ WORKDIR /app
 COPY pb_hooks ./pb_hooks
 COPY pb_migrations ./pb_migrations
 
-# Copy local database to production
-COPY pb_data ./pb_data
-
 # Copy a safe entrypoint to handle superuser creation at runtime
 COPY entrypoint.sh /app/entrypoint.sh
 RUN chmod +x /app/entrypoint.sh
