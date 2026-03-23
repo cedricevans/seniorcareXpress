@@ -17,8 +17,8 @@ WORKDIR /app
 COPY pb_hooks ./pb_hooks
 COPY pb_migrations ./pb_migrations
 
-# DO NOT COPY pb_data — let PocketBase create a fresh database
-# The entrypoint.sh will create the superuser from Railway env vars
+# Copy local database to production
+COPY pb_data ./pb_data
 
 # Copy a safe entrypoint to handle superuser creation at runtime
 COPY entrypoint.sh /app/entrypoint.sh
