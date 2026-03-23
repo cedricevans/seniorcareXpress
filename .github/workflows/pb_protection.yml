@@ -38,16 +38,18 @@ jobs:
 
           echo "Using diff range: $DIFF_RANGE"
 
-          # List changed files
-          changed_files=$(git diff --name-only $DIFF_RANGE || true)
-          echo "Changed files:\n$changed_files"
+          # List changed files (added or modified only — not deletions)
+          changed_files=$(git diff --name-only --diff-filter=ACM $DIFF_RANGE || true)
+          echo "Changed files (added/modified):"
+          echo "$changed_files"
 
-          # Fail if any changed file is inside apps/pocketbase/pb_data
-          echo "$changed_files" | grep -E '^apps/pocketbase/pb_data(/|$)' && {
-            echo "\nERROR: Commit/PR modifies files under apps/pocketbase/pb_data — pb_data must not be tracked or committed." >&2
-            echo "Please remove pb_data from the commit and ensure persistent storage is used in production." >&2
+          # Fail ONLY if pb_data files are being ADDED or MODIFIED (not deleted/untracked)
+          # Deletions (untracking) are safe and should be allowed through
+          if echo "$changed_files" | grep -E '^apps/pocketbase/pb_data(/|$)' > /dev/null 2>&1; then
+            echo "ERROR: Commit/PR adds or modifies files under apps/pocketbase/pb_data — pb_data must not be committed." >&2
+            echo "Use a persistent volume in production instead." >&2
             exit 1
-          } || true
+          fi
 
           # Fail if PB_SEED=true appears in the diff (added or changed to true)
           # This checks added lines (+) in the diff for PB_SEED and the value 'true'.
