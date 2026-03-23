@@ -132,8 +132,11 @@ async function auth() {
       passwordConfirm: SUPERUSER_PASSWORD,
     });
     console.log('  ✓ Superuser created');
-  } catch {
-    console.log('  · Superuser already exists');
+  } catch (err) {
+    // On most PocketBase instances this endpoint is not publicly writable once a
+    // superuser exists (or may require an existing superuser token). We still
+    // try it for first-run bootstrap, but treat failure as "continue to auth".
+    console.log(`  · Could not create superuser via API (continuing): ${err.message}`);
   }
 
   try {
