@@ -17,8 +17,9 @@ WORKDIR /app
 COPY pb_hooks ./pb_hooks
 COPY pb_migrations ./pb_migrations
 
-# NOTE: pb_data is NOT copied - it must be a mounted persistent volume in Railway
-# The entrypoint.sh will create the superuser automatically on first boot
+# TEMPORARY: Bootstrap production with local database (one-time seed)
+# After successful deploy, this should be removed and Railway persistent volume added
+COPY pb_data ./pb_data
 
 # Copy a safe entrypoint to handle superuser creation at runtime
 COPY entrypoint.sh /app/entrypoint.sh
