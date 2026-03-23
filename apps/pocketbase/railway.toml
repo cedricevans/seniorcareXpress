@@ -10,5 +10,9 @@ healthcheckTimeout = 30
 restartPolicyType = "ON_FAILURE"
 restartPolicyMaxRetries = 3
 
+[[deploy.volumes]]
+mountPath = "/app/pb_data"
+name = "pocketbase-data"
+
 [environments.production.variables]
 PORT = "8090"
