@@ -5,7 +5,7 @@ set -e
 # Responsibilities:
 # - Start pocketbase
 # - Wait a few seconds for it to boot
-# - Ensure a superuser exists (upsert)
+# - Ensure a superuser exists (upsert from Railway env vars)
 # - If no db is present, warn (do not auto-seed or overwrite production DB)
 
 PB_SUPERUSER_EMAIL=${PB_SUPERUSER_EMAIL:-admin@seniorcare.com}
@@ -18,8 +18,25 @@ PB_PID=$!
 
 sleep 5
 
-echo "[entrypoint] Ensuring superuser exists..."
-/app/pocketbase superuser upsert "$PB_SUPERUSER_EMAIL" "$PB_SUPERUSER_PASSWORD" || true
+echo "[entrypoint] Ensuring superuser exists for ${PB_SUPERUSER_EMAIL}..."
+# Retry a few times in case the DB is still initializing or locked.
+attempt=1
+while [ $attempt -le 5 ]; do
+  if /app/pocketbase superuser upsert "$PB_SUPERUSER_EMAIL" "$PB_SUPERUSER_PASSWORD"; then
+    echo "[entrypoint] Superuser upsert: ✓"
+    break
+  fi
+
+  echo "[entrypoint] Superuser upsert failed (attempt ${attempt}/5). Retrying..."
+  attempt=$((attempt + 1))
+  sleep 2
+done
+
+if [ $attempt -gt 5 ]; then
+  echo "[entrypoint] WARNING: superuser upsert failed after 5 attempts."
+  echo "[entrypoint] If you can't log in to /_/, run in a Railway shell:"
+  echo "  /app/pocketbase superuser upsert \"${PB_SUPERUSER_EMAIL}\" \"<new_password>\""
+fi
 
 if [ ! -f /app/pb_data/data.db ]; then
   cat <<'EOF'
