@@ -36,6 +36,7 @@ import PlaceholderPage from './pages/PlaceholderPage.jsx';
 import ServiceAgreementPage from './pages/ServiceAgreementPage.jsx';
 import AdminUsersPage from './pages/AdminUsersPage.jsx';
 import AdminServiceAgreementsPage from './pages/AdminServiceAgreementsPage.jsx';
+import SettingsPage from './pages/SettingsPage.jsx';
 
 // Wrapper for public pages to include Header/Footer
 const PublicLayout = ({ children }) => (
@@ -94,6 +95,9 @@ function App() {
           <Route path="/patient/appointments" element={<ProtectedRoute allowedRoles={['patient', 'family']}><PortalLayout><PatientDashboard /></PortalLayout></ProtectedRoute>} />
           <Route path="/patient/medical-records" element={<ProtectedRoute allowedRoles={['patient', 'family']}><PortalLayout><PatientDashboard /></PortalLayout></ProtectedRoute>} />
           <Route path="/patient/messages" element={<ProtectedRoute allowedRoles={['patient', 'family']}><PortalLayout><MessagesPage /></PortalLayout></ProtectedRoute>} />
+
+          {/* Shared Settings Route */}
+          <Route path="/settings" element={<ProtectedRoute allowedRoles={['admin', 'caregiver', 'family', 'patient']}><PortalLayout><SettingsPage /></PortalLayout></ProtectedRoute>} />
 
           {/* Fallback */}
           <Route path="*" element={

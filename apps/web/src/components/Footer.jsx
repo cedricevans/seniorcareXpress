@@ -1,8 +1,11 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Mail, Phone, MapPin, Facebook, Twitter, Linkedin } from 'lucide-react';
+import { useAuth } from '@/contexts/AuthContext.jsx';
 
 const Footer = () => {
+  const { role } = useAuth();
+
   return (
     <footer className="bg-slate-950 text-slate-200 pt-20 pb-10 mt-auto">
       <div className="container mx-auto px-4">
@@ -38,7 +41,9 @@ const Footer = () => {
               <li><Link to="/careers" className="text-slate-400 hover:text-secondary transition-colors">Careers</Link></li>
               <li><Link to="/about" className="text-slate-400 hover:text-secondary transition-colors">About Us</Link></li>
               <li><Link to="/contact" className="text-slate-400 hover:text-secondary transition-colors">Contact</Link></li>
-              <li><Link to="/service-agreement" className="text-slate-400 hover:text-secondary transition-colors">Service Agreement</Link></li>
+              {role === 'admin' && (
+                <li><Link to="/service-agreement" className="text-slate-400 hover:text-secondary transition-colors">Service Agreement</Link></li>
+              )}
             </ul>
           </div>
           

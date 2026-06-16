@@ -1,5 +1,6 @@
 
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext.jsx';
 import { Bell, Search, Menu, Globe, LogOut, User, Settings } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -15,6 +16,7 @@ import { toast } from 'sonner';
 
 const PortalHeader = ({ onMenuClick }) => {
   const { currentUser, role, logout } = useAuth();
+  const navigate = useNavigate();
 
   const handleNotImplemented = () => {
     toast('This feature is coming soon.');
@@ -62,7 +64,7 @@ const PortalHeader = ({ onMenuClick }) => {
           <DropdownMenuContent align="end" className="w-56 rounded-xl">
             <DropdownMenuLabel>My Account</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="cursor-pointer rounded-lg" onClick={handleNotImplemented}>
+            <DropdownMenuItem className="cursor-pointer rounded-lg" onClick={() => navigate('/settings')}>
               <Settings className="mr-2 h-4 w-4" />
               <span>Profile Settings</span>
             </DropdownMenuItem>
