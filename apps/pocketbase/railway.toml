@@ -7,7 +7,7 @@ watchPaths = ["apps/pocketbase/**"]
 [deploy]
 startCommand = "/bin/sh -c '/app/entrypoint.sh'"
 healthcheckPath = "/api/health"
-healthcheckTimeout = 30
+healthcheckTimeout = 120
 restartPolicyType = "ON_FAILURE"
 restartPolicyMaxRetries = 3
 
@@ -17,3 +17,4 @@ name = "pocketbase-data"
 
 [environments.production.variables]
 PORT = "8090"
+
