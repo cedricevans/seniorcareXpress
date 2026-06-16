@@ -33,6 +33,9 @@ import CaregiverSchedulePage from './pages/CaregiverSchedulePage.jsx';
 import FamilyDashboard from './pages/FamilyDashboard.jsx';
 import PatientDashboard from './pages/PatientDashboard.jsx';
 import PlaceholderPage from './pages/PlaceholderPage.jsx';
+import ServiceAgreementPage from './pages/ServiceAgreementPage.jsx';
+import AdminUsersPage from './pages/AdminUsersPage.jsx';
+import AdminServiceAgreementsPage from './pages/AdminServiceAgreementsPage.jsx';
 
 // Wrapper for public pages to include Header/Footer
 const PublicLayout = ({ children }) => (
@@ -57,6 +60,7 @@ function App() {
           <Route path="/login" element={<PublicLayout><LoginPage /></PublicLayout>} />
           <Route path="/veterans" element={<PublicLayout><VeteransPage /></PublicLayout>} />
           <Route path="/careers" element={<PublicLayout><CareersPage /></PublicLayout>} />
+          <Route path="/service-agreement" element={<ServiceAgreementPage />} />
 
           {/* Admin Portal Routes */}
           <Route path="/admin" element={<ProtectedRoute allowedRoles={['admin']}><PortalLayout><AdminDashboard /></PortalLayout></ProtectedRoute>} />
@@ -68,6 +72,9 @@ function App() {
           <Route path="/admin/messages" element={<ProtectedRoute allowedRoles={['admin']}><PortalLayout><MessagesPage /></PortalLayout></ProtectedRoute>} />
           <Route path="/admin/care-plans" element={<ProtectedRoute allowedRoles={['admin']}><PortalLayout><AdminCarePlansPage /></PortalLayout></ProtectedRoute>} />
           <Route path="/admin/reports" element={<ProtectedRoute allowedRoles={['admin']}><PortalLayout><AdminReportsPage /></PortalLayout></ProtectedRoute>} />
+          <Route path="/admin/service-agreement" element={<ProtectedRoute allowedRoles={['admin']}><ServiceAgreementPage /></ProtectedRoute>} />
+          <Route path="/admin/users" element={<ProtectedRoute allowedRoles={['admin']}><PortalLayout><AdminUsersPage /></PortalLayout></ProtectedRoute>} />
+          <Route path="/admin/service-agreements" element={<ProtectedRoute allowedRoles={['admin']}><PortalLayout><AdminServiceAgreementsPage /></PortalLayout></ProtectedRoute>} />
 
           {/* Caregiver Portal Routes */}
           <Route path="/caregiver" element={<ProtectedRoute allowedRoles={['caregiver']}><PortalLayout><CaregiverDashboard /></PortalLayout></ProtectedRoute>} />

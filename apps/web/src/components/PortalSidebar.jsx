@@ -12,7 +12,9 @@ import {
   Activity,
   Settings,
   PieChart,
-  UserCheck
+  UserCheck,
+  UserPlus,
+  FileSignature
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -33,6 +35,8 @@ const PortalSidebar = ({ isOpen, onClose }) => {
           { name: 'Care Plans', path: '/admin/care-plans', icon: FileText },
           { name: 'Reports', path: '/admin/reports', icon: PieChart },
           { name: 'Analytics', path: '/admin/analytics', icon: PieChart },
+          { name: 'Users', path: '/admin/users', icon: UserPlus },
+          { name: 'Service Agreements', path: '/admin/service-agreements', icon: FileSignature },
         ];
       case 'caregiver':
         return [
