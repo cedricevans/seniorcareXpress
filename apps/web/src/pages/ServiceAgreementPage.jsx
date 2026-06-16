@@ -12,7 +12,7 @@ const OFFICE_NOTIFICATION_EMAILS = ['info@seniorcarexpress.com', 'bassdebi@gmail
 
 function buildEmailParams(data, toEmail) {
   return {
-    to_email: toEmail,
+    email: toEmail,
     client_name: data.clientName || '',
     client_phone: data.telephone || '',
     client_address: data.clientAddress || '',
