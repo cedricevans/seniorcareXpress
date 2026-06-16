@@ -2,7 +2,42 @@ import React, { useState, useCallback } from 'react';
 import { Helmet } from 'react-helmet';
 import { Save, Plus, Trash2, Download, Printer, RotateCcw, Loader2, Send } from 'lucide-react';
 import { toast } from 'sonner';
+import emailjs from '@emailjs/browser';
 import pb from '@/lib/pocketbaseClient';
+
+const EMAILJS_SERVICE_ID = 'service_jkzlfi8';
+const EMAILJS_TEMPLATE_ID = 'template_dj7ckge';
+const EMAILJS_PUBLIC_KEY = 'Dj1QSE8_TH4ToTNjI';
+const OFFICE_NOTIFICATION_EMAILS = ['info@seniorcarexpress.com', 'bassdebi@gmail.com', 'cedric.evans@gmail.com'];
+
+function buildEmailParams(data, toEmail) {
+  return {
+    to_email: toEmail,
+    client_name: data.clientName || '',
+    client_phone: data.telephone || '',
+    client_address: data.clientAddress || '',
+    start_of_care_date: data.startOfCareDate || '',
+    hourly_rate: data.hourlyRate || '',
+    payment_type: data.paymentType || '',
+  };
+}
+
+async function sendNotificationEmails(data) {
+  const clientEmail = data.clientEmail || data.emEmail || '';
+
+  const sends = OFFICE_NOTIFICATION_EMAILS.map((toEmail) =>
+    emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, buildEmailParams(data, toEmail), { publicKey: EMAILJS_PUBLIC_KEY })
+  );
+
+  if (clientEmail) {
+    sends.push(
+      emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, buildEmailParams(data, clientEmail), { publicKey: EMAILJS_PUBLIC_KEY })
+    );
+  }
+
+  const results = await Promise.allSettled(sends);
+  return results.every((r) => r.status === 'fulfilled');
+}
 
 const DRAFT_KEY = 'scx_service_agreement_draft';
 const BRAND_LOGO_URL = 'https://horizons-cdn.hostinger.com/0f92c1a5-75e3-4878-84c5-4c29eda99ea0/6cf179a531307fd05365d487c05a8a26.png';
@@ -167,7 +202,7 @@ export default function ServiceAgreementPage() {
     }
     setSaveStatus('saving');
     try {
-      await pb.collection('service_agreements').create(
+      const record = await pb.collection('service_agreements').create(
         {
           client_name: data.clientName,
           client_email: data.clientEmail || data.emEmail || '',
@@ -176,6 +211,20 @@ export default function ServiceAgreementPage() {
         },
         { $autoCancel: false }
       );
+
+      let emailSent = false;
+      try {
+        emailSent = await sendNotificationEmails(data);
+      } catch (emailError) {
+        console.error('EmailJS send failed:', emailError);
+      }
+
+      try {
+        await pb.collection('service_agreements').update(record.id, { email_sent: emailSent }, { $autoCancel: false });
+      } catch {
+        // non-critical, ignore
+      }
+
       setSaveStatus('submitted');
       setDirty(false);
       try {
@@ -183,7 +232,11 @@ export default function ServiceAgreementPage() {
       } catch {
         // ignore
       }
-      toast.success('Service agreement submitted — a copy has been emailed to our office.');
+      toast.success(
+        emailSent
+          ? 'Service agreement submitted — a copy has been emailed to our office.'
+          : 'Service agreement submitted, but the email notification failed. Our team can still see it in the system.'
+      );
       setTimeout(() => setSaveStatus('idle'), 3000);
     } catch (error) {
       console.error(error);
