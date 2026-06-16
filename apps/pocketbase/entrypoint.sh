@@ -5,20 +5,8 @@ PB_SUPERUSER_EMAIL=${PB_SUPERUSER_EMAIL:-admin@seniorcare.com}
 PB_SUPERUSER_PASSWORD=${PB_SUPERUSER_PASSWORD:-Admin123!}
 PORT=${PORT:-8090}
 
-echo "[entrypoint] Starting PocketBase on port ${PORT}..."
-/app/pocketbase serve --http=0.0.0.0:${PORT} --hooksDir=/app/pb_hooks --hooksWatch=false &
-PB_PID=$!
-
-echo "[entrypoint] Waiting for PocketBase to accept connections..."
-for i in $(seq 1 60); do
-  if wget -q -O- "http://127.0.0.1:${PORT}/api/health" > /dev/null 2>&1; then
-    echo "[entrypoint] PocketBase is up (after ${i}s)."
-    break
-  fi
-  sleep 1
-done
-
 echo "[entrypoint] Creating/updating superuser: ${PB_SUPERUSER_EMAIL}"
 /app/pocketbase superuser upsert --dir=/app/pb_data "${PB_SUPERUSER_EMAIL}" "${PB_SUPERUSER_PASSWORD}" 2>&1 || echo "[entrypoint] Note: superuser upsert returned non-zero (may already exist)"
 
-wait $PB_PID
+echo "[entrypoint] Starting PocketBase on port ${PORT}..."
+exec /app/pocketbase serve --http=0.0.0.0:${PORT} --hooksDir=/app/pb_hooks --hooksWatch=false
