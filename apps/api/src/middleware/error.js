@@ -10,8 +10,9 @@ export default (err, req, res, next) => {
 
 	res.status(500).json({
 		message: 'Something went wrong!',
+		error: err.message,
 		...(process.env.NODE_ENV !== NodeEnv.Production && {
-			error: {
+			errorDetail: {
 				name: err.name,
 				message: err.message,
 				stack: err.stack,

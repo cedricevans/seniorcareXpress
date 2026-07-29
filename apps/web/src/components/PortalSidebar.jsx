@@ -37,6 +37,7 @@ const PortalSidebar = ({ isOpen, onClose }) => {
           { name: 'Analytics', path: '/admin/analytics', icon: PieChart },
           { name: 'Users', path: '/admin/users', icon: UserPlus },
           { name: 'Service Agreements', path: '/admin/service-agreements', icon: FileSignature },
+          { name: 'VA Forms', path: '/admin/va-forms', icon: FileText },
         ];
       case 'caregiver':
         return [

@@ -9,5 +9,6 @@
 - [Contact Us | SeniorCare Xpress](/contact): No description available
 - [Family Portal | SeniorCare Xpress](/familydashboard): No description available
 - [Messages | SeniorCare Xpress](/messages): No description available
+- [My Schedule | SeniorCare Xpress Caregiver](/caregiverschedule): No description available
 - [Our Services | SeniorCare Xpress](/services): No description available
 - [SeniorCare Xpress | Empowering Independent Living](/home): Uplifting senior care focused on wellness, independence, and quality of life. Keeping families connected and seniors thriving.

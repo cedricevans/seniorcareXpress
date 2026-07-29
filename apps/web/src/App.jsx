@@ -36,6 +36,11 @@ import PlaceholderPage from './pages/PlaceholderPage.jsx';
 import ServiceAgreementPage from './pages/ServiceAgreementPage.jsx';
 import AdminUsersPage from './pages/AdminUsersPage.jsx';
 import AdminServiceAgreementsPage from './pages/AdminServiceAgreementsPage.jsx';
+import AdminVaFormsPage from './pages/AdminVaFormsPage.jsx';
+import AdminVaNursingHomeFormPage from './pages/AdminVaNursingHomeFormPage.jsx';
+import AdminVaAuthorizationFormPage from './pages/AdminVaAuthorizationFormPage.jsx';
+import AdminVaExamFormPage from './pages/AdminVaExamFormPage.jsx';
+import AdminVaExpenseReportFormPage from './pages/AdminVaExpenseReportFormPage.jsx';
 import SettingsPage from './pages/SettingsPage.jsx';
 
 // Wrapper for public pages to include Header/Footer
@@ -76,6 +81,11 @@ function App() {
           <Route path="/admin/service-agreement" element={<ProtectedRoute allowedRoles={['admin']}><ServiceAgreementPage /></ProtectedRoute>} />
           <Route path="/admin/users" element={<ProtectedRoute allowedRoles={['admin']}><PortalLayout><AdminUsersPage /></PortalLayout></ProtectedRoute>} />
           <Route path="/admin/service-agreements" element={<ProtectedRoute allowedRoles={['admin']}><PortalLayout><AdminServiceAgreementsPage /></PortalLayout></ProtectedRoute>} />
+          <Route path="/admin/va-forms" element={<ProtectedRoute allowedRoles={['admin']}><PortalLayout><AdminVaFormsPage /></PortalLayout></ProtectedRoute>} />
+          <Route path="/admin/va-forms/21-0779" element={<ProtectedRoute allowedRoles={['admin']}><PortalLayout><AdminVaNursingHomeFormPage /></PortalLayout></ProtectedRoute>} />
+          <Route path="/admin/va-forms/21-0845" element={<ProtectedRoute allowedRoles={['admin']}><PortalLayout><AdminVaAuthorizationFormPage /></PortalLayout></ProtectedRoute>} />
+          <Route path="/admin/va-forms/21-2680" element={<ProtectedRoute allowedRoles={['admin']}><PortalLayout><AdminVaExamFormPage /></PortalLayout></ProtectedRoute>} />
+          <Route path="/admin/va-forms/21p-8416" element={<ProtectedRoute allowedRoles={['admin']}><PortalLayout><AdminVaExpenseReportFormPage /></PortalLayout></ProtectedRoute>} />
 
           {/* Caregiver Portal Routes */}
           <Route path="/caregiver" element={<ProtectedRoute allowedRoles={['caregiver']}><PortalLayout><CaregiverDashboard /></PortalLayout></ProtectedRoute>} />
