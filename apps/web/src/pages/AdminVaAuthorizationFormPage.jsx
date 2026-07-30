@@ -7,6 +7,8 @@ import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Loader2, Download, FileText } from 'lucide-react';
 import { toast } from 'sonner';
+import { useVaCaseProfile } from '@/hooks/useVaCaseProfile';
+import VaCaseProfilePicker from '@/components/VaCaseProfilePicker';
 
 const FIELDS = [
   { section: "Veteran's Identification", keys: [
@@ -72,8 +74,13 @@ const AdminVaAuthorizationFormPage = () => {
   const [values, setValues] = useState({ security_question_first_pet: true });
   const [submitting, setSubmitting] = useState(false);
   const [filledPdfUrl, setFilledPdfUrl] = useState(null);
+  const { cases, loadingCases, importedCaseId, importCase, clearImport } = useVaCaseProfile();
 
   const set = (key, val) => setValues((prev) => ({ ...prev, [key]: val }));
+
+  const handleImportCase = (caseRecord) => {
+    setValues((prev) => ({ ...prev, ...importCase(caseRecord) }));
+  };
 
   const handleSubmit = async () => {
     if (!values.veteran_first_name?.trim() || !values.veteran_last_name?.trim()) {
@@ -94,13 +101,16 @@ const AdminVaAuthorizationFormPage = () => {
         'veteran_ssn_first3', 'veteran_ssn_middle2', 'veteran_ssn_last4', 'va_file_number',
         'veteran_dob_month', 'veteran_dob_day', 'veteran_dob_year', 'veteran_service_number'];
 
-      const vaCase = await pb.collection('va_cases').create({
+      const caseData = {
         applicant_type: 'veteran',
         first_name: values.veteran_first_name || '',
         last_name: values.veteran_last_name || '',
         status: 'intake',
         ...Object.fromEntries(caseFields.map((k) => [k, values[k] || ''])),
-      });
+      };
+      const vaCase = importedCaseId
+        ? await pb.collection('va_cases').update(importedCaseId, caseData)
+        : await pb.collection('va_cases').create(caseData);
 
       const caseFormFields = { ...values };
       caseFields.forEach((k) => delete caseFormFields[k]);
@@ -136,6 +146,15 @@ const AdminVaAuthorizationFormPage = () => {
         <h1 className="text-2xl font-bold">VA Form 21-0845 — Authorization to Disclose Personal Information</h1>
       </div>
       <p className="text-slate-500 mb-8">Fill in the answers below, then generate the completed PDF.</p>
+
+      <VaCaseProfilePicker
+        cases={cases}
+        loadingCases={loadingCases}
+        importedCaseId={importedCaseId}
+        onImport={handleImportCase}
+        onClear={clearImport}
+        importNote="Note: importing a profile fills the veteran's identification info only. The Beneficiary/Claimant contact fields below (address, phone, email) belong to the person receiving the disclosure, not the veteran, so they always need to be entered manually."
+      />
 
       {FIELDS.map(({ section, keys }) => (
         <div key={section} className="mb-8">

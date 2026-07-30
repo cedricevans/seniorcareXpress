@@ -6,6 +6,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Loader2, Download, FileText, Plus, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
+import { useVaCaseProfile } from '@/hooks/useVaCaseProfile';
+import VaCaseProfilePicker from '@/components/VaCaseProfilePicker';
 
 // Main-form slots come first (main_a, main_b, ...), overflow rows map to the
 // numbered addendum slots (addendum_a_row1, addendum_a_row2, ...) once the
@@ -101,8 +103,23 @@ const AdminVaExpenseReportFormPage = () => {
   const [rows, setRows] = useState({ in_home: [], other: [], mileage: [] });
   const [submitting, setSubmitting] = useState(false);
   const [filledPdfUrl, setFilledPdfUrl] = useState(null);
+  const { cases, loadingCases, importedCaseId, importCase, clearImport } = useVaCaseProfile();
 
   const setId = (key, val) => setIdentity((prev) => ({ ...prev, [key]: val }));
+
+  const handleImportCase = (caseRecord) => {
+    const imported = importCase(caseRecord);
+    // This page stores SSN as one joined field, has no claimant_* inputs, and
+    // names its ZIP field "mailing_address_zip" (no "5" suffix) unlike the
+    // other pages/va_cases's "mailing_address_zip5" — remap both on import.
+    const ssnParts = [caseRecord.veteran_ssn_first3, caseRecord.veteran_ssn_middle2, caseRecord.veteran_ssn_last4].filter(Boolean);
+    setIdentity((prev) => ({
+      ...prev,
+      ...imported,
+      veteran_ssn: ssnParts.length === 3 ? ssnParts.join('-') : prev.veteran_ssn,
+      mailing_address_zip: caseRecord.mailing_address_zip5 || prev.mailing_address_zip,
+    }));
+  };
 
   const addRow = (sectionKey) => {
     const section = SECTIONS[sectionKey];
@@ -137,14 +154,25 @@ const AdminVaExpenseReportFormPage = () => {
         return;
       }
 
-      const vaCase = await pb.collection('va_cases').create({
+      const caseData = {
         applicant_type: 'veteran',
         first_name: identity.veteran_first_name || '',
         last_name: identity.veteran_last_name || '',
         status: 'intake',
         veteran_first_name: identity.veteran_first_name || '',
         veteran_last_name: identity.veteran_last_name || '',
-      });
+        mailing_address_street: identity.mailing_address_street || '',
+        mailing_address_city: identity.mailing_address_city || '',
+        mailing_address_state: identity.mailing_address_state || '',
+        mailing_address_country: identity.mailing_address_country || '',
+        mailing_address_zip5: identity.mailing_address_zip || '',
+        phone_area: identity.phone_area || '',
+        phone_mid: identity.phone_mid || '',
+        phone_last4: identity.phone_last4 || '',
+      };
+      const vaCase = importedCaseId
+        ? await pb.collection('va_cases').update(importedCaseId, caseData)
+        : await pb.collection('va_cases').create(caseData);
 
       const expenseReportData = {};
       Object.entries(rows).forEach(([sectionKey, sectionRows]) => {
@@ -205,6 +233,14 @@ const AdminVaExpenseReportFormPage = () => {
         <h1 className="text-2xl font-bold">VA Form 21P-8416 — Medical Expense Report</h1>
       </div>
       <p className="text-slate-500 mb-8">Add each medical expense as a row. Extra rows automatically use the form's addendum pages.</p>
+
+      <VaCaseProfilePicker
+        cases={cases}
+        loadingCases={loadingCases}
+        importedCaseId={importedCaseId}
+        onImport={handleImportCase}
+        onClear={clearImport}
+      />
 
       <div className="mb-8">
         <h2 className="text-lg font-semibold mb-4">Veteran & Claimant Identification</h2>

@@ -6,6 +6,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Loader2, Download, FileText } from 'lucide-react';
 import { toast } from 'sonner';
+import { useVaCaseProfile } from '@/hooks/useVaCaseProfile';
+import VaCaseProfilePicker from '@/components/VaCaseProfilePicker';
 
 const FIELDS = [
   { section: "Veteran's Identification", keys: [
@@ -67,8 +69,13 @@ const AdminVaNursingHomeFormPage = () => {
   const [values, setValues] = useState({});
   const [submitting, setSubmitting] = useState(false);
   const [filledPdfUrl, setFilledPdfUrl] = useState(null);
+  const { cases, loadingCases, importedCaseId, importCase, clearImport } = useVaCaseProfile();
 
   const set = (key, val) => setValues((prev) => ({ ...prev, [key]: val }));
+
+  const handleImportCase = (caseRecord) => {
+    setValues((prev) => ({ ...prev, ...importCase(caseRecord) }));
+  };
 
   const handleSubmit = async () => {
     if (!values.veteran_first_name?.trim() || !values.veteran_last_name?.trim()) {
@@ -92,13 +99,16 @@ const AdminVaNursingHomeFormPage = () => {
         'claimant_ssn_first3', 'claimant_ssn_middle2', 'claimant_ssn_last4',
         'claimant_va_file_number', 'claimant_dob_month', 'claimant_dob_day', 'claimant_dob_year'];
 
-      const vaCase = await pb.collection('va_cases').create({
+      const caseData = {
         applicant_type: 'veteran',
         first_name: values.veteran_first_name || '',
         last_name: values.veteran_last_name || '',
         status: 'intake',
         ...Object.fromEntries(caseFields.map((k) => [k, values[k] || ''])),
-      });
+      };
+      const vaCase = importedCaseId
+        ? await pb.collection('va_cases').update(importedCaseId, caseData)
+        : await pb.collection('va_cases').create(caseData);
 
       const caseFormFields = { ...values };
       caseFields.forEach((k) => delete caseFormFields[k]);
@@ -134,6 +144,15 @@ const AdminVaNursingHomeFormPage = () => {
         <h1 className="text-2xl font-bold">VA Form 21-0779 — Nursing Home Information</h1>
       </div>
       <p className="text-slate-500 mb-8">Fill in the answers below, then generate the completed PDF.</p>
+
+      <VaCaseProfilePicker
+        cases={cases}
+        loadingCases={loadingCases}
+        importedCaseId={importedCaseId}
+        onImport={handleImportCase}
+        onClear={clearImport}
+        importNote="Note: this form only asks for identification info, so importing a profile only fills name/SSN/DOB/VA file number — it does not have address, phone, or email fields to import."
+      />
 
       {FIELDS.map(({ section, keys }) => (
         <div key={section} className="mb-8">

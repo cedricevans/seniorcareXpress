@@ -27,6 +27,7 @@ const PortalSidebar = ({ isOpen, onClose }) => {
       case 'admin':
         return [
           { name: 'Dashboard', path: '/admin', icon: LayoutDashboard },
+          { name: 'VA Intake', path: '/admin/va-intake', icon: UserPlus },
           { name: 'VA Forms', path: '/admin/va-forms', icon: FileText },
           { name: 'Patients', path: '/admin/patients', icon: Users },
           { name: 'Caregivers', path: '/admin/caregivers', icon: Activity },

@@ -3,7 +3,12 @@
 // ── Service Agreement notification ──────────────────────────────────────────
 onRecordAfterCreateSuccess((e) => {
   const r = e.record;
-  const formData = r.get("form_data") || {};
+  let formData = {};
+  try {
+    formData = JSON.parse(r.getString("form_data") || "{}");
+  } catch (err) {
+    $app.logger().error("Failed to parse service agreement form_data", "error", err);
+  }
   const clientName = r.get("client_name") || "Unknown client";
   const clientEmail = r.get("client_email");
 

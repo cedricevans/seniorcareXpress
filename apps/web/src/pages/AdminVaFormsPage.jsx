@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { FileText, ChevronRight } from 'lucide-react';
+import { FileText, ChevronRight, UserPlus } from 'lucide-react';
 
 const FORMS = [
   {
@@ -48,7 +48,14 @@ const AdminVaFormsPage = () => {
         <FileText className="w-6 h-6 text-primary" />
         <h1 className="text-2xl font-bold">VA Forms</h1>
       </div>
-      <p className="text-slate-500 mb-8">Select a form to enter veteran information and generate the completed PDF.</p>
+      <p className="text-slate-500 mb-6">Select a form to enter veteran information and generate the completed PDF.</p>
+
+      <Link
+        to="/admin/va-intake"
+        className="inline-flex items-center gap-2 mb-8 px-4 py-2.5 rounded-lg bg-primary text-white font-medium text-sm hover:bg-primary/90 transition-colors"
+      >
+        <UserPlus className="w-4 h-4" /> Start VA Intake (create a veteran/claimant profile)
+      </Link>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {FORMS.map((form) => (

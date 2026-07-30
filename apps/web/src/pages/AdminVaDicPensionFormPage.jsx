@@ -7,6 +7,8 @@ import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Loader2, Download, FileText, AlertTriangle } from 'lucide-react';
 import { toast } from 'sonner';
+import { useVaCaseProfile } from '@/hooks/useVaCaseProfile';
+import VaCaseProfilePicker from '@/components/VaCaseProfilePicker';
 
 const TEXT_FIELDS = [
   { section: "Veteran's Identification", keys: [
@@ -61,8 +63,13 @@ const AdminVaDicPensionFormPage = () => {
   const [values, setValues] = useState({});
   const [submitting, setSubmitting] = useState(false);
   const [filledPdfUrl, setFilledPdfUrl] = useState(null);
+  const { cases, loadingCases, importedCaseId, importCase, clearImport } = useVaCaseProfile();
 
   const set = (key, val) => setValues((prev) => ({ ...prev, [key]: val }));
+
+  const handleImportCase = (caseRecord) => {
+    setValues((prev) => ({ ...prev, ...importCase(caseRecord) }));
+  };
 
   const handleSubmit = async () => {
     const hasFirstName = values.claimant_first_name?.trim() || values.veteran_first_name?.trim();
@@ -86,15 +93,21 @@ const AdminVaDicPensionFormPage = () => {
         'veteran_dob_month', 'veteran_dob_day', 'veteran_dob_year',
         'claimant_first_name', 'claimant_last_name', 'claimant_middle_initial',
         'claimant_ssn_first3', 'claimant_ssn_middle2', 'claimant_ssn_last4',
-        'claimant_dob_month', 'claimant_dob_day', 'claimant_dob_year'];
+        'claimant_dob_month', 'claimant_dob_day', 'claimant_dob_year',
+        'mailing_address_street', 'mailing_address_apt', 'mailing_address_city',
+        'mailing_address_state', 'mailing_address_country', 'mailing_address_zip5',
+        'phone_area', 'phone_mid', 'phone_last4', 'email'];
 
-      const vaCase = await pb.collection('va_cases').create({
+      const caseData = {
         applicant_type: 'surviving_spouse',
         first_name: values.claimant_first_name || values.veteran_first_name || '',
         last_name: values.claimant_last_name || values.veteran_last_name || '',
         status: 'intake',
         ...Object.fromEntries(caseFields.map((k) => [k, values[k] || ''])),
-      });
+      };
+      const vaCase = importedCaseId
+        ? await pb.collection('va_cases').update(importedCaseId, caseData)
+        : await pb.collection('va_cases').create(caseData);
 
       const caseFormFields = { ...values };
       caseFields.forEach((k) => delete caseFormFields[k]);
@@ -141,6 +154,14 @@ const AdminVaDicPensionFormPage = () => {
           the blank fields, and saving the file before submission.
         </div>
       </div>
+
+      <VaCaseProfilePicker
+        cases={cases}
+        loadingCases={loadingCases}
+        importedCaseId={importedCaseId}
+        onImport={handleImportCase}
+        onClear={clearImport}
+      />
 
       {TEXT_FIELDS.map(({ section, keys }) => (
         <div key={section} className="mb-8">

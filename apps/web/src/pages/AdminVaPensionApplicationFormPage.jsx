@@ -7,6 +7,8 @@ import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Loader2, Download, FileText, AlertTriangle } from 'lucide-react';
 import { toast } from 'sonner';
+import { useVaCaseProfile } from '@/hooks/useVaCaseProfile';
+import VaCaseProfilePicker from '@/components/VaCaseProfilePicker';
 
 const TEXT_FIELDS = [
   { section: "Veteran's Identification", keys: [
@@ -94,8 +96,13 @@ const AdminVaPensionApplicationFormPage = () => {
   const [values, setValues] = useState({});
   const [submitting, setSubmitting] = useState(false);
   const [filledPdfUrl, setFilledPdfUrl] = useState(null);
+  const { cases, loadingCases, importedCaseId, importCase, clearImport } = useVaCaseProfile();
 
   const set = (key, val) => setValues((prev) => ({ ...prev, [key]: val }));
+
+  const handleImportCase = (caseRecord) => {
+    setValues((prev) => ({ ...prev, ...importCase(caseRecord) }));
+  };
 
   const handleSubmit = async () => {
     if (!values.veteran_first_name?.trim() || !values.veteran_last_name?.trim()) {
@@ -114,15 +121,21 @@ const AdminVaPensionApplicationFormPage = () => {
 
       const caseFields = ['veteran_first_name', 'veteran_last_name', 'veteran_middle_initial',
         'veteran_ssn_first3', 'veteran_ssn_middle2', 'veteran_ssn_last4', 'va_file_number', 'veteran_service_number',
-        'veteran_dob_month', 'veteran_dob_day', 'veteran_dob_year'];
+        'veteran_dob_month', 'veteran_dob_day', 'veteran_dob_year',
+        'mailing_address_street', 'mailing_address_apt', 'mailing_address_city',
+        'mailing_address_state', 'mailing_address_country', 'mailing_address_zip5',
+        'phone_area', 'phone_mid', 'phone_last4'];
 
-      const vaCase = await pb.collection('va_cases').create({
+      const caseData = {
         applicant_type: 'veteran',
         first_name: values.veteran_first_name || '',
         last_name: values.veteran_last_name || '',
         status: 'intake',
         ...Object.fromEntries(caseFields.map((k) => [k, values[k] || ''])),
-      });
+      };
+      const vaCase = importedCaseId
+        ? await pb.collection('va_cases').update(importedCaseId, caseData)
+        : await pb.collection('va_cases').create(caseData);
 
       const caseFormFields = { ...values };
       caseFields.forEach((k) => delete caseFormFields[k]);
@@ -169,6 +182,14 @@ const AdminVaPensionApplicationFormPage = () => {
           directly into the blank fields, the same as filling out any PDF form by hand.
         </div>
       </div>
+
+      <VaCaseProfilePicker
+        cases={cases}
+        loadingCases={loadingCases}
+        importedCaseId={importedCaseId}
+        onImport={handleImportCase}
+        onClear={clearImport}
+      />
 
       {TEXT_FIELDS.map(({ section, keys }) => (
         <div key={section} className="mb-8">
