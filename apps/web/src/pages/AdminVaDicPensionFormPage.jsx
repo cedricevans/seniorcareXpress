@@ -65,6 +65,12 @@ const AdminVaDicPensionFormPage = () => {
   const set = (key, val) => setValues((prev) => ({ ...prev, [key]: val }));
 
   const handleSubmit = async () => {
+    const hasFirstName = values.claimant_first_name?.trim() || values.veteran_first_name?.trim();
+    const hasLastName = values.claimant_last_name?.trim() || values.veteran_last_name?.trim();
+    if (!hasFirstName || !hasLastName) {
+      toast.error('Claimant or Veteran First Name and Last Name are required.');
+      return;
+    }
     setSubmitting(true);
     setFilledPdfUrl(null);
     try {

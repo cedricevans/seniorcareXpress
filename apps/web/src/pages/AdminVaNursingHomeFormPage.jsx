@@ -71,6 +71,10 @@ const AdminVaNursingHomeFormPage = () => {
   const set = (key, val) => setValues((prev) => ({ ...prev, [key]: val }));
 
   const handleSubmit = async () => {
+    if (!values.veteran_first_name?.trim() || !values.veteran_last_name?.trim()) {
+      toast.error('Veteran First Name and Last Name are required.');
+      return;
+    }
     setSubmitting(true);
     setFilledPdfUrl(null);
     try {

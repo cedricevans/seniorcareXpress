@@ -123,6 +123,10 @@ const AdminVaExpenseReportFormPage = () => {
   };
 
   const handleSubmit = async () => {
+    if (!identity.veteran_first_name?.trim() || !identity.veteran_last_name?.trim()) {
+      toast.error('Veteran First Name and Last Name are required.');
+      return;
+    }
     setSubmitting(true);
     setFilledPdfUrl(null);
     try {
