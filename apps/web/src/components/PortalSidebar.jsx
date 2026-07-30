@@ -27,6 +27,7 @@ const PortalSidebar = ({ isOpen, onClose }) => {
       case 'admin':
         return [
           { name: 'Dashboard', path: '/admin', icon: LayoutDashboard },
+          { name: 'VA Forms', path: '/admin/va-forms', icon: FileText },
           { name: 'Patients', path: '/admin/patients', icon: Users },
           { name: 'Caregivers', path: '/admin/caregivers', icon: Activity },
           { name: 'Appointments', path: '/admin/appointments', icon: Calendar },
@@ -37,7 +38,6 @@ const PortalSidebar = ({ isOpen, onClose }) => {
           { name: 'Analytics', path: '/admin/analytics', icon: PieChart },
           { name: 'Users', path: '/admin/users', icon: UserPlus },
           { name: 'Service Agreements', path: '/admin/service-agreements', icon: FileSignature },
-          { name: 'VA Forms', path: '/admin/va-forms', icon: FileText },
         ];
       case 'caregiver':
         return [

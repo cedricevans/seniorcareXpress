@@ -27,6 +27,18 @@ const FORMS = [
     description: 'Report unreimbursed medical, in-home care, and mileage expenses',
     path: '/admin/va-forms/21p-8416',
   },
+  {
+    number: '21P-527EZ',
+    title: 'Application for Veterans Pension',
+    description: 'Sections I-IX available (identity, service, marital status, children, income summary)',
+    path: '/admin/va-forms/21p-527ez',
+  },
+  {
+    number: '21P-534EZ',
+    title: 'Application for D.I.C., Survivors Pension, and/or Accrued Benefits',
+    description: 'Sections I-II available (identity, contact info, what you\'re claiming). Remaining sections must be completed manually.',
+    path: '/admin/va-forms/21p-534ez',
+  },
 ];
 
 const AdminVaFormsPage = () => {
