@@ -26,7 +26,7 @@ const AdminDashboard = () => {
           pb.collection('users').getList(1, 1, { filter: 'role="caregiver"', $autoCancel: false }),
           pb.collection('appointments').getList(1, 1, { filter: `appointment_date >= "${today}"`, $autoCancel: false }),
           pb.collection('care_updates').getList(1, 1, { $autoCancel: false }),
-          pb.collection('care_updates').getList(1, 8, { sort: '-created', expand: 'caregiver_id,patient_id', $autoCancel: false }),
+          pb.collection('care_updates').getList(1, 8, { expand: 'caregiver_id,patient_id', $autoCancel: false }),
           pb.collection('patients').getFullList({ $autoCancel: false }),
           pb.collection('patient_assignments').getFullList({ filter: 'status="active"', $autoCancel: false })
         ]);
