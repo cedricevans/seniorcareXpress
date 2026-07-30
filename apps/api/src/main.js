@@ -14,7 +14,8 @@ const app = express();
 const server = http.createServer(app);
 
 process.on('uncaughtException', (error) => {
-  logger.error('Uncaught exception:', error);
+  logger.fatal('Uncaught exception, exiting:', error);
+  process.exit(1);
 });
 
 process.on('unhandledRejection', (reason, promise) => {
