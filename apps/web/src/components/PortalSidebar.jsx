@@ -29,6 +29,7 @@ const PortalSidebar = ({ isOpen, onClose }) => {
           { name: 'Dashboard', path: '/admin', icon: LayoutDashboard },
           { name: 'VA Intake', path: '/admin/va-intake', icon: UserPlus },
           { name: 'VA Forms', path: '/admin/va-forms', icon: FileText },
+          { name: 'VA Forms Library', path: '/admin/va-forms-library', icon: FileText },
           { name: 'Patients', path: '/admin/patients', icon: Users },
           { name: 'Caregivers', path: '/admin/caregivers', icon: Activity },
           { name: 'Appointments', path: '/admin/appointments', icon: Calendar },

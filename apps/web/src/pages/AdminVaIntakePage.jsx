@@ -194,10 +194,15 @@ const AdminVaIntakePage = () => {
                   <TableCell>{p.va_file_number || '—'}</TableCell>
                   <TableCell>{p.phone_area ? `(${p.phone_area}) ${p.phone_mid}-${p.phone_last4}` : '—'}</TableCell>
                   <TableCell className="capitalize">{p.status || '—'}</TableCell>
-                  <TableCell className="text-right">
+                  <TableCell className="text-right space-x-2">
                     <Button variant="outline" size="sm" onClick={() => startEdit(p)}>
                       <Pencil className="w-3.5 h-3.5 mr-1.5" /> Edit
                     </Button>
+                    <Link to={`/admin/va-cases/${p.id}`}>
+                      <Button variant="outline" size="sm">
+                        View Case
+                      </Button>
+                    </Link>
                   </TableCell>
                 </TableRow>
               ))}
