@@ -11,6 +11,7 @@ import {
 } from '@/components/ui/alert-dialog';
 import { Loader2, UserPlus, FileText, Pencil, Trash2, X, ChevronRight, CheckCircle2 } from 'lucide-react';
 import { toast } from 'sonner';
+import { splitSsn, joinSsn } from '@/lib/vaFieldSplit';
 
 const NEXT_FORMS = [
   { number: '21-0779', label: 'Nursing Home Info', path: '/admin/va-forms/21-0779' },
@@ -26,9 +27,7 @@ const FIELDS = [
     ['veteran_first_name', 'First Name'],
     ['veteran_last_name', 'Last Name'],
     ['veteran_middle_initial', 'Middle Initial'],
-    ['veteran_ssn_first3', 'SSN — first 3'],
-    ['veteran_ssn_middle2', 'SSN — middle 2'],
-    ['veteran_ssn_last4', 'SSN — last 4'],
+    ['veteran_ssn', 'SSN'],
     ['va_file_number', 'VA File Number'],
     ['veteran_service_number', 'Service Number'],
     ['veteran_dob_month', 'DOB — Month'],
@@ -39,9 +38,7 @@ const FIELDS = [
     ['claimant_first_name', 'First Name'],
     ['claimant_last_name', 'Last Name'],
     ['claimant_middle_initial', 'Middle Initial'],
-    ['claimant_ssn_first3', 'SSN — first 3'],
-    ['claimant_ssn_middle2', 'SSN — middle 2'],
-    ['claimant_ssn_last4', 'SSN — last 4'],
+    ['claimant_ssn', 'SSN'],
     ['claimant_va_file_number', 'VA File Number (if applicable)'],
     ['claimant_dob_month', 'DOB — Month'],
     ['claimant_dob_day', 'DOB — Day'],
@@ -101,7 +98,11 @@ const AdminVaIntakePage = () => {
 
   const startEdit = (profile) => {
     setEditingId(profile.id);
-    setValues(profile);
+    setValues({
+      ...profile,
+      veteran_ssn: joinSsn(profile.veteran_ssn_first3, profile.veteran_ssn_middle2, profile.veteran_ssn_last4),
+      claimant_ssn: joinSsn(profile.claimant_ssn_first3, profile.claimant_ssn_middle2, profile.claimant_ssn_last4),
+    });
     setShowForm(true);
     setJustSaved(null);
   };
@@ -119,13 +120,19 @@ const AdminVaIntakePage = () => {
     }
     setSaving(true);
     try {
+      const veteranSsn = splitSsn(values.veteran_ssn);
+      const claimantSsn = splitSsn(values.claimant_ssn);
       const payload = {
         applicant_type: values.applicant_type || 'veteran',
         first_name: values.veteran_first_name || '',
         last_name: values.veteran_last_name || '',
         status: values.status || 'intake',
         ...values,
+        veteran_ssn_first3: veteranSsn.first3, veteran_ssn_middle2: veteranSsn.middle2, veteran_ssn_last4: veteranSsn.last4,
+        claimant_ssn_first3: claimantSsn.first3, claimant_ssn_middle2: claimantSsn.middle2, claimant_ssn_last4: claimantSsn.last4,
       };
+      delete payload.veteran_ssn;
+      delete payload.claimant_ssn;
       let saved;
       if (editingId) {
         saved = await pb.collection('va_cases').update(editingId, payload);

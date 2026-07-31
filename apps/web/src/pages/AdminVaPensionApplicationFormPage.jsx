@@ -9,11 +9,12 @@ import { Loader2, Download, FileText, AlertTriangle } from 'lucide-react';
 import { toast } from 'sonner';
 import { useVaCaseProfile } from '@/hooks/useVaCaseProfile';
 import VaCaseProfilePicker from '@/components/VaCaseProfilePicker';
+import { splitSsn, joinSsn } from '@/lib/vaFieldSplit';
 
 const TEXT_FIELDS = [
   { section: "Veteran's Identification", keys: [
     ['veteran_first_name', 'First Name'], ['veteran_last_name', 'Last Name'], ['veteran_middle_initial', 'Middle Initial'],
-    ['veteran_ssn_first3', 'SSN — first 3'], ['veteran_ssn_middle2', 'SSN — middle 2'], ['veteran_ssn_last4', 'SSN — last 4'],
+    ['veteran_ssn', 'SSN'],
     ['veteran_dob_month', 'DOB — Month'], ['veteran_dob_day', 'DOB — Day'], ['veteran_dob_year', 'DOB — Year'],
     ['va_file_number', 'VA File Number'], ['veteran_service_number', 'Service Number'],
   ]},
@@ -36,14 +37,14 @@ const TEXT_FIELDS = [
   { section: 'Spouse Information (Section VI)', keys: [
     ['spouse_first_name', 'Spouse First Name'], ['spouse_last_name', 'Spouse Last Name'], ['spouse_middle_initial', 'Spouse Middle Initial'],
     ['spouse_dob_month', 'Spouse DOB — Month'], ['spouse_dob_day', 'Spouse DOB — Day'], ['spouse_dob_year', 'Spouse DOB — Year'],
-    ['spouse_ssn_first3', 'Spouse SSN — first 3'], ['spouse_ssn_middle2', 'Spouse SSN — middle 2'], ['spouse_ssn_last4', 'Spouse SSN — last 4'],
+    ['spouse_ssn', 'Spouse SSN'],
     ['date_of_marriage_month', 'Marriage Date — Month'], ['date_of_marriage_day', 'Marriage Date — Day'], ['date_of_marriage_year', 'Marriage Date — Year'],
     ['place_of_marriage', 'Place of Marriage'], ['spouse_va_file_number', "Spouse's VA File Number"],
   ]},
   { section: 'Dependent Children — Child 1 (Section VIII)', keys: [
     ['num_dependent_children', 'How Many Dependent Children Live With You'],
     ['child1_first_name', 'First Name'], ['child1_last_name', 'Last Name'], ['child1_middle_initial', 'Middle Initial'],
-    ['child1_ssn_first3', 'SSN — first 3'], ['child1_ssn_middle2', 'SSN — middle 2'], ['child1_ssn_last4', 'SSN — last 4'],
+    ['child1_ssn', 'SSN'],
     ['child1_dob_month', 'DOB — Month'], ['child1_dob_day', 'DOB — Day'], ['child1_dob_year', 'DOB — Year'],
     ['child1_place_of_birth', 'Place of Birth'],
   ]},
@@ -101,7 +102,9 @@ const AdminVaPensionApplicationFormPage = () => {
   const set = (key, val) => setValues((prev) => ({ ...prev, [key]: val }));
 
   const handleImportCase = (caseRecord) => {
-    setValues((prev) => ({ ...prev, ...importCase(caseRecord) }));
+    const imported = importCase(caseRecord);
+    imported.veteran_ssn = joinSsn(caseRecord.veteran_ssn_first3, caseRecord.veteran_ssn_middle2, caseRecord.veteran_ssn_last4);
+    setValues((prev) => ({ ...prev, ...imported }));
   };
 
   useEffect(() => {
@@ -124,6 +127,10 @@ const AdminVaPensionApplicationFormPage = () => {
         return;
       }
 
+      const veteranSsn = splitSsn(values.veteran_ssn);
+      const spouseSsn = splitSsn(values.spouse_ssn);
+      const child1Ssn = splitSsn(values.child1_ssn);
+
       const caseFields = ['veteran_first_name', 'veteran_last_name', 'veteran_middle_initial',
         'veteran_ssn_first3', 'veteran_ssn_middle2', 'veteran_ssn_last4', 'va_file_number', 'veteran_service_number',
         'veteran_dob_month', 'veteran_dob_day', 'veteran_dob_year',
@@ -131,18 +138,28 @@ const AdminVaPensionApplicationFormPage = () => {
         'mailing_address_state', 'mailing_address_country', 'mailing_address_zip5',
         'phone_area', 'phone_mid', 'phone_last4'];
 
+      const valuesWithSsnParts = {
+        ...values,
+        veteran_ssn_first3: veteranSsn.first3, veteran_ssn_middle2: veteranSsn.middle2, veteran_ssn_last4: veteranSsn.last4,
+        spouse_ssn_first3: spouseSsn.first3, spouse_ssn_middle2: spouseSsn.middle2, spouse_ssn_last4: spouseSsn.last4,
+        child1_ssn_first3: child1Ssn.first3, child1_ssn_middle2: child1Ssn.middle2, child1_ssn_last4: child1Ssn.last4,
+      };
+
       const caseData = {
         applicant_type: 'veteran',
         first_name: values.veteran_first_name || '',
         last_name: values.veteran_last_name || '',
         status: 'intake',
-        ...Object.fromEntries(caseFields.map((k) => [k, values[k] || ''])),
+        ...Object.fromEntries(caseFields.map((k) => [k, valuesWithSsnParts[k] || ''])),
       };
       const vaCase = importedCaseId
         ? await pb.collection('va_cases').update(importedCaseId, caseData)
         : await pb.collection('va_cases').create(caseData);
 
-      const caseFormFields = { ...values };
+      const caseFormFields = { ...valuesWithSsnParts };
+      delete caseFormFields.veteran_ssn;
+      delete caseFormFields.spouse_ssn;
+      delete caseFormFields.child1_ssn;
       caseFields.forEach((k) => delete caseFormFields[k]);
 
       const caseForm = await pb.collection('va_case_forms').create({

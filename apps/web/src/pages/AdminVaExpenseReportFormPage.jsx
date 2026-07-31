@@ -18,6 +18,20 @@ const SECTIONS = {
   mileage: { label: 'Mileage', mainSlots: ['a', 'b', 'c', 'd'], addendumPrefix: 'addendum_c_row', addendumMax: 8 },
 };
 
+// The real VA PDF has separate comb-style boxes for thousands/dollars/cents.
+// Staff type one normal amount (e.g. "1,234.56") into a single field; this
+// splits it into those three raw PDF-field values right before submit.
+function splitAmount(amountStr) {
+  const cleaned = String(amountStr ?? '').replace(/[^0-9.]/g, '');
+  if (!cleaned) return { thousands: '', dollars: '', cents: '' };
+  const [wholePart, centsPart = ''] = cleaned.split('.');
+  const whole = wholePart.replace(/^0+(?=\d)/, '');
+  const thousands = whole.length > 3 ? whole.slice(0, whole.length - 3) : '';
+  const dollars = whole.length > 3 ? whole.slice(whole.length - 3) : whole;
+  const cents = centsPart.padEnd(2, '0').slice(0, 2);
+  return { thousands, dollars, cents };
+}
+
 function slotFieldPrefix(sectionKey, slotIndex) {
   const section = SECTIONS[sectionKey];
   if (slotIndex < section.mainSlots.length) {
@@ -32,18 +46,18 @@ const IN_HOME_FIELDS = [
   ['provider_name', 'Provider Name'],
   ['start_month', 'Start — Month'], ['start_day', 'Start — Day'], ['start_year', 'Start — Year'],
   ['end_month', 'End — Month'], ['end_day', 'End — Day'], ['end_year', 'End — Year'],
-  ['amount_thousands', 'Amount — Thousands'], ['amount_dollars', 'Amount — Dollars'], ['amount_cents', 'Amount — Cents'],
+  ['amount', 'Amount ($)'],
   ['rate_per_hour', 'Rate (per hour, if in-home)'], ['hours_per_week', 'Hours/Week (if in-home)'],
 ];
 const OTHER_FIELDS = [
   ['date_month', 'Date Paid — Month'], ['date_day', 'Date Paid — Day'], ['date_year', 'Date Paid — Year'],
-  ['amount_thousands', 'Amount — Thousands'], ['amount_dollars', 'Amount — Dollars'], ['amount_cents', 'Amount — Cents'],
+  ['amount', 'Amount ($)'],
   ['paid_to', 'Paid To'], ['purpose', 'Purpose'],
 ];
 const MILEAGE_FIELDS = [
   ['location', 'Location Traveled To'], ['total_miles', 'Total Miles'],
   ['date_month', 'Date — Month'], ['date_day', 'Date — Day'], ['date_year', 'Date — Year'],
-  ['amount_reimbursed', 'Amount Reimbursed ($)'], ['amount_cents', 'Cents'],
+  ['amount', 'Amount Reimbursed ($)'],
 ];
 
 const WHOSE_OPTIONS = { in_home: ['veteran', 'spouse', 'child', 'other'], other: ['veteran', 'spouse', 'child', 'other'], mileage: ['veteran', 'spouse', 'child'] };
@@ -184,6 +198,20 @@ const AdminVaExpenseReportFormPage = () => {
         sectionRows.forEach((rowData, idx) => {
           const prefix = slotFieldPrefix(sectionKey, idx);
           Object.entries(rowData).forEach(([key, value]) => {
+            if (key === 'amount') {
+              const { thousands, dollars, cents } = splitAmount(value);
+              if (sectionKey === 'mileage') {
+                // This section's PDF field holds the whole dollar amount as one
+                // string (no separate thousands box), plus a separate cents box.
+                expenseReportData[`${prefix}_amount_reimbursed`] = `${thousands}${dollars}`;
+                expenseReportData[`${prefix}_amount_cents`] = cents;
+              } else {
+                expenseReportData[`${prefix}_amount_thousands`] = thousands;
+                expenseReportData[`${prefix}_amount_dollars`] = dollars;
+                expenseReportData[`${prefix}_amount_cents`] = cents;
+              }
+              return;
+            }
             expenseReportData[`${prefix}_${key}`] = value;
           });
         });

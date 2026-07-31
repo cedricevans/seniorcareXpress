@@ -9,15 +9,14 @@ import { Loader2, Download, FileText } from 'lucide-react';
 import { toast } from 'sonner';
 import { useVaCaseProfile } from '@/hooks/useVaCaseProfile';
 import VaCaseProfilePicker from '@/components/VaCaseProfilePicker';
+import { splitSsn, joinSsn } from '@/lib/vaFieldSplit';
 
 const FIELDS = [
   { section: "Veteran's Identification", keys: [
     ['veteran_first_name', 'First Name'],
     ['veteran_last_name', 'Last Name'],
     ['veteran_middle_initial', 'Middle Initial'],
-    ['veteran_ssn_first3', 'SSN — first 3'],
-    ['veteran_ssn_middle2', 'SSN — middle 2'],
-    ['veteran_ssn_last4', 'SSN — last 4'],
+    ['veteran_ssn', 'SSN'],
     ['va_file_number', 'VA File Number (if known)'],
     ['veteran_dob_month', 'Date of Birth — Month'],
     ['veteran_dob_day', 'Date of Birth — Day'],
@@ -79,7 +78,9 @@ const AdminVaAuthorizationFormPage = () => {
   const set = (key, val) => setValues((prev) => ({ ...prev, [key]: val }));
 
   const handleImportCase = (caseRecord) => {
-    setValues((prev) => ({ ...prev, ...importCase(caseRecord) }));
+    const imported = importCase(caseRecord);
+    imported.veteran_ssn = joinSsn(caseRecord.veteran_ssn_first3, caseRecord.veteran_ssn_middle2, caseRecord.veteran_ssn_last4);
+    setValues((prev) => ({ ...prev, ...imported }));
   };
 
   useEffect(() => {
@@ -102,22 +103,30 @@ const AdminVaAuthorizationFormPage = () => {
         return;
       }
 
+      const veteranSsn = splitSsn(values.veteran_ssn);
+
       const caseFields = ['veteran_first_name', 'veteran_last_name', 'veteran_middle_initial',
         'veteran_ssn_first3', 'veteran_ssn_middle2', 'veteran_ssn_last4', 'va_file_number',
         'veteran_dob_month', 'veteran_dob_day', 'veteran_dob_year', 'veteran_service_number'];
+
+      const valuesWithSsnParts = {
+        ...values,
+        veteran_ssn_first3: veteranSsn.first3, veteran_ssn_middle2: veteranSsn.middle2, veteran_ssn_last4: veteranSsn.last4,
+      };
 
       const caseData = {
         applicant_type: 'veteran',
         first_name: values.veteran_first_name || '',
         last_name: values.veteran_last_name || '',
         status: 'intake',
-        ...Object.fromEntries(caseFields.map((k) => [k, values[k] || ''])),
+        ...Object.fromEntries(caseFields.map((k) => [k, valuesWithSsnParts[k] || ''])),
       };
       const vaCase = importedCaseId
         ? await pb.collection('va_cases').update(importedCaseId, caseData)
         : await pb.collection('va_cases').create(caseData);
 
-      const caseFormFields = { ...values };
+      const caseFormFields = { ...valuesWithSsnParts };
+      delete caseFormFields.veteran_ssn;
       caseFields.forEach((k) => delete caseFormFields[k]);
 
       const caseForm = await pb.collection('va_case_forms').create({
