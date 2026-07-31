@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import pb from '@/lib/pocketbaseClient';
 import apiServerClient from '@/lib/apiServerClient';
 import { Button } from '@/components/ui/button';
@@ -103,7 +103,7 @@ const AdminVaExpenseReportFormPage = () => {
   const [rows, setRows] = useState({ in_home: [], other: [], mileage: [] });
   const [submitting, setSubmitting] = useState(false);
   const [filledPdfUrl, setFilledPdfUrl] = useState(null);
-  const { cases, loadingCases, importedCaseId, importCase, clearImport } = useVaCaseProfile();
+  const { cases, loadingCases, importedCaseId, importCase, clearImport, autoImportCase } = useVaCaseProfile();
 
   const setId = (key, val) => setIdentity((prev) => ({ ...prev, [key]: val }));
 
@@ -120,6 +120,11 @@ const AdminVaExpenseReportFormPage = () => {
       mailing_address_zip: caseRecord.mailing_address_zip5 || prev.mailing_address_zip,
     }));
   };
+
+  useEffect(() => {
+    if (autoImportCase) handleImportCase(autoImportCase);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [autoImportCase]);
 
   const addRow = (sectionKey) => {
     const section = SECTIONS[sectionKey];

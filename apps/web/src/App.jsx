@@ -39,7 +39,6 @@ import AdminServiceAgreementsPage from './pages/AdminServiceAgreementsPage.jsx';
 import AdminVaFormsPage from './pages/AdminVaFormsPage.jsx';
 import AdminVaIntakePage from './pages/AdminVaIntakePage.jsx';
 import AdminVaCaseDetailPage from './pages/AdminVaCaseDetailPage.jsx';
-import AdminVaFormsLibraryPage from './pages/AdminVaFormsLibraryPage.jsx';
 import AdminVaNursingHomeFormPage from './pages/AdminVaNursingHomeFormPage.jsx';
 import AdminVaAuthorizationFormPage from './pages/AdminVaAuthorizationFormPage.jsx';
 import AdminVaExamFormPage from './pages/AdminVaExamFormPage.jsx';
@@ -88,7 +87,6 @@ function App() {
           <Route path="/admin/service-agreements" element={<ProtectedRoute allowedRoles={['admin']}><PortalLayout><AdminServiceAgreementsPage /></PortalLayout></ProtectedRoute>} />
           <Route path="/admin/va-intake" element={<ProtectedRoute allowedRoles={['admin']}><PortalLayout><AdminVaIntakePage /></PortalLayout></ProtectedRoute>} />
           <Route path="/admin/va-cases/:caseId" element={<ProtectedRoute allowedRoles={['admin']}><PortalLayout><AdminVaCaseDetailPage /></PortalLayout></ProtectedRoute>} />
-          <Route path="/admin/va-forms-library" element={<ProtectedRoute allowedRoles={['admin']}><PortalLayout><AdminVaFormsLibraryPage /></PortalLayout></ProtectedRoute>} />
           <Route path="/admin/va-forms" element={<ProtectedRoute allowedRoles={['admin']}><PortalLayout><AdminVaFormsPage /></PortalLayout></ProtectedRoute>} />
           <Route path="/admin/va-forms/21-0779" element={<ProtectedRoute allowedRoles={['admin']}><PortalLayout><AdminVaNursingHomeFormPage /></PortalLayout></ProtectedRoute>} />
           <Route path="/admin/va-forms/21-0845" element={<ProtectedRoute allowedRoles={['admin']}><PortalLayout><AdminVaAuthorizationFormPage /></PortalLayout></ProtectedRoute>} />

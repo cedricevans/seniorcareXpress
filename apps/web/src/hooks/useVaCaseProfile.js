@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import pb from '@/lib/pocketbaseClient';
 
 // Fields on va_cases that represent reusable identity data, shared across every
@@ -21,10 +22,17 @@ const CASE_IDENTITY_FIELDS = [
 // fields it cares about (`caseFields`) — this hook only handles listing
 // va_cases records, loading one into a values object, and knowing whether the
 // current values came from an import (so submit can update instead of create).
+//
+// If the page is opened with ?profile=<va_cases id> (e.g. from the VA Intake
+// "which form does this person need?" panel), `autoImportCase` resolves to
+// that profile once it loads, so the caller can auto-fill without staff
+// having to reselect it from the picker dropdown.
 export function useVaCaseProfile() {
   const [cases, setCases] = useState([]);
   const [loadingCases, setLoadingCases] = useState(true);
   const [importedCaseId, setImportedCaseId] = useState(null);
+  const [searchParams] = useSearchParams();
+  const autoImportRequestedId = searchParams.get('profile');
 
   useEffect(() => {
     let cancelled = false;
@@ -52,7 +60,11 @@ export function useVaCaseProfile() {
 
   const clearImport = useCallback(() => setImportedCaseId(null), []);
 
-  return { cases, loadingCases, importedCaseId, importCase, clearImport };
+  const autoImportCase = !importedCaseId && autoImportRequestedId
+    ? cases.find((c) => c.id === autoImportRequestedId) || null
+    : null;
+
+  return { cases, loadingCases, importedCaseId, importCase, clearImport, autoImportCase };
 }
 
 export { CASE_IDENTITY_FIELDS };

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import pb from '@/lib/pocketbaseClient';
 import apiServerClient from '@/lib/apiServerClient';
 import { Button } from '@/components/ui/button';
@@ -74,13 +74,18 @@ const AdminVaAuthorizationFormPage = () => {
   const [values, setValues] = useState({ security_question_first_pet: true });
   const [submitting, setSubmitting] = useState(false);
   const [filledPdfUrl, setFilledPdfUrl] = useState(null);
-  const { cases, loadingCases, importedCaseId, importCase, clearImport } = useVaCaseProfile();
+  const { cases, loadingCases, importedCaseId, importCase, clearImport, autoImportCase } = useVaCaseProfile();
 
   const set = (key, val) => setValues((prev) => ({ ...prev, [key]: val }));
 
   const handleImportCase = (caseRecord) => {
     setValues((prev) => ({ ...prev, ...importCase(caseRecord) }));
   };
+
+  useEffect(() => {
+    if (autoImportCase) handleImportCase(autoImportCase);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [autoImportCase]);
 
   const handleSubmit = async () => {
     if (!values.veteran_first_name?.trim() || !values.veteran_last_name?.trim()) {

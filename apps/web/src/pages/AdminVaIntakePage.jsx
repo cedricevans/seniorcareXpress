@@ -5,8 +5,17 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Loader2, UserPlus, FileText, Pencil, X } from 'lucide-react';
+import { Loader2, UserPlus, FileText, Pencil, X, ChevronRight, CheckCircle2 } from 'lucide-react';
 import { toast } from 'sonner';
+
+const NEXT_FORMS = [
+  { number: '21-0779', label: 'Nursing Home Info', path: '/admin/va-forms/21-0779' },
+  { number: '21-0845', label: 'Authorization to Disclose', path: '/admin/va-forms/21-0845' },
+  { number: '21-2680', label: 'Aid & Attendance Exam', path: '/admin/va-forms/21-2680' },
+  { number: '21P-8416', label: 'Medical Expense Report', path: '/admin/va-forms/21p-8416' },
+  { number: '21P-527EZ', label: 'Veterans Pension', path: '/admin/va-forms/21p-527ez' },
+  { number: '21P-534EZ', label: 'D.I.C. / Survivors Pension', path: '/admin/va-forms/21p-534ez' },
+];
 
 const FIELDS = [
   { section: "Veteran's Identification", keys: [
@@ -57,6 +66,7 @@ const AdminVaIntakePage = () => {
   const [editingId, setEditingId] = useState(null);
   const [saving, setSaving] = useState(false);
   const [showForm, setShowForm] = useState(false);
+  const [justSaved, setJustSaved] = useState(null);
 
   const set = (key, val) => setValues((prev) => ({ ...prev, [key]: val }));
 
@@ -79,12 +89,14 @@ const AdminVaIntakePage = () => {
     setEditingId(null);
     setValues(emptyForm());
     setShowForm(true);
+    setJustSaved(null);
   };
 
   const startEdit = (profile) => {
     setEditingId(profile.id);
     setValues(profile);
     setShowForm(true);
+    setJustSaved(null);
   };
 
   const cancelForm = () => {
@@ -107,14 +119,18 @@ const AdminVaIntakePage = () => {
         status: values.status || 'intake',
         ...values,
       };
+      let saved;
       if (editingId) {
-        await pb.collection('va_cases').update(editingId, payload);
+        saved = await pb.collection('va_cases').update(editingId, payload);
         toast.success('Profile updated');
       } else {
-        await pb.collection('va_cases').create(payload);
+        saved = await pb.collection('va_cases').create(payload);
         toast.success('Profile created');
       }
-      cancelForm();
+      setShowForm(false);
+      setEditingId(null);
+      setValues(emptyForm());
+      setJustSaved(saved);
       await loadProfiles();
     } catch (err) {
       console.error(err);
@@ -167,6 +183,43 @@ const AdminVaIntakePage = () => {
           <Button onClick={handleSave} disabled={saving}>
             {saving ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Saving...</> : 'Save Profile'}
           </Button>
+        </div>
+      )}
+
+      {justSaved && (
+        <div className="border border-primary/20 rounded-xl p-6 mb-10 bg-primary/5">
+          <div className="flex items-start justify-between gap-4 mb-5">
+            <div className="flex items-start gap-3">
+              <CheckCircle2 className="w-5 h-5 text-primary shrink-0 mt-0.5" />
+              <div>
+                <h2 className="font-semibold text-slate-900">
+                  Profile saved for {justSaved.first_name} {justSaved.last_name}
+                </h2>
+                <p className="text-sm text-slate-500 mt-0.5">Which form does this person need?</p>
+              </div>
+            </div>
+            <button type="button" onClick={() => setJustSaved(null)} className="text-slate-400 hover:text-slate-600 shrink-0">
+              <X className="w-4 h-4" />
+            </button>
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-4">
+            {NEXT_FORMS.map((f) => (
+              <Link
+                key={f.number}
+                to={`${f.path}?profile=${justSaved.id}`}
+                className="flex items-center justify-between gap-2 rounded-lg border border-slate-200 bg-white px-4 py-3 text-sm hover:border-primary hover:shadow-sm transition-all"
+              >
+                <div>
+                  <div className="text-xs font-semibold text-primary">{f.number}</div>
+                  <div className="text-slate-700">{f.label}</div>
+                </div>
+                <ChevronRight className="w-4 h-4 text-slate-300 shrink-0" />
+              </Link>
+            ))}
+          </div>
+          <Link to={`/admin/va-cases/${justSaved.id}`} className="text-sm font-medium text-primary hover:underline">
+            Or go to this person's case page →
+          </Link>
         </div>
       )}
 
