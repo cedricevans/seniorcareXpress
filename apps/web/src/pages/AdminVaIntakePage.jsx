@@ -5,7 +5,11 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Loader2, UserPlus, FileText, Pencil, X, ChevronRight, CheckCircle2 } from 'lucide-react';
+import {
+  AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
+  AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
+import { Loader2, UserPlus, FileText, Pencil, Trash2, X, ChevronRight, CheckCircle2 } from 'lucide-react';
 import { toast } from 'sonner';
 
 const NEXT_FORMS = [
@@ -67,6 +71,9 @@ const AdminVaIntakePage = () => {
   const [saving, setSaving] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [justSaved, setJustSaved] = useState(null);
+  const [deleteTarget, setDeleteTarget] = useState(null);
+  const [deleteFormCount, setDeleteFormCount] = useState(0);
+  const [deleting, setDeleting] = useState(false);
 
   const set = (key, val) => setValues((prev) => ({ ...prev, [key]: val }));
 
@@ -137,6 +144,34 @@ const AdminVaIntakePage = () => {
       toast.error('Something went wrong saving the profile');
     } finally {
       setSaving(false);
+    }
+  };
+
+  const confirmDelete = async (profile) => {
+    setDeleteTarget(profile);
+    try {
+      const linkedForms = await pb.collection('va_case_forms').getFullList({ filter: `case_id = "${profile.id}"` });
+      setDeleteFormCount(linkedForms.length);
+    } catch (err) {
+      console.error('Failed to check linked forms', err);
+      setDeleteFormCount(0);
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!deleteTarget) return;
+    setDeleting(true);
+    try {
+      await pb.collection('va_cases').delete(deleteTarget.id);
+      toast.success('Profile deleted');
+      if (justSaved?.id === deleteTarget.id) setJustSaved(null);
+      setDeleteTarget(null);
+      await loadProfiles();
+    } catch (err) {
+      console.error(err);
+      toast.error('Could not delete profile');
+    } finally {
+      setDeleting(false);
     }
   };
 
@@ -256,6 +291,9 @@ const AdminVaIntakePage = () => {
                         View Case
                       </Button>
                     </Link>
+                    <Button variant="outline" size="sm" onClick={() => confirmDelete(p)} className="text-red-500 hover:text-red-600 hover:bg-red-50">
+                      <Trash2 className="w-3.5 h-3.5 mr-1.5" /> Delete
+                    </Button>
                   </TableCell>
                 </TableRow>
               ))}
@@ -269,6 +307,38 @@ const AdminVaIntakePage = () => {
           <FileText className="w-4 h-4" /> Go to VA Forms to select a form for one of these profiles
         </Link>
       </div>
+
+      <AlertDialog open={!!deleteTarget} onOpenChange={(open) => !open && setDeleteTarget(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete this profile?</AlertDialogTitle>
+            <AlertDialogDescription>
+              {deleteTarget && (
+                <>
+                  This permanently deletes the profile for <strong>{deleteTarget.first_name} {deleteTarget.last_name}</strong>.
+                  {deleteFormCount > 0 && (
+                    <>
+                      {' '}It also deletes {deleteFormCount} form{deleteFormCount === 1 ? '' : 's'} started for this
+                      person, including any generated PDFs. This cannot be undone.
+                    </>
+                  )}
+                  {deleteFormCount === 0 && ' This cannot be undone.'}
+                </>
+              )}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={deleting}>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleDelete}
+              disabled={deleting}
+              className="bg-red-500 hover:bg-red-600 focus:ring-red-500"
+            >
+              {deleting ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Deleting...</> : 'Delete Profile'}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };
