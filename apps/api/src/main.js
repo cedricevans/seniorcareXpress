@@ -9,6 +9,7 @@ import routes from './routes/index.js';
 import { errorMiddleware } from './middleware/index.js';
 import logger from './utils/logger.js';
 import { initWebSocket } from './utils/websocket.js';
+import { ensureAuthenticated } from './utils/pocketbaseClient.js';
 
 const app = express();
 const server = http.createServer(app);
@@ -42,6 +43,15 @@ app.use(cors({
 app.use(morgan('combined'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+app.use(async (req, res, next) => {
+  try {
+    await ensureAuthenticated();
+    next();
+  } catch (err) {
+    next(err);
+  }
+});
 
 app.use('/', routes());
 
