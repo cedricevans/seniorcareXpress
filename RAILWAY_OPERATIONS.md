@@ -112,8 +112,24 @@ this single check would have saved an entire troubleshooting session.
 **New failure mode, found and fixed 2026-07-30 — not yet in general Railway knowledge,
 specific to this project's setup.**
 
-- `apps/api`'s PocketBase client (`apps/api/src/utils/pocketbaseClient.js`) authenticates
-  **once at process boot** and holds that connection for the service's entire lifetime.
+**Update 2026-08-01:** `apps/api/src/utils/pocketbaseClient.js` no longer authenticates
+only once at boot — it now re-authenticates the superuser session every 15 minutes in the
+background (`REAUTH_INTERVAL_MS`), plus `apps/api/src/main.js` runs an `ensureAuthenticated()`
+check before every request as a backstop that re-auths on the spot if the token is ever
+found invalid. This was deployed specifically because a *second*, independent cause of the
+same `ClientResponseError 404` symptom was found and confirmed on 2026-08-01: the superuser
+token expiring from age alone (~24h+ uptime, no `setup.js` involved) — see the git history /
+session notes for `fix: auto-refresh PocketBase superuser session to prevent stale-token
+404s` (commit `2512782`) for the full diagnosis. The directive below (redeploy after
+`setup.js`) **still applies** — the stale-connection-after-schema-change failure mode this
+section describes is a separate trigger from token expiry, and the auto-refresh does not
+eliminate the need to restart after a live schema change, though it should make token-expiry
+alone no longer a source of `/fill`-type failures going forward.
+
+- `apps/api`'s PocketBase client (`apps/api/src/utils/pocketbaseClient.js`) authenticated
+  **once at process boot** and held that connection for the service's entire lifetime. (As
+  of 2026-08-01, it now also self-refreshes — see the update note above — but the
+  stale-after-`setup.js` mechanism described next is independent of that and still applies.)
 - Running `setup.js` against production PocketBase while `api-qvX_` is already running and
   serving traffic can leave that already-running process's connection in a state where
   subsequent requests touching the changed collection fail with a `ClientResponseError
@@ -123,7 +139,10 @@ specific to this project's setup.**
 - This is NOT: a credentials issue, an API-rule/permissions issue, a token-expiry issue
   (production tokens are 24h), or a race condition (failures reproduced 100% of the time,
   30+ seconds apart, not concurrent). All of those were checked and ruled out via
-  read-only requests before concluding this.
+  read-only requests before concluding this. (Token expiry *was* later confirmed as a
+  separate real cause of the same symptom over longer uptimes — see the update note above —
+  this bullet's original 2026-07-30 investigation was correct for the specific case it
+  tested, just not exhaustive of every way a stale connection can happen.)
 - **Directive: after running `setup.js` against production, always redeploy/restart
   `api-qvX_` immediately afterward**, even if nothing in `apps/api` itself changed:
   ```
@@ -177,6 +196,7 @@ Playwright-driven) browser and read the rendered content, not the HTTP status.
 | PocketBase fails every healthcheck, never comes up | Stale/conflicting `pb_migrations/*.js` crashing automigrate | `railway logs --service pocketbase`, look for migration errors before the HTTP port ever opens |
 | Docker build fails on `COPY pb_migrations` | `pb_migrations/.gitkeep` was deleted along with the last `.js` file | `git status` / `ls apps/pocketbase/pb_migrations/` |
 | API 500s on a specific collection right after a schema change, but the same query works via direct curl | Stale connection in the already-running API process | Restart `api-qvX_` (§5) |
+| `/va-forms/:id/fill` (or any PocketBase-backed route) 500s with `"The requested resource wasn't found"` after the API has been up 24h+, unrelated to any recent `setup.js` run | Superuser token expired and was never refreshed — fixed 2026-08-01 (commit `2512782`), client now self-refreshes every 15min + on-demand (§5 update). If this recurs post-fix, check `railway logs --service api-qvX_` for `"Superuser re-auth failed"` — the refresh itself may be erroring | `railway logs --service api-qvX_ \| grep -i "re-auth\|superuser"` |
 | Admin dashboard/list query 400s with "Something went wrong" | `sort=-created` (or `-updated`) on a collection that has no `created`/`updated` autodate fields | Check the collection's fields via `railway variables`-authenticated `GET /api/collections/<name>`; several collections in this project (`care_updates`, `va_cases` before a later fix) lack these fields |
 | A route that should be gone still "returns 200" | Expected SPA behavior, not a bug (§7) | Load it in a real browser, read the rendered content |
 | Office notification email missing fields that are clearly present in the DB record | For **JSON-type fields only**, `record.get("jsonField")` in a `pb_hooks/*.pb.js` hook returns a raw byte array in the PocketBase JS VM, not a parsed object. Plain text/email/etc. fields via `record.get(...)` are unaffected. | Use `JSON.parse(record.getString("jsonField"))` for JSON fields specifically |
