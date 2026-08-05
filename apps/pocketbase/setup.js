@@ -567,7 +567,7 @@ async function createCollections() {
     listRule: '@request.auth.role = "admin"',
     viewRule: '@request.auth.role = "admin"',
     createRule: '',
-    updateRule: '@request.auth.role = "admin"',
+    updateRule: '',
     deleteRule: '@request.auth.role = "admin"',
   };
 
