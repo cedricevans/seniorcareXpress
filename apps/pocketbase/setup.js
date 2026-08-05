@@ -563,6 +563,8 @@ async function createCollections() {
       { name: 'statement_agreed', type: 'text' },
       { name: 'signature_first', type: 'text' },
       { name: 'signature_last', type: 'text' },
+      { name: 'created', type: 'autodate', onCreate: true, onUpdate: false },
+      { name: 'updated', type: 'autodate', onCreate: true, onUpdate: true },
     ],
     listRule: '@request.auth.role = "admin"',
     viewRule: '@request.auth.role = "admin"',

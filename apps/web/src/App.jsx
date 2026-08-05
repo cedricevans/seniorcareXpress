@@ -22,6 +22,7 @@ import CareersPage from './pages/CareersPage.jsx';
 import AdminDashboard from './pages/AdminDashboard.jsx';
 import AdminPatientList from './pages/AdminPatientList.jsx';
 import AdminCaregiverList from './pages/AdminCaregiverList.jsx';
+import AdminJobApplicationsPage from './pages/AdminJobApplicationsPage.jsx';
 import AdminAppointmentsPage from './pages/AdminAppointmentsPage.jsx';
 import AdminAssignmentsPage from './pages/AdminAssignmentsPage.jsx';
 import MessagesPage from './pages/MessagesPage.jsx';
@@ -76,6 +77,7 @@ function App() {
           <Route path="/admin" element={<ProtectedRoute allowedRoles={['admin']}><PortalLayout><AdminDashboard /></PortalLayout></ProtectedRoute>} />
           <Route path="/admin/patients" element={<ProtectedRoute allowedRoles={['admin']}><PortalLayout><AdminPatientList /></PortalLayout></ProtectedRoute>} />
           <Route path="/admin/caregivers" element={<ProtectedRoute allowedRoles={['admin']}><PortalLayout><AdminCaregiverList /></PortalLayout></ProtectedRoute>} />
+          <Route path="/admin/job-applications" element={<ProtectedRoute allowedRoles={['admin']}><PortalLayout><AdminJobApplicationsPage /></PortalLayout></ProtectedRoute>} />
           <Route path="/admin/appointments" element={<ProtectedRoute allowedRoles={['admin']}><PortalLayout><AdminAppointmentsPage /></PortalLayout></ProtectedRoute>} />
           <Route path="/admin/assignments" element={<ProtectedRoute allowedRoles={['admin']}><PortalLayout><AdminAssignmentsPage /></PortalLayout></ProtectedRoute>} />
           <Route path="/admin/analytics" element={<ProtectedRoute allowedRoles={['admin']}><PortalLayout><PlaceholderPage title="Analytics Dashboard" /></PortalLayout></ProtectedRoute>} />

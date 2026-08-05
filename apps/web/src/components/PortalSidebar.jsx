@@ -14,7 +14,8 @@ import {
   PieChart,
   UserCheck,
   UserPlus,
-  FileSignature
+  FileSignature,
+  Briefcase
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -31,6 +32,7 @@ const PortalSidebar = ({ isOpen, onClose }) => {
           { name: 'VA Forms', path: '/admin/va-forms', icon: FileText },
           { name: 'Patients', path: '/admin/patients', icon: Users },
           { name: 'Caregivers', path: '/admin/caregivers', icon: Activity },
+          { name: 'Job Applications', path: '/admin/job-applications', icon: Briefcase },
           { name: 'Appointments', path: '/admin/appointments', icon: Calendar },
           { name: 'Assignments', path: '/admin/assignments', icon: UserCheck },
           { name: 'Messages', path: '/admin/messages', icon: MessageSquare },
