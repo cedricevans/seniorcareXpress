@@ -166,7 +166,7 @@ const AdminVaExpenseReportFormPage = () => {
     setSubmitting(true);
     setFilledCaseForm(null);
     try {
-      const forms = await pb.collection('va_forms').getList(1, 1, { filter: 'form_number = "21P-8416"' });
+      const forms = await pb.collection('va_forms').getList(1, 1, { filter: 'form_number = "21P-8416" && is_current = true' });
       const vaForm = forms.items[0];
       if (!vaForm) {
         toast.error('Form 21P-8416 has not been uploaded to the library yet.');

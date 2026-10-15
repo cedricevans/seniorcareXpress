@@ -1,12 +1,33 @@
 import { PDFDocument, StandardFonts } from 'pdf-lib';
 
+const isBlank = (v) => v === undefined || v === null || String(v).trim() === '';
+
+// Newer VA editions collapse separate street/city/state/ZIP boxes into one
+// free-text box. format 'address' builds a mailing address from parts keyed
+// { street, apt, city, state, zip5, zip4, country }; otherwise parts is a list
+// of value keys joined with `separator`. Field map keys for composed entries
+// are just labels, since the values come from `parts`.
+function composeValue(mapping, values) {
+  if (mapping.format === 'address') {
+    const p = Object.fromEntries(Object.entries(mapping.parts).map(([k, key]) => [k, values[key]]));
+    const zip = [p.zip5, p.zip4].filter((v) => !isBlank(v)).join('-');
+    const country = isBlank(p.country) || /^(us|usa|united states)$/i.test(String(p.country).trim()) ? '' : p.country;
+    return [
+      [p.street, isBlank(p.apt) ? '' : `Apt/Unit ${p.apt}`].filter((v) => !isBlank(v)).join(', '),
+      [p.city, [p.state, zip].filter((v) => !isBlank(v)).join(' ')].filter((v) => !isBlank(v)).join(', '),
+      country,
+    ].filter((v) => !isBlank(v)).join('\n');
+  }
+  return mapping.parts.map((key) => values[key]).filter((v) => !isBlank(v)).join(mapping.separator ?? ' ');
+}
+
 export async function fillPdfForm(pdfBytes, fieldMap, values) {
   const pdfDoc = await PDFDocument.load(pdfBytes, { ignoreEncryption: true });
   const form = pdfDoc.getForm();
   const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
 
   for (const [dataKey, mapping] of Object.entries(fieldMap)) {
-    const value = values[dataKey];
+    const value = mapping.parts ? composeValue(mapping, values) : values[dataKey];
     if (value === undefined || value === null || value === '') continue;
 
     if (mapping.type === 'text') {
@@ -16,6 +37,7 @@ export async function fillPdfForm(pdfBytes, fieldMap, values) {
       if (maxLength !== undefined && text.length > maxLength) {
         text = text.slice(0, maxLength);
       }
+      if (text.includes('\n') && !field.isMultiline()) field.enableMultiline();
       field.setText(text);
     } else if (mapping.type === 'checkbox') {
       const checkbox = form.getCheckBox(mapping.pdfField);
