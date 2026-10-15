@@ -217,6 +217,28 @@ Never add a plain `href={pb.files.getURL(...)}` for these fields. `va_forms.pdf_
 `job_applications.updateRule` is admin-only again; the Careers page creates the record
 and uploads the resume in one request, so it never needs an anonymous update.
 
+## 8b. VA form templates and editions
+
+VA rejects claims filed on superseded editions. Each form's edition and OMB expiration
+are printed in its footer/header (`VA FORM 21-0845, MAY 2026`, `Expiration Date:`).
+Compare against `https://www.vba.va.gov/pubs/forms/VBA-<number>-ARE.pdf` periodically.
+
+- Templates live in the `va_forms` collection; each page uses the record with
+  `is_current = true` for its form number. **Field maps exist only in the database**
+  (`va_forms.field_map`), not in the repo.
+- A new edition often renames, renumbers or merges PDF fields, so never just swap the PDF.
+  Rebuild the map against the new field names, fill a test, render every page and look.
+  Watch for radio groups that keep their names but change order (the JUN 2026 21-2680
+  reversed `RadioButtonList[0]`/`[2]` on page 3, which would have swapped "legally blind"
+  with "mental capacity"). Map entries can combine values with `parts` (see
+  `apps/api/src/utils/pdfFormFill.js`) when the VA merges boxes into one field.
+- 2026-10-15: replaced 21-0845 (FEB 2023 → MAY 2026, new record `5h1q2bouxyh7tm8`, old
+  `a4qu8791oatt2ky`) and 21-2680 (FEB 2023 → JUN 2026, new `f7oscarj186y2xj`, old
+  `hl0h0zpqknx091j`). Old records are kept with `is_current = false`. Rollback is flipping
+  `is_current` back on the old record and off on the new one.
+- Watch list as of 2026-10-15: 21-0779 printed expiration 09/30/2026 has passed but VA
+  still publishes that edition; 21P-8416 expires 10/31/2026.
+
 ## 9. Credentials in this project (locations, not values)
 
 - PocketBase superuser (`_superusers` collection, used for admin API access, `setup.js`,
