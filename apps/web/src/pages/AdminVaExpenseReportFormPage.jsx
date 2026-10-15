@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import pb from '@/lib/pocketbaseClient';
+import pb, { openProtectedFile } from '@/lib/pocketbaseClient';
 import apiServerClient from '@/lib/apiServerClient';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -116,7 +116,7 @@ const AdminVaExpenseReportFormPage = () => {
   const [identity, setIdentity] = useState({});
   const [rows, setRows] = useState({ in_home: [], other: [], mileage: [] });
   const [submitting, setSubmitting] = useState(false);
-  const [filledPdfUrl, setFilledPdfUrl] = useState(null);
+  const [filledCaseForm, setFilledCaseForm] = useState(null);
   const { cases, loadingCases, importedCaseId, importCase, clearImport, autoImportCase } = useVaCaseProfile();
 
   const setId = (key, val) => setIdentity((prev) => ({ ...prev, [key]: val }));
@@ -164,7 +164,7 @@ const AdminVaExpenseReportFormPage = () => {
       return;
     }
     setSubmitting(true);
-    setFilledPdfUrl(null);
+    setFilledCaseForm(null);
     try {
       const forms = await pb.collection('va_forms').getList(1, 1, { filter: 'form_number = "21P-8416"' });
       const vaForm = forms.items[0];
@@ -249,7 +249,7 @@ const AdminVaExpenseReportFormPage = () => {
         return;
       }
       const updated = await res.json();
-      setFilledPdfUrl(pb.files.getURL(updated, updated.filled_pdf));
+      setFilledCaseForm(updated);
       toast.success('Form filled successfully');
     } catch (err) {
       console.error(err);
@@ -321,10 +321,10 @@ const AdminVaExpenseReportFormPage = () => {
         {submitting ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Filling PDF...</> : 'Generate Filled PDF'}
       </Button>
 
-      {filledPdfUrl && (
-        <a href={filledPdfUrl} target="_blank" rel="noreferrer" className="ml-4 inline-flex items-center text-primary font-medium">
+      {filledCaseForm && (
+        <button type="button" onClick={() => openProtectedFile(filledCaseForm, filledCaseForm.filled_pdf)} className="ml-4 inline-flex items-center text-primary font-medium">
           <Download className="w-4 h-4 mr-1" /> Download Filled Form
-        </a>
+        </button>
       )}
     </div>
   );

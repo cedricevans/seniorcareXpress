@@ -515,7 +515,7 @@ async function createCollections() {
       { name: 'address2', type: 'text' },
       { name: 'city_state', type: 'text' },
       { name: 'zip_code', type: 'text' },
-      { name: 'resume', type: 'file', maxSelect: 1, maxSize: 10485760 },
+      { name: 'resume', type: 'file', maxSelect: 1, maxSize: 10485760, protected: true },
       { name: 'worked_before', type: 'text' },
       { name: 'worked_before_details', type: 'text' },
       { name: 'work_authorization', type: 'text' },
@@ -569,7 +569,7 @@ async function createCollections() {
     listRule: '@request.auth.role = "admin"',
     viewRule: '@request.auth.role = "admin"',
     createRule: '',
-    updateRule: '',
+    updateRule: '@request.auth.role = "admin"',
     deleteRule: '@request.auth.role = "admin"',
   };
 
@@ -654,7 +654,7 @@ async function createCollections() {
       { name: 'checklist_financial_docs_attached', type: 'bool' },
       { name: 'checklist_evidence_reviewed', type: 'bool' },
       { name: 'checklist_supervisor_approved', type: 'bool' },
-      { name: 'packet_pdf', type: 'file', maxSelect: 1, maxSize: 20971520 },
+      { name: 'packet_pdf', type: 'file', maxSelect: 1, maxSize: 20971520, protected: true },
     ],
     listRule: '@request.auth.role = "admin"',
     viewRule: '@request.auth.role = "admin"',
@@ -670,7 +670,7 @@ async function createCollections() {
       { name: 'case_id', type: 'relation', required: true, collectionId: 'va_cases', cascadeDelete: true, maxSelect: 1 },
       { name: 'form_id', type: 'relation', required: true, collectionId: 'va_forms', cascadeDelete: false, maxSelect: 1 },
       { name: 'status', type: 'select', maxSelect: 1, values: ['blank', 'filled', 'reviewed', 'submitted'] },
-      { name: 'filled_pdf', type: 'file', maxSelect: 1, maxSize: 10485760 },
+      { name: 'filled_pdf', type: 'file', maxSelect: 1, maxSize: 10485760, protected: true },
       // Form-specific data for VA Form 21-0779 (Nursing Home Information).
       { name: 'nursing_home_name', type: 'text' },
       { name: 'nursing_home_address_street', type: 'text' },

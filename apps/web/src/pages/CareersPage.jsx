@@ -9,6 +9,8 @@ import {
 import { Button } from '@/components/ui/button';
 import pb from '@/lib/pocketbaseClient.js';
 
+const MAX_RESUME_BYTES = 10 * 1024 * 1024;
+
 /* ─────────────────────────────────────────────
    Shared field helpers
 ───────────────────────────────────────────── */
@@ -399,6 +401,8 @@ const CareersPage = () => {
     if (step === 0) {
       if (!d.first_name || !d.last_name || !d.email || !d.cell_phone || !d.address || !d.city_state || !d.zip_code)
         return 'Please complete all required personal information fields.';
+      if (d._resumeFile && d._resumeFile.size > MAX_RESUME_BYTES)
+        return 'Your resume file is larger than 10 MB. Please upload a smaller file.';
     }
     if (step === 1) {
       if (!d.worked_before || !d.work_authorization || !d.how_heard || !d.criminal_record || !d.licensing_disqualifiers || !d.discharged)
@@ -443,12 +447,8 @@ const CareersPage = () => {
     setSubmitting(true);
     try {
       const { _resumeFile, ...payload } = formData;
-      const record = await pb.collection('job_applications').create(payload);
-      if (_resumeFile) {
-        const fd = new FormData();
-        fd.append('resume', _resumeFile);
-        await pb.collection('job_applications').update(record.id, fd);
-      }
+      // One request, so a failed upload can't leave a saved application without its resume.
+      await pb.collection('job_applications').create(_resumeFile ? { ...payload, resume: _resumeFile } : payload);
       setSubmitted(true);
       scrollTop();
     } catch (e) {

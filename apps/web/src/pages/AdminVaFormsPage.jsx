@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import pb from '@/lib/pocketbaseClient';
+import pb, { openProtectedFile } from '@/lib/pocketbaseClient';
 import { useAuth } from '@/contexts/AuthContext.jsx';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -252,14 +252,13 @@ const AdminVaFormsPage = () => {
                         <TableCell>{f.expand?.updated_by?.name || f.expand?.updated_by?.email || '—'}</TableCell>
                         <TableCell className="text-right">
                           {f.pdf_file && (
-                            <a
-                              href={pb.files.getURL(f, f.pdf_file)}
-                              target="_blank"
-                              rel="noreferrer"
+                            <button
+                              type="button"
+                              onClick={() => openProtectedFile(f, f.pdf_file)}
                               className="inline-flex items-center text-primary text-sm font-medium"
                             >
                               <Download className="w-3.5 h-3.5 mr-1" /> View
-                            </a>
+                            </button>
                           )}
                         </TableCell>
                       </TableRow>

@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import pb from '@/lib/pocketbaseClient';
+import pb, { openProtectedFile } from '@/lib/pocketbaseClient';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
@@ -60,7 +60,6 @@ const AdminJobApplicationsPage = () => {
     }
   };
 
-  const resumeUrl = (app) => app?.resume ? pb.files.getURL(app, app.resume) : null;
 
   const filteredApplications = applications.filter(a => {
     const q = search.toLowerCase();
@@ -152,10 +151,8 @@ const AdminJobApplicationsPage = () => {
                     <TableCell className="text-right" onClick={(e) => e.stopPropagation()}>
                       <div className="flex justify-end gap-2">
                         {app.resume && (
-                          <Button variant="ghost" size="icon" asChild className="text-muted-foreground hover:text-primary" title="Download Resume">
-                            <a href={resumeUrl(app)} target="_blank" rel="noopener noreferrer">
-                              <Download className="h-4 w-4" />
-                            </a>
+                          <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-primary" title="Download Resume" onClick={() => openProtectedFile(app, app.resume)}>
+                            <Download className="h-4 w-4" />
                           </Button>
                         )}
                         <Button variant="ghost" size="icon" onClick={() => handleOpenDelete(app)} className="text-muted-foreground hover:text-destructive">
@@ -180,10 +177,8 @@ const AdminJobApplicationsPage = () => {
           {selectedApp && (
             <div className="space-y-6 py-2">
               {selectedApp.resume && (
-                <Button asChild className="w-full gap-2">
-                  <a href={resumeUrl(selectedApp)} target="_blank" rel="noopener noreferrer">
-                    <FileText className="h-4 w-4" /> View / Download Resume
-                  </a>
+                <Button className="w-full gap-2" onClick={() => openProtectedFile(selectedApp, selectedApp.resume)}>
+                  <FileText className="h-4 w-4" /> View / Download Resume
                 </Button>
               )}
 

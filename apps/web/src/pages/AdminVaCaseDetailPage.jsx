@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import pb from '@/lib/pocketbaseClient';
+import pb, { openProtectedFile } from '@/lib/pocketbaseClient';
 import apiServerClient from '@/lib/apiServerClient';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -43,7 +43,7 @@ const AdminVaCaseDetailPage = () => {
   const [loading, setLoading] = useState(true);
   const [savingChecklist, setSavingChecklist] = useState(false);
   const [generatingPacket, setGeneratingPacket] = useState(false);
-  const [packetUrl, setPacketUrl] = useState(null);
+  const [packetCase, setPacketCase] = useState(null);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -85,7 +85,7 @@ const AdminVaCaseDetailPage = () => {
       return;
     }
     setGeneratingPacket(true);
-    setPacketUrl(null);
+    setPacketCase(null);
     try {
       const res = await apiServerClient.fetch(`/packets/${caseId}/generate`, { method: 'POST' });
       if (!res.ok) {
@@ -94,7 +94,7 @@ const AdminVaCaseDetailPage = () => {
         return;
       }
       const updated = await res.json();
-      setPacketUrl(pb.files.getURL(updated, updated.packet_pdf));
+      setPacketCase(updated);
       toast.success('Packet generated');
     } catch (err) {
       console.error(err);
@@ -160,14 +160,13 @@ const AdminVaCaseDetailPage = () => {
                           </Link>
                         )}
                         {cf.filled_pdf && (
-                          <a
-                            href={pb.files.getURL(cf, cf.filled_pdf)}
-                            target="_blank"
-                            rel="noreferrer"
+                          <button
+                            type="button"
+                            onClick={() => openProtectedFile(cf, cf.filled_pdf)}
                             className="inline-flex items-center text-primary text-sm font-medium"
                           >
                             <Download className="w-3.5 h-3.5 mr-1" /> PDF
-                          </a>
+                          </button>
                         )}
                       </TableCell>
                     </TableRow>
@@ -210,10 +209,10 @@ const AdminVaCaseDetailPage = () => {
         {!checklistComplete && (
           <p className="text-xs text-amber-600 mt-2">Complete the staff review checklist above to enable packet generation.</p>
         )}
-        {packetUrl && (
-          <a href={packetUrl} target="_blank" rel="noreferrer" className="ml-4 inline-flex items-center text-primary font-medium text-sm">
+        {packetCase && (
+          <button type="button" onClick={() => openProtectedFile(packetCase, packetCase.packet_pdf)} className="ml-4 inline-flex items-center text-primary font-medium text-sm">
             <Download className="w-4 h-4 mr-1" /> Download Packet
-          </a>
+          </button>
         )}
       </div>
     </div>

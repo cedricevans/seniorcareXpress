@@ -22,16 +22,18 @@ router.post('/:caseId/generate', async (req, res) => {
   }
 
   const caseForms = await pb.collection('va_case_forms').getFullList({
-    filter: `case_id = "${caseId}"`,
+    filter: pb.filter('case_id = {:caseId}', { caseId }),
     expand: 'form_id',
   });
 
   const filledForms = caseForms.filter((cf) => cf.filled_pdf);
+  const fileToken = await pb.files.getToken();
   const filledPdfBuffers = await Promise.all(
     filledForms.map(async (cf) => {
-      const url = pb.files.getURL(cf, cf.filled_pdf);
-      const bytes = await fetch(url).then((r) => r.arrayBuffer());
-      return Buffer.from(bytes);
+      const url = pb.files.getURL(cf, cf.filled_pdf, { token: fileToken });
+      const r = await fetch(url);
+      if (!r.ok) throw new Error(`Failed to download ${cf.filled_pdf} (HTTP ${r.status})`);
+      return Buffer.from(await r.arrayBuffer());
     }),
   );
 
