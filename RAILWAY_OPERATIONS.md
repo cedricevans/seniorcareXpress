@@ -203,6 +203,20 @@ Playwright-driven) browser and read the rendered content, not the HTTP status.
 | PocketBase logs `Error in appointment reminder cron: could not convert [object Object] to dbx.Expression` every day at 09:00 | `pb_hooks/appointment-reminder.pb.js` calls `$app.findAllRecords(name, { filter })`, which takes dbx expressions, not an options object. Should be `$app.findRecordsByFilter(...)`. Harmless until appointments exist and SMTP is configured (both currently not the case). | `railway logs --service pocketbase -f "appointment reminder"` |
 | Office notification email missing fields that are clearly present in the DB record | For **JSON-type fields only**, `record.get("jsonField")` in a `pb_hooks/*.pb.js` hook returns a raw byte array in the PocketBase JS VM, not a parsed object. Plain text/email/etc. fields via `record.get(...)` are unaffected. | Use `JSON.parse(record.getString("jsonField"))` for JSON fields specifically |
 
+## 8a. Client files are protected (since 2026-10-15)
+
+`va_case_forms.filled_pdf`, `va_cases.packet_pdf` and `job_applications.resume` are
+PocketBase **protected** file fields. A raw `/api/files/...` link returns 404 without a
+short-lived file token. In the web app, always open these through `openProtectedFile()`
+in `apps/web/src/lib/pocketbaseClient.js` (fetches a token, opens the file from a blob
+URL so ad blockers don't hit `ERR_BLOCKED_BY_CLIENT`). In the API, pass
+`{ token: await pb.files.getToken() }` to `pb.files.getURL()` (see `routes/packets.js`).
+Never add a plain `href={pb.files.getURL(...)}` for these fields. `va_forms.pdf_file`
+(blank VA templates) and `users.avatar` are intentionally public.
+
+`job_applications.updateRule` is admin-only again; the Careers page creates the record
+and uploads the resume in one request, so it never needs an anonymous update.
+
 ## 9. Credentials in this project (locations, not values)
 
 - PocketBase superuser (`_superusers` collection, used for admin API access, `setup.js`,
