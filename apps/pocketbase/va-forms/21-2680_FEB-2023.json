@@ -1,0 +1,473 @@
+{
+  "form_number": "21-2680",
+  "title": "Examination for Housebound Status or Permanent Need for Regular Aid and Attendance",
+  "category": "medical",
+  "edition": "FEB 2023",
+  "omb_expires": "02/28/2026",
+  "is_current": false,
+  "pocketbase_id": "hl0h0zpqknx091j",
+  "revision_date": "2023-02-01 00:00:00.000Z",
+  "notes": "",
+  "pdf": null,
+  "field_map": {
+    "veteran_first_name": {
+      "pdfField": "form1[0].Page1[0].Veteran_Beneficiary_FirstName[0]",
+      "type": "text"
+    },
+    "veteran_last_name": {
+      "pdfField": "form1[0].Page1[0].ClaimantsLastName[0]",
+      "type": "text"
+    },
+    "veteran_middle_initial": {
+      "pdfField": "form1[0].Page1[0].ClaimantsMiddleInitial1[0]",
+      "type": "text"
+    },
+    "veteran_ssn_first3": {
+      "pdfField": "form1[0].Page1[0].Veterans_SocialSecurityNumber_FirstThreeNumbers[0]",
+      "type": "text"
+    },
+    "veteran_ssn_middle2": {
+      "pdfField": "form1[0].Page1[0].Veterans_SocialSecurityNumber_SecondTwoNumbers[0]",
+      "type": "text"
+    },
+    "veteran_ssn_last4": {
+      "pdfField": "form1[0].Page1[0].Veterans_SocialSecurityNumber_LastFourNumbers[0]",
+      "type": "text"
+    },
+    "va_file_number": {
+      "pdfField": "form1[0].Page1[0].VA_FileNumber[0]",
+      "type": "text"
+    },
+    "veteran_service_number": {
+      "pdfField": "form1[0].Page1[0].Veterans_ServiceNumber[0]",
+      "type": "text"
+    },
+    "veteran_dob_month": {
+      "pdfField": "form1[0].Page1[0].Veterans_DOB_Month[0]",
+      "type": "text"
+    },
+    "veteran_dob_day": {
+      "pdfField": "form1[0].Page1[0].Veterans_DOB_Day[0]",
+      "type": "text"
+    },
+    "veteran_dob_year": {
+      "pdfField": "form1[0].Page1[0].Veterans_DOB_Year[0]",
+      "type": "text"
+    },
+    "claimant_first_name": {
+      "pdfField": "form1[0].Page1[0].Claimants_FirstName[0]",
+      "type": "text"
+    },
+    "claimant_last_name": {
+      "pdfField": "form1[0].Page1[0].Claimants_LastName[0]",
+      "type": "text"
+    },
+    "claimant_middle_initial": {
+      "pdfField": "form1[0].Page1[0].Claimants_MiddleInitial1[0]",
+      "type": "text"
+    },
+    "claimant_ssn_first3": {
+      "pdfField": "form1[0].Page1[0].Claimants_SocialSecurityNumber_FirstThreeNumbers[0]",
+      "type": "text"
+    },
+    "claimant_ssn_middle2": {
+      "pdfField": "form1[0].Page1[0].Claimants_SocialSecurityNumber_SecondTwoNumbers[0]",
+      "type": "text"
+    },
+    "claimant_ssn_last4": {
+      "pdfField": "form1[0].Page1[0].Claimants_SocialSecurityNumber_LastFourNumbers[0]",
+      "type": "text"
+    },
+    "claimant_relationship": {
+      "pdfField": "form1[0].Page1[0].RadioButtonList[0]",
+      "type": "radio",
+      "note": "Item 8 — Relationship of Claimant to Veteran",
+      "values": {
+        "self": "1",
+        "spouse": "2",
+        "parent": "3",
+        "child": "4"
+      }
+    },
+    "claimant_dob_month": {
+      "pdfField": "form1[0].Page1[0].Claimants_DOB_Month[0]",
+      "type": "text"
+    },
+    "claimant_dob_day": {
+      "pdfField": "form1[0].Page1[0].Claimants_DOB_Day[0]",
+      "type": "text"
+    },
+    "claimant_dob_year": {
+      "pdfField": "form1[0].Page1[0].Claimants_DOB_Year[0]",
+      "type": "text"
+    },
+    "mailing_address_street": {
+      "pdfField": "form1[0].Page1[0].Mailing_Address_NumberAndStreet[0]",
+      "type": "text"
+    },
+    "mailing_address_apt": {
+      "pdfField": "form1[0].Page1[0].Mailing_Address_ApartmentOrUnitNumber[0]",
+      "type": "text"
+    },
+    "mailing_address_city": {
+      "pdfField": "form1[0].Page1[0].Mailing_Address_City[0]",
+      "type": "text"
+    },
+    "mailing_address_state": {
+      "pdfField": "form1[0].Page1[0].Mailing_Address_StateOrProvince[0]",
+      "type": "text"
+    },
+    "mailing_address_country": {
+      "pdfField": "form1[0].Page1[0].Mailing_Address_Country[0]",
+      "type": "text"
+    },
+    "mailing_address_zip5": {
+      "pdfField": "form1[0].Page1[0].Mailing_Address_ZIPOrPostalCode_FirstFiveNumbers[0]",
+      "type": "text"
+    },
+    "mailing_address_zip4": {
+      "pdfField": "form1[0].Page1[0].Mailing_Address_ZIPOrPostalCode_LastFourNumbers[0]",
+      "type": "text"
+    },
+    "phone_area": {
+      "pdfField": "form1[0].Page1[0].Telephone_Number_Area_Code[0]",
+      "type": "text"
+    },
+    "phone_mid": {
+      "pdfField": "form1[0].Page1[0].Telephone_Middle_Three_Numbers[0]",
+      "type": "text"
+    },
+    "phone_last4": {
+      "pdfField": "form1[0].Page1[0].Telephone_Last_Four_Numbers[0]",
+      "type": "text"
+    },
+    "email": {
+      "pdfField": "form1[0].Page1[0].Email_Address_Optional[0]",
+      "type": "text"
+    },
+    "agrees_to_email": {
+      "pdfField": "form1[0].Page1[0].CheckBox1[0]",
+      "type": "checkbox"
+    },
+    "benefit_type": {
+      "pdfField": "form1[0].Page1[0].RadioButtonList[1]",
+      "type": "radio",
+      "note": "Item 13 — SMC vs SMP",
+      "values": {
+        "smc": "1",
+        "smp": "2"
+      }
+    },
+    "is_hospitalized": {
+      "pdfField": "form1[0].Page2[0].RadioButtonList[0]",
+      "type": "radio",
+      "note": "Item 14A — Is the claimant hospitalized?",
+      "values": {
+        "yes": "1",
+        "no": "2"
+      }
+    },
+    "hospital_date_admitted_month": {
+      "pdfField": "form1[0].Page2[0].Date_Admitted_Month[0]",
+      "type": "text"
+    },
+    "hospital_date_admitted_day": {
+      "pdfField": "form1[0].Page2[0].Date_Admitted_Day[0]",
+      "type": "text"
+    },
+    "hospital_date_admitted_year": {
+      "pdfField": "form1[0].Page2[0].Date_Admitted_Year[0]",
+      "type": "text"
+    },
+    "hospital_name": {
+      "pdfField": "form1[0].Page2[0].NAME_OF_HOSPITAL[0]",
+      "type": "text"
+    },
+    "hospital_address": {
+      "pdfField": "form1[0].Page2[0].ADDRESS_OF_HOSPITAL[0]",
+      "type": "text"
+    },
+    "veteran_date_signed_month": {
+      "pdfField": "form1[0].Page2[0].DATE_SIGNED_Month[0]",
+      "type": "text"
+    },
+    "veteran_date_signed_day": {
+      "pdfField": "form1[0].Page2[0].DATE_SIGNED_Day[0]",
+      "type": "text"
+    },
+    "veteran_date_signed_year": {
+      "pdfField": "form1[0].Page2[0].DATE_SIGNED_Year[0]",
+      "type": "text"
+    },
+    "exam_date_month": {
+      "pdfField": "form1[0].Page2[0].DATE_OF_EXAMINATION_Month[0]",
+      "type": "text"
+    },
+    "exam_date_day": {
+      "pdfField": "form1[0].Page2[0].DATE_OF_EXAMINATION_Day[0]",
+      "type": "text"
+    },
+    "exam_date_year": {
+      "pdfField": "form1[0].Page2[0].DATE_OF_EXAMINATION_Year[0]",
+      "type": "text"
+    },
+    "complete_diagnosis": {
+      "pdfField": "form1[0].Page2[0].COMPLETE_DIAGNOSIS[0]",
+      "type": "text"
+    },
+    "permanent_disability_a": {
+      "pdfField": "form1[0].Page2[0].Disability_Considered_Permanent_And_Totally_Disabling[0]",
+      "type": "text"
+    },
+    "permanent_disability_b": {
+      "pdfField": "form1[0].Page2[0].Disability_Considered_Permanent_And_Totally_Disabling[1]",
+      "type": "text"
+    },
+    "permanent_disability_c": {
+      "pdfField": "form1[0].Page2[0].Disability_Considered_Permanent_And_Totally_Disabling[2]",
+      "type": "text"
+    },
+    "permanent_disability_d": {
+      "pdfField": "form1[0].Page2[0].Disability_Considered_Permanent_And_Totally_Disabling[3]",
+      "type": "text"
+    },
+    "permanent_disability_e": {
+      "pdfField": "form1[0].Page2[0].Disability_Considered_Permanent_And_Totally_Disabling[4]",
+      "type": "text"
+    },
+    "permanent_disability_f": {
+      "pdfField": "form1[0].Page2[0].Disability_Considered_Permanent_And_Totally_Disabling[5]",
+      "type": "text"
+    },
+    "exam_age": {
+      "pdfField": "form1[0].Page2[0].AGE[0]",
+      "type": "text"
+    },
+    "exam_weight_actual": {
+      "pdfField": "form1[0].Page2[0].Weight_Actual_lbs[0]",
+      "type": "text"
+    },
+    "exam_weight_estimated": {
+      "pdfField": "form1[0].Page2[0].Weight_Estimated_lbs[0]",
+      "type": "text"
+    },
+    "exam_height_feet": {
+      "pdfField": "form1[0].Page2[0].Height_Feet[0]",
+      "type": "text"
+    },
+    "exam_height_inches": {
+      "pdfField": "form1[0].Page2[0].Height_Feet_Inches[0]",
+      "type": "text"
+    },
+    "exam_nutrition": {
+      "pdfField": "form1[0].Page2[0].NUTRITION[0]",
+      "type": "text"
+    },
+    "exam_gait": {
+      "pdfField": "form1[0].Page2[0].GAIT[0]",
+      "type": "text"
+    },
+    "exam_blood_pressure": {
+      "pdfField": "form1[0].Page2[0].Blood_Pressure[0]",
+      "type": "text"
+    },
+    "exam_pulse_rate": {
+      "pdfField": "form1[0].Page2[0].Pulse_Rate[0]",
+      "type": "text"
+    },
+    "exam_respiratory_rate": {
+      "pdfField": "form1[0].Page2[0].Respiratory_Rate[0]",
+      "type": "text"
+    },
+    "exam_disabilities_restrict_activities": {
+      "pdfField": "form1[0].Page2[0].What_Disabilties_Restrict_The_Listed_Activities_Functions[0]",
+      "type": "text"
+    },
+    "bed_hours_9pm_to_9am": {
+      "pdfField": "form1[0].Page3[0].HOURS_IN_BED_9pm_TO_9am[0]",
+      "type": "text"
+    },
+    "bed_hours_9am_to_9pm": {
+      "pdfField": "form1[0].Page3[0].HOURS_IN_BED_9am_TO_9pm[0]",
+      "type": "text"
+    },
+    "needs_bathing": {
+      "pdfField": "form1[0].Page3[0].BATHINGSHOWERING[0]",
+      "type": "checkbox"
+    },
+    "needs_feeding": {
+      "pdfField": "form1[0].Page3[0].FEEDING_AND_MEAL_PREPARATION[0]",
+      "type": "checkbox"
+    },
+    "needs_dressing": {
+      "pdfField": "form1[0].Page3[0].DRESSING[0]",
+      "type": "checkbox"
+    },
+    "needs_ambulating": {
+      "pdfField": "form1[0].Page3[0].AMBULATING_WITHIN_THE_HOME_OR_LIVING_AREA[0]",
+      "type": "checkbox"
+    },
+    "needs_hygiene": {
+      "pdfField": "form1[0].Page3[0].TENDING_TO_HYGIENE_NEEDS[0]",
+      "type": "checkbox"
+    },
+    "needs_transferring": {
+      "pdfField": "form1[0].Page3[0].TRANSFERRING_IN_OR_OUT_OF_BED_CHAIR[0]",
+      "type": "checkbox"
+    },
+    "needs_toileting": {
+      "pdfField": "form1[0].Page3[0].TOILETING[0]",
+      "type": "checkbox"
+    },
+    "needs_medication_management": {
+      "pdfField": "form1[0].Page3[0].MEDICATION_MANAGEMENT[0]",
+      "type": "checkbox"
+    },
+    "needs_additional_activity": {
+      "pdfField": "form1[0].Page3[0].ADDITIONAL_ACTIVITY_Specify[0]",
+      "type": "checkbox"
+    },
+    "additional_activities_specify": {
+      "pdfField": "form1[0].Page3[0].ADDITIONAL_ACTIVITIES[0]",
+      "type": "text"
+    },
+    "is_legally_blind": {
+      "pdfField": "form1[0].Page3[0].RadioButtonList[0]",
+      "type": "radio",
+      "note": "Item 28A — Is the patient legally blind?",
+      "values": {
+        "yes": "1",
+        "no": "2"
+      }
+    },
+    "blind_explanation": {
+      "pdfField": "form1[0].Page3[0].EXPLAIN[0]",
+      "type": "text"
+    },
+    "corrected_vision_left": {
+      "pdfField": "form1[0].Page3[0].Left_Eye[0]",
+      "type": "text"
+    },
+    "corrected_vision_right": {
+      "pdfField": "form1[0].Page3[0].Right_Eye[0]",
+      "type": "text"
+    },
+    "requires_nursing_home_care": {
+      "pdfField": "form1[0].Page3[0].RadioButtonList[1]",
+      "type": "radio",
+      "note": "Item 29 — Does the patient require nursing home care?",
+      "values": {
+        "yes": "1",
+        "no": "2"
+      }
+    },
+    "nursing_home_care_explanation": {
+      "pdfField": "form1[0].Page3[0].EXPLAIN[1]",
+      "type": "text"
+    },
+    "has_mental_capacity": {
+      "pdfField": "form1[0].Page3[0].RadioButtonList[2]",
+      "type": "radio",
+      "note": "Item 30 — Mental capacity to manage benefit payments?",
+      "values": {
+        "yes": "1",
+        "no": "2"
+      }
+    },
+    "mental_capacity_explanation": {
+      "pdfField": "form1[0].Page3[0].EXPLAIN[2]",
+      "type": "text"
+    },
+    "posture_and_appearance": {
+      "pdfField": "form1[0].Page3[0].DESCRIBE[0]",
+      "type": "text"
+    },
+    "upper_extremity_restrictions": {
+      "pdfField": "form1[0].Page3[0].DESCRIBE[1]",
+      "type": "text"
+    },
+    "lower_extremity_restrictions": {
+      "pdfField": "form1[0].Page3[0].DESCRIBE[2]",
+      "type": "text"
+    },
+    "spine_trunk_neck_restrictions": {
+      "pdfField": "form1[0].Page3[0].DESCRIBE[3]",
+      "type": "text"
+    },
+    "other_pathology": {
+      "pdfField": "form1[0].Page4[0].DESCRIBE[0]",
+      "type": "text"
+    },
+    "leave_home_frequency": {
+      "pdfField": "form1[0].Page4[0].DESCRIBE[1]",
+      "type": "text"
+    },
+    "requires_locomotion_aids": {
+      "pdfField": "form1[0].Page4[0].RadioButtonList[0]",
+      "type": "radio",
+      "note": "Item 37 — Are aids required for locomotion?",
+      "values": {
+        "yes": "1",
+        "no": "2"
+      }
+    },
+    "locomotion_aid_distance": {
+      "pdfField": "form1[0].Page4[0].RadioButtonList[1]",
+      "type": "radio",
+      "note": "Item 37 — distance able to walk with aids",
+      "values": {
+        "one_block": "1",
+        "five_to_six_blocks": "2",
+        "one_mile": "3"
+      }
+    },
+    "locomotion_aid_distance_other": {
+      "pdfField": "form1[0].Page4[0].OTHER_Specify_Distance[0]",
+      "type": "text"
+    },
+    "examiner_printed_name": {
+      "pdfField": "form1[0].Page4[0].PRINTED_NAME_OF_EXAMINER[0]",
+      "type": "text"
+    },
+    "examiner_title": {
+      "pdfField": "form1[0].Page4[0].TITLE_OF_EXAMINER[0]",
+      "type": "text"
+    },
+    "examiner_date_signed_month": {
+      "pdfField": "form1[0].Page4[0].Date_Signed_Month[0]",
+      "type": "text"
+    },
+    "examiner_date_signed_day": {
+      "pdfField": "form1[0].Page4[0].Date_Signed_Day[0]",
+      "type": "text"
+    },
+    "examiner_date_signed_year": {
+      "pdfField": "form1[0].Page4[0].Date_Signed_Year[0]",
+      "type": "text"
+    },
+    "examiner_npi": {
+      "pdfField": "form1[0].Page4[0].National_Provider_Identifier_Number[0]",
+      "type": "text"
+    },
+    "medical_facility_name": {
+      "pdfField": "form1[0].Page4[0].NAME_OF_MEDICAL_FACILITY[0]",
+      "type": "text"
+    },
+    "medical_facility_address": {
+      "pdfField": "form1[0].Page4[0].ASSRESS_OF_MEDICAL_FACILITY[0]",
+      "type": "text"
+    },
+    "medical_facility_phone_area": {
+      "pdfField": "form1[0].Page4[0].Telephone_Number_Area_Code[0]",
+      "type": "text"
+    },
+    "medical_facility_phone_mid": {
+      "pdfField": "form1[0].Page4[0].Telephone_Middle_Three_Numbers[0]",
+      "type": "text"
+    },
+    "medical_facility_phone_last4": {
+      "pdfField": "form1[0].Page4[0].Telephone_Last_Four_Numbers[0]",
+      "type": "text"
+    }
+  }
+}

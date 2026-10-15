@@ -1,0 +1,317 @@
+{
+  "form_number": "21-0845",
+  "title": "Authorization to Disclose Personal Information to a Third Party",
+  "category": "authorization",
+  "edition": "FEB 2023",
+  "omb_expires": "02/28/2026",
+  "is_current": false,
+  "pocketbase_id": "a4qu8791oatt2ky",
+  "revision_date": "2023-02-01 00:00:00.000Z",
+  "notes": "",
+  "pdf": null,
+  "field_map": {
+    "veteran_first_name": {
+      "pdfField": "F[0].Page_2[0].VeteransFirstName[0]",
+      "type": "text"
+    },
+    "veteran_last_name": {
+      "pdfField": "F[0].Page_2[0].VeteransLastName[0]",
+      "type": "text"
+    },
+    "veteran_middle_initial": {
+      "pdfField": "F[0].Page_2[0].VeteransMiddleInitial[0]",
+      "type": "text"
+    },
+    "veteran_ssn_first3": {
+      "pdfField": "F[0].Page_2[0].FirstThreeNumbers[0]",
+      "type": "text"
+    },
+    "veteran_ssn_middle2": {
+      "pdfField": "F[0].Page_2[0].SecondTwoNumbers[0]",
+      "type": "text"
+    },
+    "veteran_ssn_last4": {
+      "pdfField": "F[0].Page_2[0].LastFourNumbers[0]",
+      "type": "text"
+    },
+    "va_file_number": {
+      "pdfField": "F[0].Page_2[0].VAFileNumber[0]",
+      "type": "text"
+    },
+    "veteran_dob_month": {
+      "pdfField": "F[0].Page_2[0].Month[0]",
+      "type": "text"
+    },
+    "veteran_dob_day": {
+      "pdfField": "F[0].Page_2[0].Day[0]",
+      "type": "text"
+    },
+    "veteran_dob_year": {
+      "pdfField": "F[0].Page_2[0].Year[0]",
+      "type": "text"
+    },
+    "veteran_service_number": {
+      "pdfField": "F[0].Page_2[0].VeteransServiceNumber[0]",
+      "type": "text"
+    },
+    "beneficiary_first_name": {
+      "pdfField": "F[0].Page_2[0].Beneficiary_Claimant_Who_Is_Not_The_Veteran_FirstName[0]",
+      "type": "text"
+    },
+    "beneficiary_last_name": {
+      "pdfField": "F[0].Page_2[0].Beneficiary_Claimant_Who_Is_Not_The_Veteran_LastName[0]",
+      "type": "text"
+    },
+    "beneficiary_middle_initial": {
+      "pdfField": "F[0].Page_2[0].Beneficiary_Claimant_Who_Is_Not_The_Veteran_MiddleInitial1[0]",
+      "type": "text"
+    },
+    "beneficiary_address_street": {
+      "pdfField": "F[0].Page_2[0].CurrentMailingAddress_NumberAndStreet[0]",
+      "type": "text"
+    },
+    "beneficiary_address_apt": {
+      "pdfField": "F[0].Page_2[0].CurrentMailingAddress_ApartmentOrUnitNumber[0]",
+      "type": "text"
+    },
+    "beneficiary_address_city": {
+      "pdfField": "F[0].Page_2[0].CurrentMailingAddress_City[0]",
+      "type": "text"
+    },
+    "beneficiary_address_state": {
+      "pdfField": "F[0].Page_2[0].CurrentMailingAddress_StateOrProvince[0]",
+      "type": "text"
+    },
+    "beneficiary_address_country": {
+      "pdfField": "F[0].Page_2[0].CurrentMailingAddress_Country[0]",
+      "type": "text"
+    },
+    "beneficiary_address_zip5": {
+      "pdfField": "F[0].Page_2[0].CurrentMailingAddress_ZIPOrPostalCode_FirstFiveNumbers[0]",
+      "type": "text"
+    },
+    "beneficiary_address_zip4": {
+      "pdfField": "F[0].Page_2[0].CurrentMailingAddress_ZIPOrPostalCode_LastFourNumbers[0]",
+      "type": "text"
+    },
+    "beneficiary_phone_area": {
+      "pdfField": "F[0].Page_2[0].Area_Code[0]",
+      "type": "text"
+    },
+    "beneficiary_phone_mid": {
+      "pdfField": "F[0].Page_2[0].Second_Three_Numbers[0]",
+      "type": "text"
+    },
+    "beneficiary_phone_last4": {
+      "pdfField": "F[0].Page_2[0].Last_Four_Numbers[0]",
+      "type": "text"
+    },
+    "beneficiary_phone_intl": {
+      "pdfField": "F[0].Page_2[0].International_Telephone_Number_If_Applicable[0]",
+      "type": "text"
+    },
+    "beneficiary_email": {
+      "pdfField": "F[0].Page_2[0].Email_Address_Optional[0]",
+      "type": "text"
+    },
+    "beneficiary_agrees_to_email": {
+      "pdfField": "F[0].Page_2[0].CheckBox1[0]",
+      "type": "checkbox"
+    },
+    "recipient_person_first_name": {
+      "pdfField": "F[0].Page_2[0].NAME_OF_AUTHORIZED_PERSON_First_Name[0]",
+      "type": "text"
+    },
+    "recipient_person_last_name": {
+      "pdfField": "F[0].Page_2[0].Authorized_Person_Last_Name[0]",
+      "type": "text"
+    },
+    "recipient_person_middle_initial": {
+      "pdfField": "F[0].Page_2[0].Authorized_Person_Middle_Initial1[0]",
+      "type": "text"
+    },
+    "recipient_person_address_street": {
+      "pdfField": "F[0].Page_2[0].CurrentMailingAddress_NumberAndStreet[1]",
+      "type": "text"
+    },
+    "recipient_person_address_apt": {
+      "pdfField": "F[0].Page_2[0].CurrentMailingAddress_ApartmentOrUnitNumber[1]",
+      "type": "text"
+    },
+    "recipient_person_address_city": {
+      "pdfField": "F[0].Page_2[0].CurrentMailingAddress_City[1]",
+      "type": "text"
+    },
+    "recipient_person_address_state": {
+      "pdfField": "F[0].Page_2[0].CurrentMailingAddress_StateOrProvince[1]",
+      "type": "text"
+    },
+    "recipient_person_address_country": {
+      "pdfField": "F[0].Page_2[0].CurrentMailingAddress_Country[1]",
+      "type": "text"
+    },
+    "recipient_person_address_zip5": {
+      "pdfField": "F[0].Page_2[0].CurrentMailingAddress_ZIPOrPostalCode_FirstFiveNumbers[1]",
+      "type": "text"
+    },
+    "recipient_person_address_zip4": {
+      "pdfField": "F[0].Page_2[0].CurrentMailingAddress_ZIPOrPostalCode_LastFourNumbers[1]",
+      "type": "text"
+    },
+    "recipient_org_name_line1": {
+      "pdfField": "F[0].Page_2[0].Name_of_Org1[0]",
+      "type": "text"
+    },
+    "recipient_org_name_line2": {
+      "pdfField": "F[0].Page_2[0].Name_of_Org2[0]",
+      "type": "text"
+    },
+    "recipient_org_name_line3": {
+      "pdfField": "F[0].Page_2[0].Name_of_Org3[0]",
+      "type": "text"
+    },
+    "recipient_org_address_street": {
+      "pdfField": "F[0].Page_2[0].CurrentMailingAddress_NumberAndStreet[2]",
+      "type": "text"
+    },
+    "recipient_org_address_apt": {
+      "pdfField": "F[0].Page_2[0].CurrentMailingAddress_ApartmentOrUnitNumber[2]",
+      "type": "text"
+    },
+    "recipient_org_address_city": {
+      "pdfField": "F[0].Page_2[0].CurrentMailingAddress_City[2]",
+      "type": "text"
+    },
+    "recipient_org_address_state": {
+      "pdfField": "F[0].Page_2[0].CurrentMailingAddress_StateOrProvince[2]",
+      "type": "text"
+    },
+    "recipient_org_address_country": {
+      "pdfField": "F[0].Page_2[0].CurrentMailingAddress_Country[2]",
+      "type": "text"
+    },
+    "recipient_org_address_zip5": {
+      "pdfField": "F[0].Page_2[0].CurrentMailingAddress_ZIPOrPostalCode_FirstFiveNumbers[2]",
+      "type": "text"
+    },
+    "recipient_org_address_zip4": {
+      "pdfField": "F[0].Page_2[0].CurrentMailingAddress_ZIPOrPostalCode_LastFourNumbers[2]",
+      "type": "text"
+    },
+    "disclosure_scope": {
+      "pdfField": "F[0].#subform[2].RadioButtonList11[0]",
+      "type": "radio",
+      "note": "Item 11 — Limited Information vs Any Information",
+      "values": {
+        "limited": "LIMITED INFORMATION (Go to Item 12)",
+        "any": "ANY INFORMATION (Go to Item 13)"
+      }
+    },
+    "limited_info_pending_claim": {
+      "pdfField": "F[0].#subform[2].Checklist12[0]",
+      "type": "checkbox"
+    },
+    "limited_info_current_benefit": {
+      "pdfField": "F[0].#subform[2].Checklist12[1]",
+      "type": "checkbox"
+    },
+    "limited_info_payment_history": {
+      "pdfField": "F[0].#subform[2].Checklist12[2]",
+      "type": "checkbox"
+    },
+    "limited_info_amount_owed": {
+      "pdfField": "F[0].#subform[2].Checklist12[3]",
+      "type": "checkbox"
+    },
+    "limited_info_benefit_letter": {
+      "pdfField": "F[0].#subform[2].Checklist12[4]",
+      "type": "checkbox"
+    },
+    "limited_info_address_deposit": {
+      "pdfField": "F[0].#subform[2].Checklist12[5]",
+      "type": "checkbox"
+    },
+    "limited_info_other": {
+      "pdfField": "F[0].#subform[2].Checklist12[6]",
+      "type": "checkbox"
+    },
+    "limited_info_other_specify": {
+      "pdfField": "F[0].#subform[2].Specify_Other[0]",
+      "type": "text"
+    },
+    "any_info_duration": {
+      "pdfField": "F[0].#subform[2].RadioButtonList[0]",
+      "type": "radio",
+      "note": "Item 13 — duration of Any Information release",
+      "values": {
+        "one_time": "1",
+        "ongoing": "2",
+        "until_date": "3"
+      }
+    },
+    "any_info_until_date_month": {
+      "pdfField": "F[0].#subform[2].Month[0]",
+      "type": "text"
+    },
+    "any_info_until_date_day": {
+      "pdfField": "F[0].#subform[2].Day[0]",
+      "type": "text"
+    },
+    "any_info_until_date_year": {
+      "pdfField": "F[0].#subform[2].Year[0]",
+      "type": "text"
+    },
+    "security_question_mother_birthplace": {
+      "pdfField": "F[0].#subform[2].Checklist14[0]",
+      "type": "checkbox"
+    },
+    "security_question_high_school": {
+      "pdfField": "F[0].#subform[2].Checklist14[1]",
+      "type": "checkbox"
+    },
+    "security_question_first_pet": {
+      "pdfField": "F[0].#subform[2].Checklist14[2]",
+      "type": "checkbox"
+    },
+    "security_question_favorite_teacher": {
+      "pdfField": "F[0].#subform[2].Checklist14[3]",
+      "type": "checkbox"
+    },
+    "security_question_fathers_middle_name": {
+      "pdfField": "F[0].#subform[2].Checklist14[4]",
+      "type": "checkbox"
+    },
+    "security_answer_mother_birthplace": {
+      "pdfField": "F[0].#subform[2].SECURITY_QUESTION_Answer[0]",
+      "type": "text"
+    },
+    "security_answer_high_school": {
+      "pdfField": "F[0].#subform[2].SECURITY_QUESTION_Answer[1]",
+      "type": "text"
+    },
+    "security_answer_first_pet": {
+      "pdfField": "F[0].#subform[2].SECURITY_QUESTION_Answer[2]",
+      "type": "text"
+    },
+    "security_answer_favorite_teacher": {
+      "pdfField": "F[0].#subform[2].SECURITY_QUESTION_Answer[3]",
+      "type": "text"
+    },
+    "security_answer_fathers_middle_name": {
+      "pdfField": "F[0].#subform[2].SECURITY_QUESTION_Answer[4]",
+      "type": "text"
+    },
+    "date_signed_month": {
+      "pdfField": "F[0].#subform[2].Month[1]",
+      "type": "text"
+    },
+    "date_signed_day": {
+      "pdfField": "F[0].#subform[2].Day[1]",
+      "type": "text"
+    },
+    "date_signed_year": {
+      "pdfField": "F[0].#subform[2].Year[1]",
+      "type": "text"
+    }
+  }
+}

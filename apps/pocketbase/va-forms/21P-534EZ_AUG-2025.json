@@ -1,0 +1,232 @@
+{
+  "form_number": "21P-534EZ",
+  "title": "Application for D.I.C., Survivors Pension, and/or Accrued Benefits",
+  "category": "dic",
+  "edition": "AUG 2025",
+  "omb_expires": "08/31/2028",
+  "is_current": true,
+  "pocketbase_id": "2751s0y0i5eg605",
+  "revision_date": "2025-08-01 00:00:00.000Z",
+  "notes": "Sections I-II (veteran/claimant identification) verified and mapped. Sections III-XIV not yet automated -- must be completed manually in the downloaded PDF.",
+  "pdf": "21P-534EZ_AUG-2025.pdf",
+  "field_map": {
+    "veteran_first_name": {
+      "pdfField": "form1[0].#subform[152].VeteransFirstName[0]",
+      "type": "text"
+    },
+    "veteran_last_name": {
+      "pdfField": "form1[0].#subform[152].VeteransLastName[0]",
+      "type": "text"
+    },
+    "veteran_middle_initial": {
+      "pdfField": "form1[0].#subform[152].VeteransMiddleInitial1[0]",
+      "type": "text"
+    },
+    "veteran_dob_month": {
+      "pdfField": "form1[0].#subform[152].DOBmonth[0]",
+      "type": "text"
+    },
+    "veteran_dob_day": {
+      "pdfField": "form1[0].#subform[152].DOBday[0]",
+      "type": "text"
+    },
+    "veteran_dob_year": {
+      "pdfField": "form1[0].#subform[152].DOByear[0]",
+      "type": "text"
+    },
+    "va_file_number": {
+      "pdfField": "form1[0].#subform[152].VAFileNumber[0]",
+      "type": "text"
+    },
+    "veteran_service_number": {
+      "pdfField": "form1[0].#subform[152].VETERANS_SERVICE_NUMBER[0]",
+      "type": "text"
+    },
+    "veteran_dod_month": {
+      "pdfField": "form1[0].#subform[152].DATE_OF_DEATH_Month[0]",
+      "type": "text"
+    },
+    "veteran_dod_day": {
+      "pdfField": "form1[0].#subform[152].DATE_OF_DEATH_Day[0]",
+      "type": "text"
+    },
+    "veteran_dod_year": {
+      "pdfField": "form1[0].#subform[152].DATE_OF_DEATH_Year[0]",
+      "type": "text"
+    },
+    "veteran_ssn_first3": {
+      "pdfField": "form1[0].#subform[152].VeteransSocialSecurityNumber_FirstThreeNumbers[0]",
+      "type": "text"
+    },
+    "veteran_ssn_middle2": {
+      "pdfField": "form1[0].#subform[152].VeteransSocialSecurityNumber_SecondTwoNumbers[0]",
+      "type": "text"
+    },
+    "veteran_ssn_last4": {
+      "pdfField": "form1[0].#subform[152].VeteransSocialSecurityNumber_LastFourNumbers[0]",
+      "type": "text"
+    },
+    "claimant_first_name": {
+      "pdfField": "form1[0].#subform[152].ClaimantsFirstName[0]",
+      "type": "text"
+    },
+    "claimant_last_name": {
+      "pdfField": "form1[0].#subform[152].ClaimantsLastName[0]",
+      "type": "text"
+    },
+    "claimant_middle_initial": {
+      "pdfField": "form1[0].#subform[152].ClaimantsMiddleInitial1[0]",
+      "type": "text"
+    },
+    "claimant_ssn_first3": {
+      "pdfField": "form1[0].#subform[152].ClaimantsSocialSecurityNumber_FirstThreeNumbers[0]",
+      "type": "text"
+    },
+    "claimant_ssn_middle2": {
+      "pdfField": "form1[0].#subform[152].ClaimantsSocialSecurityNumber_SecondTwoNumbers[0]",
+      "type": "text"
+    },
+    "claimant_ssn_last4": {
+      "pdfField": "form1[0].#subform[152].ClaimantsSocialSecurityNumber_LastFourNumbers[0]",
+      "type": "text"
+    },
+    "claimant_dob_month": {
+      "pdfField": "form1[0].#subform[152].DOBmonth[1]",
+      "type": "text"
+    },
+    "claimant_dob_day": {
+      "pdfField": "form1[0].#subform[152].DOBday[1]",
+      "type": "text"
+    },
+    "claimant_dob_year": {
+      "pdfField": "form1[0].#subform[152].DOByear[1]",
+      "type": "text"
+    },
+    "mailing_address_street": {
+      "pdfField": "form1[0].#subform[152].NumberStreet[0]",
+      "type": "text"
+    },
+    "mailing_address_apt": {
+      "pdfField": "form1[0].#subform[152].Apt_Or_Unit_Number[0]",
+      "type": "text"
+    },
+    "mailing_address_city": {
+      "pdfField": "form1[0].#subform[152].City[0]",
+      "type": "text"
+    },
+    "mailing_address_state": {
+      "pdfField": "form1[0].#subform[152].State_Province[0]",
+      "type": "text"
+    },
+    "mailing_address_country": {
+      "pdfField": "form1[0].#subform[152].Country[0]",
+      "type": "text"
+    },
+    "mailing_address_zip5": {
+      "pdfField": "form1[0].#subform[152].Zip_Postal_Code[0]",
+      "type": "text"
+    },
+    "mailing_address_zip4": {
+      "pdfField": "form1[0].#subform[152].Zip_Postal_Code[1]",
+      "type": "text"
+    },
+    "phone_area": {
+      "pdfField": "form1[0].#subform[152].Telephone_Number_First_Three_Numbers[0]",
+      "type": "text"
+    },
+    "phone_mid": {
+      "pdfField": "form1[0].#subform[152].Telephone_Number_Second_Three_Numbers[0]",
+      "type": "text"
+    },
+    "phone_last4": {
+      "pdfField": "form1[0].#subform[152].Telephone_Number_Last_Four_Numbers[0]",
+      "type": "text"
+    },
+    "phone_intl": {
+      "pdfField": "form1[0].#subform[152].International_Telephone_Number[0]",
+      "type": "text"
+    },
+    "email": {
+      "pdfField": "form1[0].#subform[152].Email_Address_Optional[0]",
+      "type": "text"
+    },
+    "claiming_dic": {
+      "pdfField": "form1[0].#subform[152].Dependency_And_Indemnity_Compensation_DIC[0]",
+      "type": "checkbox"
+    },
+    "claiming_survivors_pension": {
+      "pdfField": "form1[0].#subform[152].Survivors_Pension[0]",
+      "type": "checkbox"
+    },
+    "claiming_accrued_benefits": {
+      "pdfField": "form1[0].#subform[152].Accrued_Benefits[0]",
+      "type": "checkbox"
+    },
+    "ever_filed_va_claim": {
+      "pdfField": "form1[0].#subform[152].RadioButtonList[0]",
+      "type": "radio",
+      "values": {
+        "yes": "YES",
+        "no": "NO"
+      }
+    },
+    "veteran_died_active_duty": {
+      "pdfField": "form1[0].#subform[152].RadioButtonList[1]",
+      "type": "radio",
+      "values": {
+        "yes": "YES",
+        "no": "NO"
+      }
+    },
+    "claimant_type": {
+      "pdfField": "form1[0].#subform[152].RadioButtonList[2]",
+      "type": "radio",
+      "values": {
+        "surviving_spouse": "SURVIVING SPOUSE",
+        "child_18_23_in_school": "CHILD 18-23 IN SCHOOL",
+        "custodian_for_child_under_18": "CUSTODIAN FILING FOR CHILD UNDER 18",
+        "disabled_adult_child": "DISABLED ADULT CHILD"
+      }
+    },
+    "claimant_is_veteran": {
+      "pdfField": "form1[0].#subform[152].RadioButtonList[3]",
+      "type": "radio",
+      "values": {
+        "yes": "YES",
+        "no": "NO"
+      }
+    },
+    "veteran_other_name_yn": {
+      "pdfField": "form1[0].#subform[152].RadioButtonList[4]",
+      "type": "radio",
+      "values": {
+        "yes": "YES",
+        "no": "NO"
+      }
+    },
+    "other_name1_first": {
+      "pdfField": "form1[0].#subform[152].First_Name[0]",
+      "type": "text"
+    },
+    "other_name1_last": {
+      "pdfField": "form1[0].#subform[152].Last_Name[0]",
+      "type": "text"
+    },
+    "other_name1_mi": {
+      "pdfField": "form1[0].#subform[152].Middle_Initial[0]",
+      "type": "text"
+    },
+    "other_name2_first": {
+      "pdfField": "form1[0].#subform[152].First_Name[1]",
+      "type": "text"
+    },
+    "other_name2_last": {
+      "pdfField": "form1[0].#subform[152].Last_Name[1]",
+      "type": "text"
+    },
+    "other_name2_mi": {
+      "pdfField": "form1[0].#subform[152].Middle_Initial[1]",
+      "type": "text"
+    }
+  }
+}

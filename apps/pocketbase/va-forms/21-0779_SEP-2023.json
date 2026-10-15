@@ -1,0 +1,226 @@
+{
+  "form_number": "21-0779",
+  "title": "Request for Nursing Home Information",
+  "category": "aid_attendance",
+  "edition": "SEP 2023",
+  "omb_expires": "09/30/2026",
+  "is_current": true,
+  "pocketbase_id": "oh3b3ju47331j9m",
+  "revision_date": "2023-09-01 00:00:00.000Z",
+  "notes": "",
+  "pdf": "21-0779_SEP-2023.pdf",
+  "field_map": {
+    "veteran_first_name": {
+      "pdfField": "F[0].Page_1[0].Veterans_First_Name[0]",
+      "type": "text"
+    },
+    "veteran_last_name": {
+      "pdfField": "F[0].Page_1[0].Veterans_Last_Name[0]",
+      "type": "text"
+    },
+    "veteran_middle_initial": {
+      "pdfField": "F[0].Page_1[0].Veterans_Middle_Initial[0]",
+      "type": "text"
+    },
+    "veteran_ssn_first3": {
+      "pdfField": "F[0].Page_1[0].Social_Security_Number_FirstThreeNumbers[0]",
+      "type": "text"
+    },
+    "veteran_ssn_middle2": {
+      "pdfField": "F[0].Page_1[0].Social_Security_Number_SecondTwoNumbers[0]",
+      "type": "text"
+    },
+    "veteran_ssn_last4": {
+      "pdfField": "F[0].Page_1[0].Social_Security_Number_LastFourNumbers[0]",
+      "type": "text"
+    },
+    "va_file_number": {
+      "pdfField": "F[0].Page_1[0].VA_File_Number[0]",
+      "type": "text"
+    },
+    "veteran_dob_month": {
+      "pdfField": "F[0].Page_1[0].Date_Of_Birth_Month[0]",
+      "type": "text"
+    },
+    "veteran_dob_day": {
+      "pdfField": "F[0].Page_1[0].Date_Of_Birth_Day[0]",
+      "type": "text"
+    },
+    "veteran_dob_year": {
+      "pdfField": "F[0].Page_1[0].Date_Of_Birth_Year[0]",
+      "type": "text"
+    },
+    "claimant_first_name": {
+      "pdfField": "F[0].Page_1[0].Claimants_First_Name[0]",
+      "type": "text"
+    },
+    "claimant_last_name": {
+      "pdfField": "F[0].Page_1[0].Claimants_Last_Name[0]",
+      "type": "text"
+    },
+    "claimant_middle_initial": {
+      "pdfField": "F[0].Page_1[0].Claimants_Middle_Initial[0]",
+      "type": "text"
+    },
+    "claimant_ssn_first3": {
+      "pdfField": "F[0].Page_1[0].Claimants_Social_Security_Number_FirstThreeNumbers[0]",
+      "type": "text"
+    },
+    "claimant_ssn_middle2": {
+      "pdfField": "F[0].Page_1[0].Claimants_Social_Security_Number_SecondTwoNumbers[0]",
+      "type": "text"
+    },
+    "claimant_ssn_last4": {
+      "pdfField": "F[0].Page_1[0].Claimants_Social_Security_Number_LastFourNumbers[0]",
+      "type": "text"
+    },
+    "claimant_va_file_number": {
+      "pdfField": "F[0].Page_1[0].Claimants_VA_File_Number_If_Applicable[0]",
+      "type": "text"
+    },
+    "claimant_dob_month": {
+      "pdfField": "F[0].Page_1[0].Date_Of_Birth_Month[1]",
+      "type": "text"
+    },
+    "claimant_dob_day": {
+      "pdfField": "F[0].Page_1[0].Date_Of_Birth_Day[1]",
+      "type": "text"
+    },
+    "claimant_dob_year": {
+      "pdfField": "F[0].Page_1[0].Date_Of_Birth_Year[1]",
+      "type": "text"
+    },
+    "nursing_home_name": {
+      "pdfField": "F[0].Page_1[0].Name_Of_Nursing_Home[0]",
+      "type": "text"
+    },
+    "nursing_home_address_street": {
+      "pdfField": "F[0].Page_1[0].Address_Of_Nursing_Home_NumberAndStreet[0]",
+      "type": "text"
+    },
+    "nursing_home_address_apt": {
+      "pdfField": "F[0].Page_1[0].Apartment_Or_Unit_Number[0]",
+      "type": "text"
+    },
+    "nursing_home_address_city": {
+      "pdfField": "F[0].Page_1[0].City[0]",
+      "type": "text"
+    },
+    "nursing_home_address_state": {
+      "pdfField": "F[0].Page_1[0].State_Or_Province[0]",
+      "type": "text"
+    },
+    "nursing_home_address_country": {
+      "pdfField": "F[0].Page_1[0].Country[0]",
+      "type": "text"
+    },
+    "nursing_home_address_zip5": {
+      "pdfField": "F[0].Page_1[0].ZIP_Or_Postal_Code_FirstFiveNumbers[0]",
+      "type": "text"
+    },
+    "nursing_home_address_zip4": {
+      "pdfField": "F[0].Page_1[0].ZIP_Or_Postal_Code_LastFourNumbers[0]",
+      "type": "text"
+    },
+    "date_admitted_month": {
+      "pdfField": "F[0].Page_1[0].Date_Admitted_Month[0]",
+      "type": "text"
+    },
+    "date_admitted_day": {
+      "pdfField": "F[0].Page_1[0].Date_Admitted_Day[0]",
+      "type": "text"
+    },
+    "date_admitted_year": {
+      "pdfField": "F[0].Page_1[0].Date_Admitted_Year[0]",
+      "type": "text"
+    },
+    "is_medicaid_approved_facility": {
+      "pdfField": "F[0].Page_1[0].RadioButtonList[1]",
+      "type": "radio",
+      "note": "Item 12 — Is the nursing home a Medicaid approved facility?",
+      "values": {
+        "yes": "1",
+        "no": "2"
+      }
+    },
+    "patient_applied_for_medicaid": {
+      "pdfField": "F[0].Page_1[0].RadioButtonList[3]",
+      "type": "radio",
+      "note": "Item 13 — Has the patient applied for Medicaid?",
+      "values": {
+        "yes": "1",
+        "no": "2"
+      }
+    },
+    "patient_covered_by_medicaid": {
+      "pdfField": "F[0].Page_1[0].RadioButtonList[2]",
+      "type": "radio",
+      "note": "Item 14A — Is the patient covered by Medicaid?",
+      "values": {
+        "yes": "1",
+        "no": "2"
+      }
+    },
+    "date_medicaid_began_month": {
+      "pdfField": "F[0].Page_1[0].Date_Medicaid_Began_Month[0]",
+      "type": "text"
+    },
+    "date_medicaid_began_day": {
+      "pdfField": "F[0].Page_1[0].Date__Medicaid_Began_Day[0]",
+      "type": "text"
+    },
+    "date_medicaid_began_year": {
+      "pdfField": "F[0].Page_1[0].Date_Medicaid_Began_Year[0]",
+      "type": "text"
+    },
+    "monthly_amount_dollars": {
+      "pdfField": "F[0].Page_1[0].Amount[1]",
+      "type": "text"
+    },
+    "monthly_amount_cents": {
+      "pdfField": "F[0].Page_1[0].Amount_Cents[0]",
+      "type": "text"
+    },
+    "care_type": {
+      "pdfField": "F[0].Page_1[0].RadioButtonList[0]",
+      "type": "radio",
+      "note": "Item 16 — Skilled vs Intermediate nursing care",
+      "values": {
+        "skilled": "1",
+        "intermediate": "2"
+      }
+    },
+    "nursing_home_official_name": {
+      "pdfField": "F[0].Page_1[0].Nursing_Home_Officials_Name[0]",
+      "type": "text"
+    },
+    "nursing_home_official_title": {
+      "pdfField": "F[0].Page_1[0].Nursing_Home_Officials_Title[0]",
+      "type": "text"
+    },
+    "nursing_home_official_phone_area": {
+      "pdfField": "F[0].Page_1[0].Nursing_Home_Officials_Phone_Number_Area_Code[0]",
+      "type": "text"
+    },
+    "nursing_home_official_phone_mid": {
+      "pdfField": "F[0].Page_1[0].Nursing_Home_Officials_Phone_Middle_Three_Numbers[0]",
+      "type": "text"
+    },
+    "nursing_home_official_phone_last4": {
+      "pdfField": "F[0].Page_1[0].Nursing_Home_Official_Phone_Last_Four_Numbers[0]",
+      "type": "text"
+    },
+    "date_signed_month": {
+      "pdfField": "F[0].Page_1[0].Date_Signed_Month[0]",
+      "type": "text"
+    },
+    "date_signed_day": {
+      "pdfField": "F[0].Page_1[0].Date_Signed_Day[0]",
+      "type": "text"
+    },
+    "date_signed_year": {
+      "pdfField": "F[0].Page_1[0].Date_Signed_Year[0]",
+      "type": "text"
+    }
+  }
+}

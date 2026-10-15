@@ -211,7 +211,12 @@ short-lived file token. In the web app, always open these through `openProtected
 in `apps/web/src/lib/pocketbaseClient.js` (fetches a token, opens the file from a blob
 URL so ad blockers don't hit `ERR_BLOCKED_BY_CLIENT`). In the API, pass
 `{ token: await pb.files.getToken() }` to `pb.files.getURL()` (see `routes/packets.js`).
-Never add a plain `href={pb.files.getURL(...)}` for these fields. `va_forms.pdf_file`
+Never add a plain `href={pb.files.getURL(...)}` for these fields.
+
+The API's `/va-forms` and `/packets` routes require a signed-in admin
+(`apps/api/src/middleware/requireAdmin.js`). The web app's `apiServerClient` sends the
+user's PocketBase token automatically. The other API routes (`/auth`, `/video-calls`,
+`/reports`, `/audit-logs`) are still unauthenticated as of 2026-10-15. `va_forms.pdf_file`
 (blank VA templates) and `users.avatar` are intentionally public.
 
 `job_applications.updateRule` is admin-only again; the Careers page creates the record
@@ -224,8 +229,14 @@ are printed in its footer/header (`VA FORM 21-0845, MAY 2026`, `Expiration Date:
 Compare against `https://www.vba.va.gov/pubs/forms/VBA-<number>-ARE.pdf` periodically.
 
 - Templates live in the `va_forms` collection; each page uses the record with
-  `is_current = true` for its form number. **Field maps exist only in the database**
-  (`va_forms.field_map`), not in the repo.
+  `is_current = true` for its form number. The database is the live copy of each field
+  map; `apps/pocketbase/va-forms/` holds a backup of every record (field map, edition,
+  OMB expiration) plus the current template PDFs. Re-export it whenever a template or
+  map changes in production, or the backup goes stale.
+- `.github/workflows/va_form_editions.yml` runs `tools/check_va_editions.py` on the 1st
+  and 15th of each month and fails (GitHub emails the repo owner) when VA publishes a
+  newer edition than the backup's current one. Run it locally any time with
+  `python3 tools/check_va_editions.py`.
 - A new edition often renames, renumbers or merges PDF fields, so never just swap the PDF.
   Rebuild the map against the new field names, fill a test, render every page and look.
   Watch for radio groups that keep their names but change order (the JUN 2026 21-2680

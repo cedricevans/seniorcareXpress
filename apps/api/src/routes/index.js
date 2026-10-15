@@ -6,6 +6,7 @@ import reportsRouter from './reports.js';
 import auditLogsRouter from './audit-logs.js';
 import vaFormsRouter from './va-forms.js';
 import packetsRouter from './packets.js';
+import { requireAdmin } from '../middleware/index.js';
 
 const router = Router();
 
@@ -15,8 +16,8 @@ export default () => {
   router.use('/video-calls', videoCallsRouter);
   router.use('/reports', reportsRouter);
   router.use('/audit-logs', auditLogsRouter);
-  router.use('/va-forms', vaFormsRouter);
-  router.use('/packets', packetsRouter);
+  router.use('/va-forms', requireAdmin, vaFormsRouter);
+  router.use('/packets', requireAdmin, packetsRouter);
 
   return router;
 };

@@ -1,0 +1,1968 @@
+{
+  "form_number": "21P-8416",
+  "title": "Medical Expense Report",
+  "category": "medical",
+  "edition": "OCT 2023",
+  "omb_expires": "10/31/2026",
+  "is_current": true,
+  "pocketbase_id": "7qlnno315z8ym2e",
+  "revision_date": "2023-10-01 00:00:00.000Z",
+  "notes": "",
+  "pdf": "21P-8416_OCT-2023.pdf",
+  "field_map": {
+    "veteran_first_name": {
+      "pdfField": "form1[0].#subform[9].TextField1[0]",
+      "type": "text"
+    },
+    "veteran_middle_initial": {
+      "pdfField": "form1[0].#subform[9].TextField1[1]",
+      "type": "text"
+    },
+    "veteran_last_name": {
+      "pdfField": "form1[0].#subform[9].TextField1[2]",
+      "type": "text"
+    },
+    "veteran_ssn": {
+      "pdfField": "form1[0].#subform[9].Enter_Veterans_Social_Security_Number[0]",
+      "type": "text"
+    },
+    "va_file_number": {
+      "pdfField": "form1[0].#subform[9].Enter_V_A_File_Number[0]",
+      "type": "text"
+    },
+    "claimant_first_name": {
+      "pdfField": "form1[0].#subform[9].TextField1[3]",
+      "type": "text"
+    },
+    "claimant_middle_initial": {
+      "pdfField": "form1[0].#subform[9].TextField1[4]",
+      "type": "text"
+    },
+    "claimant_last_name": {
+      "pdfField": "form1[0].#subform[9].TextField1[5]",
+      "type": "text"
+    },
+    "mailing_address_apt": {
+      "pdfField": "form1[0].#subform[9].TextField1[6]",
+      "type": "text"
+    },
+    "mailing_address_street": {
+      "pdfField": "form1[0].#subform[9].TextField1[7]",
+      "type": "text"
+    },
+    "mailing_address_city": {
+      "pdfField": "form1[0].#subform[9].TextField1[8]",
+      "type": "text"
+    },
+    "mailing_address_state": {
+      "pdfField": "form1[0].#subform[9].TextField1[9]",
+      "type": "text"
+    },
+    "mailing_address_country": {
+      "pdfField": "form1[0].#subform[9].TextField1[10]",
+      "type": "text"
+    },
+    "mailing_address_zip": {
+      "pdfField": "form1[0].#subform[9].TextField1[11]",
+      "type": "text"
+    },
+    "phone_area": {
+      "pdfField": "form1[0].#subform[9].Telephone_Number_First_Three_Numbers[0]",
+      "type": "text"
+    },
+    "phone_mid": {
+      "pdfField": "form1[0].#subform[9].Telephone_Number_Second_Three_Numbers[0]",
+      "type": "text"
+    },
+    "phone_last4": {
+      "pdfField": "form1[0].#subform[9].Telephone_Number_Last_Four_Numbers[0]",
+      "type": "text"
+    },
+    "claimant_email": {
+      "pdfField": "form1[0].#subform[9].Claimants_E_Mail_Address[0]",
+      "type": "text"
+    },
+    "report_date_from": {
+      "pdfField": "form1[0].#subform[9].Date_From[0]",
+      "type": "text"
+    },
+    "report_date_to": {
+      "pdfField": "form1[0].#subform[9].Date_To[0]",
+      "type": "text"
+    },
+    "in_home_a_whose": {
+      "pdfField": "form1[0].#subform[9].RadioButtonList[0]",
+      "type": "radio",
+      "values": {
+        "veteran": "4",
+        "spouse": "1",
+        "child": "3",
+        "other": "2"
+      }
+    },
+    "in_home_a_child_name": {
+      "pdfField": "form1[0].#subform[9].Name_Of_Child_Or_Other[1]",
+      "type": "text"
+    },
+    "in_home_a_provider_name": {
+      "pdfField": "form1[0].#subform[9].Name_Of_Provider[0]",
+      "type": "text"
+    },
+    "in_home_a_start_month": {
+      "pdfField": "form1[0].#subform[9].Provider_Start_Date_Month[0]",
+      "type": "text"
+    },
+    "in_home_a_start_day": {
+      "pdfField": "form1[0].#subform[9].Provider_Start_Date_Day[0]",
+      "type": "text"
+    },
+    "in_home_a_start_year": {
+      "pdfField": "form1[0].#subform[9].Provider_Start_Date_Year[0]",
+      "type": "text"
+    },
+    "in_home_a_end_month": {
+      "pdfField": "form1[0].#subform[9].Provider_End_Date_Month[0]",
+      "type": "text"
+    },
+    "in_home_a_end_day": {
+      "pdfField": "form1[0].#subform[9].Provider_End_Date_Day[0]",
+      "type": "text"
+    },
+    "in_home_a_end_year": {
+      "pdfField": "form1[0].#subform[9].Provider_End_Date_Year[0]",
+      "type": "text"
+    },
+    "in_home_a_amount_thousands": {
+      "pdfField": "form1[0].#subform[9].Amount_Paid_Monthly[1]",
+      "type": "text"
+    },
+    "in_home_a_amount_dollars": {
+      "pdfField": "form1[0].#subform[9].Amount_Paid_Monthly[0]",
+      "type": "text"
+    },
+    "in_home_a_amount_cents": {
+      "pdfField": "form1[0].#subform[9].Amount_Paid_Monthly[2]",
+      "type": "text"
+    },
+    "in_home_a_rate_per_hour": {
+      "pdfField": "form1[0].#subform[9].Payment_Rate_Per_Hour[0]",
+      "type": "text"
+    },
+    "in_home_a_hours_per_week": {
+      "pdfField": "form1[0].#subform[9].Hours_Worked_Per_Week[0]",
+      "type": "text"
+    },
+    "in_home_b_whose": {
+      "pdfField": "form1[0].#subform[9].RadioButtonList[1]",
+      "type": "radio",
+      "values": {
+        "veteran": "4",
+        "spouse": "1",
+        "child": "3",
+        "other": "2"
+      }
+    },
+    "in_home_b_child_name": {
+      "pdfField": "form1[0].#subform[9].Name_Of_Child_Or_Other[0]",
+      "type": "text"
+    },
+    "in_home_b_provider_name": {
+      "pdfField": "form1[0].#subform[9].Name_Of_Provider[1]",
+      "type": "text"
+    },
+    "in_home_b_start_month": {
+      "pdfField": "form1[0].#subform[9].Provider_Start_Date_Month[1]",
+      "type": "text"
+    },
+    "in_home_b_start_day": {
+      "pdfField": "form1[0].#subform[9].Provider_Start_Date_Day[1]",
+      "type": "text"
+    },
+    "in_home_b_start_year": {
+      "pdfField": "form1[0].#subform[9].Provider_Start_Date_Year[1]",
+      "type": "text"
+    },
+    "in_home_b_end_month": {
+      "pdfField": "form1[0].#subform[9].Provider_End_Date_Month[1]",
+      "type": "text"
+    },
+    "in_home_b_end_day": {
+      "pdfField": "form1[0].#subform[9].Provider_End_Date_Day[1]",
+      "type": "text"
+    },
+    "in_home_b_end_year": {
+      "pdfField": "form1[0].#subform[9].Provider_End_Date_Year[1]",
+      "type": "text"
+    },
+    "in_home_b_amount_thousands": {
+      "pdfField": "form1[0].#subform[9].Amount_Paid_Monthly[4]",
+      "type": "text"
+    },
+    "in_home_b_amount_dollars": {
+      "pdfField": "form1[0].#subform[9].Amount_Paid_Monthly[3]",
+      "type": "text"
+    },
+    "in_home_b_amount_cents": {
+      "pdfField": "form1[0].#subform[9].Amount_Paid_Monthly[5]",
+      "type": "text"
+    },
+    "in_home_b_rate_per_hour": {
+      "pdfField": "form1[0].#subform[9].Payment_Rate_Per_Hour[1]",
+      "type": "text"
+    },
+    "in_home_b_hours_per_week": {
+      "pdfField": "form1[0].#subform[9].Hours_Worked_Per_Week[1]",
+      "type": "text"
+    },
+    "other_a_whose": {
+      "pdfField": "form1[0].#subform[10].RadioButtonList[2]",
+      "type": "radio",
+      "values": {
+        "veteran": "4",
+        "spouse": "1",
+        "child": "3",
+        "other": "2"
+      }
+    },
+    "other_a_child_name": {
+      "pdfField": "form1[0].#subform[10].Name_Of_Child_Or_Other[2]",
+      "type": "text"
+    },
+    "other_a_date_month": {
+      "pdfField": "form1[0].#subform[10].Date_Costs_Paid_Month[0]",
+      "type": "text"
+    },
+    "other_a_date_day": {
+      "pdfField": "form1[0].#subform[10].Date_Costs_Paid_Day[0]",
+      "type": "text"
+    },
+    "other_a_date_year": {
+      "pdfField": "form1[0].#subform[10].Date_Costs_Paid_Year[0]",
+      "type": "text"
+    },
+    "other_a_frequency": {
+      "pdfField": "form1[0].#subform[10].RadioButtonList[9]",
+      "type": "radio",
+      "values": {
+        "monthly": "4",
+        "annually": "1",
+        "not_recurring": "3"
+      }
+    },
+    "other_a_amount_thousands": {
+      "pdfField": "form1[0].#subform[10].Payment_Amount[1]",
+      "type": "text"
+    },
+    "other_a_amount_dollars": {
+      "pdfField": "form1[0].#subform[10].Payment_Amount[0]",
+      "type": "text"
+    },
+    "other_a_amount_cents": {
+      "pdfField": "form1[0].#subform[10].Payment_Amount[2]",
+      "type": "text"
+    },
+    "other_a_paid_to": {
+      "pdfField": "form1[0].#subform[10].Paid_To_Name_Of_Provider_Insurance_Company_ETC[0]",
+      "type": "text"
+    },
+    "other_a_purpose": {
+      "pdfField": "form1[0].#subform[10].PURPOSE_Insurance_Premium_Medical_Supplies_ETC[0]",
+      "type": "text"
+    },
+    "other_b_whose": {
+      "pdfField": "form1[0].#subform[10].RadioButtonList[3]",
+      "type": "radio",
+      "values": {
+        "veteran": "4",
+        "spouse": "1",
+        "child": "3",
+        "other": "2"
+      }
+    },
+    "other_b_child_name": {
+      "pdfField": "form1[0].#subform[10].Name_Of_Child_Or_Other[3]",
+      "type": "text"
+    },
+    "other_b_date_month": {
+      "pdfField": "form1[0].#subform[10].Date_Costs_Paid_Month[1]",
+      "type": "text"
+    },
+    "other_b_date_day": {
+      "pdfField": "form1[0].#subform[10].Date_Costs_Paid_Day[1]",
+      "type": "text"
+    },
+    "other_b_date_year": {
+      "pdfField": "form1[0].#subform[10].Date_Costs_Paid_Year[1]",
+      "type": "text"
+    },
+    "other_b_frequency": {
+      "pdfField": "form1[0].#subform[10].RadioButtonList[10]",
+      "type": "radio",
+      "values": {
+        "monthly": "4",
+        "annually": "1",
+        "not_recurring": "3"
+      }
+    },
+    "other_b_amount_thousands": {
+      "pdfField": "form1[0].#subform[10].Payment_Amount[4]",
+      "type": "text"
+    },
+    "other_b_amount_dollars": {
+      "pdfField": "form1[0].#subform[10].Payment_Amount[3]",
+      "type": "text"
+    },
+    "other_b_amount_cents": {
+      "pdfField": "form1[0].#subform[10].Payment_Amount[5]",
+      "type": "text"
+    },
+    "other_b_paid_to": {
+      "pdfField": "form1[0].#subform[10].Paid_To_Name_Of_Provider_Insurance_Company_ETC[1]",
+      "type": "text"
+    },
+    "other_b_purpose": {
+      "pdfField": "form1[0].#subform[10].PURPOSE_Insurance_Premium_Medical_Supplies_ETC[1]",
+      "type": "text"
+    },
+    "other_c_whose": {
+      "pdfField": "form1[0].#subform[10].RadioButtonList[4]",
+      "type": "radio",
+      "values": {
+        "veteran": "4",
+        "spouse": "1",
+        "child": "3",
+        "other": "2"
+      }
+    },
+    "other_c_child_name": {
+      "pdfField": "form1[0].#subform[10].Name_Of_Child_Or_Other[4]",
+      "type": "text"
+    },
+    "other_c_date_month": {
+      "pdfField": "form1[0].#subform[10].Date_Costs_Paid_Month[2]",
+      "type": "text"
+    },
+    "other_c_date_day": {
+      "pdfField": "form1[0].#subform[10].Date_Costs_Paid_Day[2]",
+      "type": "text"
+    },
+    "other_c_date_year": {
+      "pdfField": "form1[0].#subform[10].Date_Costs_Paid_Year[2]",
+      "type": "text"
+    },
+    "other_c_frequency": {
+      "pdfField": "form1[0].#subform[10].RadioButtonList[11]",
+      "type": "radio",
+      "values": {
+        "monthly": "4",
+        "annually": "1",
+        "not_recurring": "3"
+      }
+    },
+    "other_c_amount_thousands": {
+      "pdfField": "form1[0].#subform[10].Payment_Amount[7]",
+      "type": "text"
+    },
+    "other_c_amount_dollars": {
+      "pdfField": "form1[0].#subform[10].Payment_Amount[6]",
+      "type": "text"
+    },
+    "other_c_amount_cents": {
+      "pdfField": "form1[0].#subform[10].Payment_Amount[8]",
+      "type": "text"
+    },
+    "other_c_paid_to": {
+      "pdfField": "form1[0].#subform[10].Paid_To_Name_Of_Provider_Insurance_Company_ETC[2]",
+      "type": "text"
+    },
+    "other_c_purpose": {
+      "pdfField": "form1[0].#subform[10].PURPOSE_Insurance_Premium_Medical_Supplies_ETC[2]",
+      "type": "text"
+    },
+    "other_d_whose": {
+      "pdfField": "form1[0].#subform[10].RadioButtonList[5]",
+      "type": "radio",
+      "values": {
+        "veteran": "4",
+        "spouse": "1",
+        "child": "3",
+        "other": "2"
+      }
+    },
+    "other_d_child_name": {
+      "pdfField": "form1[0].#subform[10].Name_Of_Child_Or_Other[5]",
+      "type": "text"
+    },
+    "other_d_date_month": {
+      "pdfField": "form1[0].#subform[10].Date_Costs_Paid_Month[3]",
+      "type": "text"
+    },
+    "other_d_date_day": {
+      "pdfField": "form1[0].#subform[10].Date_Costs_Paid_Day[3]",
+      "type": "text"
+    },
+    "other_d_date_year": {
+      "pdfField": "form1[0].#subform[10].Date_Costs_Paid_Year[3]",
+      "type": "text"
+    },
+    "other_d_frequency": {
+      "pdfField": "form1[0].#subform[10].RadioButtonList[12]",
+      "type": "radio",
+      "values": {
+        "monthly": "4",
+        "annually": "1",
+        "not_recurring": "3"
+      }
+    },
+    "other_d_amount_thousands": {
+      "pdfField": "form1[0].#subform[10].Payment_Amount[10]",
+      "type": "text"
+    },
+    "other_d_amount_dollars": {
+      "pdfField": "form1[0].#subform[10].Payment_Amount[9]",
+      "type": "text"
+    },
+    "other_d_amount_cents": {
+      "pdfField": "form1[0].#subform[10].Payment_Amount[11]",
+      "type": "text"
+    },
+    "other_d_paid_to": {
+      "pdfField": "form1[0].#subform[10].Paid_To_Name_Of_Provider_Insurance_Company_ETC[3]",
+      "type": "text"
+    },
+    "other_d_purpose": {
+      "pdfField": "form1[0].#subform[10].PURPOSE_Insurance_Premium_Medical_Supplies_ETC[3]",
+      "type": "text"
+    },
+    "other_e_whose": {
+      "pdfField": "form1[0].#subform[10].RadioButtonList[6]",
+      "type": "radio",
+      "values": {
+        "veteran": "4",
+        "spouse": "1",
+        "child": "3",
+        "other": "2"
+      }
+    },
+    "other_e_child_name": {
+      "pdfField": "form1[0].#subform[10].Name_Of_Child_Or_Other[6]",
+      "type": "text"
+    },
+    "other_e_date_month": {
+      "pdfField": "form1[0].#subform[10].Date_Costs_Paid_Month[4]",
+      "type": "text"
+    },
+    "other_e_date_day": {
+      "pdfField": "form1[0].#subform[10].Date_Costs_Paid_Day[4]",
+      "type": "text"
+    },
+    "other_e_date_year": {
+      "pdfField": "form1[0].#subform[10].Date_Costs_Paid_Year[4]",
+      "type": "text"
+    },
+    "other_e_frequency": {
+      "pdfField": "form1[0].#subform[10].RadioButtonList[13]",
+      "type": "radio",
+      "values": {
+        "monthly": "4",
+        "annually": "1",
+        "not_recurring": "3"
+      }
+    },
+    "other_e_amount_thousands": {
+      "pdfField": "form1[0].#subform[10].Payment_Amount[13]",
+      "type": "text"
+    },
+    "other_e_amount_dollars": {
+      "pdfField": "form1[0].#subform[10].Payment_Amount[12]",
+      "type": "text"
+    },
+    "other_e_amount_cents": {
+      "pdfField": "form1[0].#subform[10].Payment_Amount[14]",
+      "type": "text"
+    },
+    "other_e_paid_to": {
+      "pdfField": "form1[0].#subform[10].Paid_To_Name_Of_Provider_Insurance_Company_ETC[4]",
+      "type": "text"
+    },
+    "other_e_purpose": {
+      "pdfField": "form1[0].#subform[10].PURPOSE_Insurance_Premium_Medical_Supplies_ETC[4]",
+      "type": "text"
+    },
+    "other_f_whose": {
+      "pdfField": "form1[0].#subform[10].RadioButtonList[7]",
+      "type": "radio",
+      "values": {
+        "veteran": "4",
+        "spouse": "1",
+        "child": "3",
+        "other": "2"
+      }
+    },
+    "other_f_child_name": {
+      "pdfField": "form1[0].#subform[10].Name_Of_Child_Or_Other[7]",
+      "type": "text"
+    },
+    "other_f_date_month": {
+      "pdfField": "form1[0].#subform[10].Date_Costs_Paid_Month[5]",
+      "type": "text"
+    },
+    "other_f_date_day": {
+      "pdfField": "form1[0].#subform[10].Date_Costs_Paid_Day[5]",
+      "type": "text"
+    },
+    "other_f_date_year": {
+      "pdfField": "form1[0].#subform[10].Date_Costs_Paid_Year[5]",
+      "type": "text"
+    },
+    "other_f_frequency": {
+      "pdfField": "form1[0].#subform[10].RadioButtonList[14]",
+      "type": "radio",
+      "values": {
+        "monthly": "4",
+        "annually": "1",
+        "not_recurring": "3"
+      }
+    },
+    "other_f_amount_thousands": {
+      "pdfField": "form1[0].#subform[10].Payment_Amount[16]",
+      "type": "text"
+    },
+    "other_f_amount_dollars": {
+      "pdfField": "form1[0].#subform[10].Payment_Amount[15]",
+      "type": "text"
+    },
+    "other_f_amount_cents": {
+      "pdfField": "form1[0].#subform[10].Payment_Amount[17]",
+      "type": "text"
+    },
+    "other_f_paid_to": {
+      "pdfField": "form1[0].#subform[10].Paid_To_Name_Of_Provider_Insurance_Company_ETC[5]",
+      "type": "text"
+    },
+    "other_f_purpose": {
+      "pdfField": "form1[0].#subform[10].PURPOSE_Insurance_Premium_Medical_Supplies_ETC[5]",
+      "type": "text"
+    },
+    "other_g_whose": {
+      "pdfField": "form1[0].#subform[10].RadioButtonList[8]",
+      "type": "radio",
+      "values": {
+        "veteran": "4",
+        "spouse": "1",
+        "child": "3",
+        "other": "2"
+      }
+    },
+    "other_g_child_name": {
+      "pdfField": "form1[0].#subform[10].Name_Of_Child_Or_Other[8]",
+      "type": "text"
+    },
+    "other_g_date_month": {
+      "pdfField": "form1[0].#subform[10].Date_Costs_Paid_Month[6]",
+      "type": "text"
+    },
+    "other_g_date_day": {
+      "pdfField": "form1[0].#subform[10].Date_Costs_Paid_Day[6]",
+      "type": "text"
+    },
+    "other_g_date_year": {
+      "pdfField": "form1[0].#subform[10].Date_Costs_Paid_Year[6]",
+      "type": "text"
+    },
+    "other_g_frequency": {
+      "pdfField": "form1[0].#subform[10].RadioButtonList[15]",
+      "type": "radio",
+      "values": {
+        "monthly": "4",
+        "annually": "1",
+        "not_recurring": "3"
+      }
+    },
+    "other_g_amount_thousands": {
+      "pdfField": "form1[0].#subform[10].Payment_Amount[19]",
+      "type": "text"
+    },
+    "other_g_amount_dollars": {
+      "pdfField": "form1[0].#subform[10].Payment_Amount[18]",
+      "type": "text"
+    },
+    "other_g_amount_cents": {
+      "pdfField": "form1[0].#subform[10].Payment_Amount[20]",
+      "type": "text"
+    },
+    "other_g_paid_to": {
+      "pdfField": "form1[0].#subform[10].Paid_To_Name_Of_Provider_Insurance_Company_ETC[6]",
+      "type": "text"
+    },
+    "other_g_purpose": {
+      "pdfField": "form1[0].#subform[10].PURPOSE_Insurance_Premium_Medical_Supplies_ETC[6]",
+      "type": "text"
+    },
+    "mileage_a_whose": {
+      "pdfField": "form1[0].#subform[11].RadioButtonList[16]",
+      "type": "radio",
+      "values": {
+        "veteran": "4",
+        "spouse": "1",
+        "child": "3"
+      }
+    },
+    "mileage_a_child_name": {
+      "pdfField": "form1[0].#subform[11].Name_Of_Child_Or_Other[9]",
+      "type": "text"
+    },
+    "mileage_a_location": {
+      "pdfField": "form1[0].#subform[11].Provide_Location_Traveled_To_Hospital_Clinic_Pharmacy_ETC[0]",
+      "type": "text"
+    },
+    "mileage_a_total_miles": {
+      "pdfField": "form1[0].#subform[11].Total_Miles_Traveled[0]",
+      "type": "text"
+    },
+    "mileage_a_date_month": {
+      "pdfField": "form1[0].#subform[11].Date_Traveled_Month[0]",
+      "type": "text"
+    },
+    "mileage_a_date_day": {
+      "pdfField": "form1[0].#subform[11].Date_Traveled_Day[0]",
+      "type": "text"
+    },
+    "mileage_a_date_year": {
+      "pdfField": "form1[0].#subform[11].Date_Traveled_Year[0]",
+      "type": "text"
+    },
+    "mileage_a_amount_thousands": {
+      "pdfField": "form1[0].#subform[11].Amount[1]",
+      "type": "text"
+    },
+    "mileage_a_amount_dollars": {
+      "pdfField": "form1[0].#subform[11].Amount[0]",
+      "type": "text"
+    },
+    "mileage_a_amount_cents": {
+      "pdfField": "form1[0].#subform[11].Amount[2]",
+      "type": "text"
+    },
+    "mileage_b_whose": {
+      "pdfField": "form1[0].#subform[11].RadioButtonList[17]",
+      "type": "radio",
+      "values": {
+        "veteran": "4",
+        "spouse": "1",
+        "child": "3"
+      }
+    },
+    "mileage_b_child_name": {
+      "pdfField": "form1[0].#subform[11].Name_Of_Child_Or_Other[10]",
+      "type": "text"
+    },
+    "mileage_b_location": {
+      "pdfField": "form1[0].#subform[11].Provide_Location_Traveled_To_Hospital_Clinic_Pharmacy_ETC[1]",
+      "type": "text"
+    },
+    "mileage_b_total_miles": {
+      "pdfField": "form1[0].#subform[11].Total_Miles_Traveled[1]",
+      "type": "text"
+    },
+    "mileage_b_date_month": {
+      "pdfField": "form1[0].#subform[11].Date_Traveled_Month[1]",
+      "type": "text"
+    },
+    "mileage_b_date_day": {
+      "pdfField": "form1[0].#subform[11].Date_Traveled_Day[1]",
+      "type": "text"
+    },
+    "mileage_b_date_year": {
+      "pdfField": "form1[0].#subform[11].Date_Traveled_Year[1]",
+      "type": "text"
+    },
+    "mileage_b_amount_thousands": {
+      "pdfField": "form1[0].#subform[11].Amount[4]",
+      "type": "text"
+    },
+    "mileage_b_amount_dollars": {
+      "pdfField": "form1[0].#subform[11].Amount[3]",
+      "type": "text"
+    },
+    "mileage_b_amount_cents": {
+      "pdfField": "form1[0].#subform[11].Amount[5]",
+      "type": "text"
+    },
+    "mileage_c_whose": {
+      "pdfField": "form1[0].#subform[11].RadioButtonList[18]",
+      "type": "radio",
+      "values": {
+        "veteran": "4",
+        "spouse": "1",
+        "child": "3"
+      }
+    },
+    "mileage_c_child_name": {
+      "pdfField": "form1[0].#subform[11].Name_Of_Child_Or_Other[11]",
+      "type": "text"
+    },
+    "mileage_c_location": {
+      "pdfField": "form1[0].#subform[11].Provide_Location_Traveled_To_Hospital_Clinic_Pharmacy_ETC[2]",
+      "type": "text"
+    },
+    "mileage_c_total_miles": {
+      "pdfField": "form1[0].#subform[11].Total_Miles_Traveled[2]",
+      "type": "text"
+    },
+    "mileage_c_date_month": {
+      "pdfField": "form1[0].#subform[11].Date_Traveled_Month[2]",
+      "type": "text"
+    },
+    "mileage_c_date_day": {
+      "pdfField": "form1[0].#subform[11].Date_Traveled_Day[2]",
+      "type": "text"
+    },
+    "mileage_c_date_year": {
+      "pdfField": "form1[0].#subform[11].Date_Traveled_Year[2]",
+      "type": "text"
+    },
+    "mileage_c_amount_thousands": {
+      "pdfField": "form1[0].#subform[11].Amount[7]",
+      "type": "text"
+    },
+    "mileage_c_amount_dollars": {
+      "pdfField": "form1[0].#subform[11].Amount[6]",
+      "type": "text"
+    },
+    "mileage_c_amount_cents": {
+      "pdfField": "form1[0].#subform[11].Amount[8]",
+      "type": "text"
+    },
+    "mileage_d_whose": {
+      "pdfField": "form1[0].#subform[11].RadioButtonList[19]",
+      "type": "radio",
+      "values": {
+        "veteran": "4",
+        "spouse": "1",
+        "child": "3"
+      }
+    },
+    "mileage_d_child_name": {
+      "pdfField": "form1[0].#subform[11].Name_Of_Child_Or_Other[12]",
+      "type": "text"
+    },
+    "mileage_d_location": {
+      "pdfField": "form1[0].#subform[11].Provide_Location_Traveled_To_Hospital_Clinic_Pharmacy_ETC[3]",
+      "type": "text"
+    },
+    "mileage_d_total_miles": {
+      "pdfField": "form1[0].#subform[11].Total_Miles_Traveled[3]",
+      "type": "text"
+    },
+    "mileage_d_date_month": {
+      "pdfField": "form1[0].#subform[11].Date_Traveled_Month[3]",
+      "type": "text"
+    },
+    "mileage_d_date_day": {
+      "pdfField": "form1[0].#subform[11].Date_Traveled_Day[3]",
+      "type": "text"
+    },
+    "mileage_d_date_year": {
+      "pdfField": "form1[0].#subform[11].Date_Traveled_Year[3]",
+      "type": "text"
+    },
+    "mileage_d_amount_thousands": {
+      "pdfField": "form1[0].#subform[11].Amount[10]",
+      "type": "text"
+    },
+    "mileage_d_amount_dollars": {
+      "pdfField": "form1[0].#subform[11].Amount[9]",
+      "type": "text"
+    },
+    "mileage_d_amount_cents": {
+      "pdfField": "form1[0].#subform[11].Amount[11]",
+      "type": "text"
+    },
+    "date_signed_month": {
+      "pdfField": "form1[0].#subform[11].Date_Signed_Month[0]",
+      "type": "text"
+    },
+    "date_signed_day": {
+      "pdfField": "form1[0].#subform[11].Date_Signed_Day[0]",
+      "type": "text"
+    },
+    "date_signed_year": {
+      "pdfField": "form1[0].#subform[11].Date_Signed_Year[0]",
+      "type": "text"
+    },
+    "witness1_printed_name": {
+      "pdfField": "form1[0].#subform[11].Print_Name_Of_First_Witness[0]",
+      "type": "text"
+    },
+    "witness1_address_apt": {
+      "pdfField": "form1[0].#subform[11].Mailing_Address_Apartment_Unit_Number[0]",
+      "type": "text"
+    },
+    "witness1_address_street": {
+      "pdfField": "form1[0].#subform[11].Mailing_Address_Number_And_Street[0]",
+      "type": "text"
+    },
+    "witness1_address_city": {
+      "pdfField": "form1[0].#subform[11].Mailing_Address_City[0]",
+      "type": "text"
+    },
+    "witness1_address_state": {
+      "pdfField": "form1[0].#subform[11].Mailing_Address_State_Province[0]",
+      "type": "text"
+    },
+    "witness1_address_country": {
+      "pdfField": "form1[0].#subform[11].Mailing_Address_Country[0]",
+      "type": "text"
+    },
+    "witness1_address_zip": {
+      "pdfField": "form1[0].#subform[11].Mailing_Address_ZIP_Code_Postal_Code[0]",
+      "type": "text"
+    },
+    "witness2_printed_name": {
+      "pdfField": "form1[0].#subform[11].Print_Name_Of_Second_Witness[0]",
+      "type": "text"
+    },
+    "witness2_address_apt": {
+      "pdfField": "form1[0].#subform[11].Mailing_Address_Apartment_Unit_Number[1]",
+      "type": "text"
+    },
+    "witness2_address_street": {
+      "pdfField": "form1[0].#subform[11].Mailing_Address_Number_And_Street[1]",
+      "type": "text"
+    },
+    "witness2_address_city": {
+      "pdfField": "form1[0].#subform[11].Mailing_Address_City[1]",
+      "type": "text"
+    },
+    "witness2_address_state": {
+      "pdfField": "form1[0].#subform[11].Mailing_Address_State_Province[1]",
+      "type": "text"
+    },
+    "witness2_address_country": {
+      "pdfField": "form1[0].#subform[11].Mailing_Address_Country[1]",
+      "type": "text"
+    },
+    "witness2_address_zip": {
+      "pdfField": "form1[0].#subform[11].Mailing_Address_ZIP_Code_Postal_Code[1]",
+      "type": "text"
+    },
+    "addendum_a_row1_start_year": {
+      "pdfField": "form1[0].#subform[12].Provider_Start_Date_Year[2]",
+      "type": "text"
+    },
+    "addendum_a_row1_start_day": {
+      "pdfField": "form1[0].#subform[12].Provider_Start_Date_Day[2]",
+      "type": "text"
+    },
+    "addendum_a_row1_start_month": {
+      "pdfField": "form1[0].#subform[12].Provider_Start_Date_Month[2]",
+      "type": "text"
+    },
+    "addendum_a_row1_end_year": {
+      "pdfField": "form1[0].#subform[12].Provider_End_Date_Year[2]",
+      "type": "text"
+    },
+    "addendum_a_row1_end_day": {
+      "pdfField": "form1[0].#subform[12].Provider_End_Date_Day[2]",
+      "type": "text"
+    },
+    "addendum_a_row1_end_month": {
+      "pdfField": "form1[0].#subform[12].Provider_End_Date_Month[2]",
+      "type": "text"
+    },
+    "addendum_a_row1_whose": {
+      "pdfField": "form1[0].#subform[12].RadioButtonList[20]",
+      "type": "radio",
+      "values": {
+        "veteran": "4",
+        "spouse": "1",
+        "child": "3",
+        "other": "2"
+      }
+    },
+    "addendum_a_row1_provider_name": {
+      "pdfField": "form1[0].#subform[12].Name_Of_Provider[2]",
+      "type": "text"
+    },
+    "addendum_a_row1_amount_thousands": {
+      "pdfField": "form1[0].#subform[12].Amount_Paid_Monthly[6]",
+      "type": "text"
+    },
+    "addendum_a_row1_amount_dollars": {
+      "pdfField": "form1[0].#subform[12].Amount[12]",
+      "type": "text"
+    },
+    "addendum_a_row1_amount_cents": {
+      "pdfField": "form1[0].#subform[12].Amount[13]",
+      "type": "text"
+    },
+    "addendum_a_row1_rate_per_hour": {
+      "pdfField": "form1[0].#subform[12].Payment_Rate_Per_Hour[2]",
+      "type": "text"
+    },
+    "addendum_a_row1_hours_per_week": {
+      "pdfField": "form1[0].#subform[12].Average_Hours_Worked_Per_Week[0]",
+      "type": "text"
+    },
+    "addendum_a_row1_child_name": {
+      "pdfField": "form1[0].#subform[12].Name_Of_Child_Or_Other[13]",
+      "type": "text"
+    },
+    "addendum_a_row2_start_year": {
+      "pdfField": "form1[0].#subform[12].Provider_Start_Date_Year[3]",
+      "type": "text"
+    },
+    "addendum_a_row2_start_day": {
+      "pdfField": "form1[0].#subform[12].Provider_Start_Date_Day[3]",
+      "type": "text"
+    },
+    "addendum_a_row2_start_month": {
+      "pdfField": "form1[0].#subform[12].Provider_Start_Date_Month[3]",
+      "type": "text"
+    },
+    "addendum_a_row2_end_year": {
+      "pdfField": "form1[0].#subform[12].Provider_End_Date_Year[3]",
+      "type": "text"
+    },
+    "addendum_a_row2_end_day": {
+      "pdfField": "form1[0].#subform[12].Provider_End_Date_Day[3]",
+      "type": "text"
+    },
+    "addendum_a_row2_end_month": {
+      "pdfField": "form1[0].#subform[12].Provider_End_Date_Month[3]",
+      "type": "text"
+    },
+    "addendum_a_row2_whose": {
+      "pdfField": "form1[0].#subform[12].RadioButtonList[21]",
+      "type": "radio",
+      "values": {
+        "veteran": "4",
+        "spouse": "1",
+        "child": "3",
+        "other": "2"
+      }
+    },
+    "addendum_a_row2_provider_name": {
+      "pdfField": "form1[0].#subform[12].Name_Of_Provider[3]",
+      "type": "text"
+    },
+    "addendum_a_row2_amount_thousands": {
+      "pdfField": "form1[0].#subform[12].Amount_Paid_Monthly[7]",
+      "type": "text"
+    },
+    "addendum_a_row2_amount_dollars": {
+      "pdfField": "form1[0].#subform[12].Amount[14]",
+      "type": "text"
+    },
+    "addendum_a_row2_amount_cents": {
+      "pdfField": "form1[0].#subform[12].Amount[15]",
+      "type": "text"
+    },
+    "addendum_a_row2_rate_per_hour": {
+      "pdfField": "form1[0].#subform[12].Payment_Rate_Per_Hour[3]",
+      "type": "text"
+    },
+    "addendum_a_row2_hours_per_week": {
+      "pdfField": "form1[0].#subform[12].Average_Hours_Worked_Per_Week[1]",
+      "type": "text"
+    },
+    "addendum_a_row2_child_name": {
+      "pdfField": "form1[0].#subform[12].Name_Of_Child_Or_Other[14]",
+      "type": "text"
+    },
+    "addendum_a_row3_start_year": {
+      "pdfField": "form1[0].#subform[12].Provider_Start_Date_Year[4]",
+      "type": "text"
+    },
+    "addendum_a_row3_start_day": {
+      "pdfField": "form1[0].#subform[12].Provider_Start_Date_Day[4]",
+      "type": "text"
+    },
+    "addendum_a_row3_start_month": {
+      "pdfField": "form1[0].#subform[12].Provider_Start_Date_Month[4]",
+      "type": "text"
+    },
+    "addendum_a_row3_end_year": {
+      "pdfField": "form1[0].#subform[12].Provider_End_Date_Year[4]",
+      "type": "text"
+    },
+    "addendum_a_row3_end_day": {
+      "pdfField": "form1[0].#subform[12].Provider_End_Date_Day[4]",
+      "type": "text"
+    },
+    "addendum_a_row3_end_month": {
+      "pdfField": "form1[0].#subform[12].Provider_End_Date_Month[4]",
+      "type": "text"
+    },
+    "addendum_a_row3_whose": {
+      "pdfField": "form1[0].#subform[12].RadioButtonList[22]",
+      "type": "radio",
+      "values": {
+        "veteran": "4",
+        "spouse": "1",
+        "child": "3",
+        "other": "2"
+      }
+    },
+    "addendum_a_row3_provider_name": {
+      "pdfField": "form1[0].#subform[12].Name_Of_Provider[4]",
+      "type": "text"
+    },
+    "addendum_a_row3_amount_thousands": {
+      "pdfField": "form1[0].#subform[12].Amount_Paid_Monthly[8]",
+      "type": "text"
+    },
+    "addendum_a_row3_amount_dollars": {
+      "pdfField": "form1[0].#subform[12].Amount[16]",
+      "type": "text"
+    },
+    "addendum_a_row3_amount_cents": {
+      "pdfField": "form1[0].#subform[12].Amount[17]",
+      "type": "text"
+    },
+    "addendum_a_row3_rate_per_hour": {
+      "pdfField": "form1[0].#subform[12].Payment_Rate_Per_Hour[4]",
+      "type": "text"
+    },
+    "addendum_a_row3_hours_per_week": {
+      "pdfField": "form1[0].#subform[12].Average_Hours_Worked_Per_Week[2]",
+      "type": "text"
+    },
+    "addendum_a_row3_child_name": {
+      "pdfField": "form1[0].#subform[12].Name_Of_Child_Or_Other[15]",
+      "type": "text"
+    },
+    "addendum_a_row4_start_year": {
+      "pdfField": "form1[0].#subform[12].Provider_Start_Date_Year[5]",
+      "type": "text"
+    },
+    "addendum_a_row4_start_day": {
+      "pdfField": "form1[0].#subform[12].Provider_Start_Date_Day[5]",
+      "type": "text"
+    },
+    "addendum_a_row4_start_month": {
+      "pdfField": "form1[0].#subform[12].Provider_Start_Date_Month[5]",
+      "type": "text"
+    },
+    "addendum_a_row4_end_year": {
+      "pdfField": "form1[0].#subform[12].Provider_End_Date_Year[5]",
+      "type": "text"
+    },
+    "addendum_a_row4_end_day": {
+      "pdfField": "form1[0].#subform[12].Provider_End_Date_Day[5]",
+      "type": "text"
+    },
+    "addendum_a_row4_end_month": {
+      "pdfField": "form1[0].#subform[12].Provider_End_Date_Month[5]",
+      "type": "text"
+    },
+    "addendum_a_row4_whose": {
+      "pdfField": "form1[0].#subform[12].RadioButtonList[23]",
+      "type": "radio",
+      "values": {
+        "veteran": "4",
+        "spouse": "1",
+        "child": "3",
+        "other": "2"
+      }
+    },
+    "addendum_a_row4_provider_name": {
+      "pdfField": "form1[0].#subform[12].Name_Of_Provider[5]",
+      "type": "text"
+    },
+    "addendum_a_row4_amount_thousands": {
+      "pdfField": "form1[0].#subform[12].Amount_You_Pay[0]",
+      "type": "text"
+    },
+    "addendum_a_row4_amount_dollars": {
+      "pdfField": "form1[0].#subform[12].Amount[18]",
+      "type": "text"
+    },
+    "addendum_a_row4_amount_cents": {
+      "pdfField": "form1[0].#subform[12].Amount[19]",
+      "type": "text"
+    },
+    "addendum_a_row4_rate_per_hour": {
+      "pdfField": "form1[0].#subform[12].Payment_Rate_Per_Hour[5]",
+      "type": "text"
+    },
+    "addendum_a_row4_hours_per_week": {
+      "pdfField": "form1[0].#subform[12].Average_Hours_Worked_Per_Week[3]",
+      "type": "text"
+    },
+    "addendum_a_row4_child_name": {
+      "pdfField": "form1[0].#subform[12].Name_Of_Child_Or_Other[16]",
+      "type": "text"
+    },
+    "addendum_a_row5_start_year": {
+      "pdfField": "form1[0].#subform[12].Provider_Start_Date_Year[6]",
+      "type": "text"
+    },
+    "addendum_a_row5_start_day": {
+      "pdfField": "form1[0].#subform[12].Provider_Start_Date_Day[6]",
+      "type": "text"
+    },
+    "addendum_a_row5_start_month": {
+      "pdfField": "form1[0].#subform[12].Provider_Start_Date_Month[6]",
+      "type": "text"
+    },
+    "addendum_a_row5_end_year": {
+      "pdfField": "form1[0].#subform[12].Provider_End_Date_Year[6]",
+      "type": "text"
+    },
+    "addendum_a_row5_end_day": {
+      "pdfField": "form1[0].#subform[12].Provider_End_Date_Day[6]",
+      "type": "text"
+    },
+    "addendum_a_row5_end_month": {
+      "pdfField": "form1[0].#subform[12].Provider_End_Date_Month[6]",
+      "type": "text"
+    },
+    "addendum_a_row5_whose": {
+      "pdfField": "form1[0].#subform[12].RadioButtonList[24]",
+      "type": "radio",
+      "values": {
+        "veteran": "4",
+        "spouse": "1",
+        "child": "3",
+        "other": "2"
+      }
+    },
+    "addendum_a_row5_provider_name": {
+      "pdfField": "form1[0].#subform[12].Name_Of_Provider[6]",
+      "type": "text"
+    },
+    "addendum_a_row5_amount_thousands": {
+      "pdfField": "form1[0].#subform[12].Amount_Paid_Monthly[9]",
+      "type": "text"
+    },
+    "addendum_a_row5_amount_dollars": {
+      "pdfField": "form1[0].#subform[12].Amount[20]",
+      "type": "text"
+    },
+    "addendum_a_row5_amount_cents": {
+      "pdfField": "form1[0].#subform[12].Amount[21]",
+      "type": "text"
+    },
+    "addendum_a_row5_rate_per_hour": {
+      "pdfField": "form1[0].#subform[12].Payment_Rate_Per_Hour[6]",
+      "type": "text"
+    },
+    "addendum_a_row5_hours_per_week": {
+      "pdfField": "form1[0].#subform[12].Average_Hours_Worked_Per_Week[4]",
+      "type": "text"
+    },
+    "addendum_a_row5_child_name": {
+      "pdfField": "form1[0].#subform[12].Name_Of_Child_Or_Other[17]",
+      "type": "text"
+    },
+    "addendum_a_row6_start_year": {
+      "pdfField": "form1[0].#subform[12].Provider_Start_Date_Year[7]",
+      "type": "text"
+    },
+    "addendum_a_row6_start_day": {
+      "pdfField": "form1[0].#subform[12].Provider_Start_Date_Day[7]",
+      "type": "text"
+    },
+    "addendum_a_row6_start_month": {
+      "pdfField": "form1[0].#subform[12].Provider_Start_Date_Month[7]",
+      "type": "text"
+    },
+    "addendum_a_row6_end_year": {
+      "pdfField": "form1[0].#subform[12].Provider_End_Date_Year[7]",
+      "type": "text"
+    },
+    "addendum_a_row6_end_day": {
+      "pdfField": "form1[0].#subform[12].Provider_End_Date_Day[7]",
+      "type": "text"
+    },
+    "addendum_a_row6_end_month": {
+      "pdfField": "form1[0].#subform[12].Provider_End_Date_Month[7]",
+      "type": "text"
+    },
+    "addendum_a_row6_whose": {
+      "pdfField": "form1[0].#subform[12].RadioButtonList[25]",
+      "type": "radio",
+      "values": {
+        "veteran": "4",
+        "spouse": "1",
+        "child": "3",
+        "other": "2"
+      }
+    },
+    "addendum_a_row6_provider_name": {
+      "pdfField": "form1[0].#subform[12].Name_Of_Provider[7]",
+      "type": "text"
+    },
+    "addendum_a_row6_amount_thousands": {
+      "pdfField": "form1[0].#subform[12].Amount_Paid_Monthly[10]",
+      "type": "text"
+    },
+    "addendum_a_row6_amount_dollars": {
+      "pdfField": "form1[0].#subform[12].Amount[22]",
+      "type": "text"
+    },
+    "addendum_a_row6_amount_cents": {
+      "pdfField": "form1[0].#subform[12].Amount[23]",
+      "type": "text"
+    },
+    "addendum_a_row6_rate_per_hour": {
+      "pdfField": "form1[0].#subform[12].Payment_Rate_Per_Hour[7]",
+      "type": "text"
+    },
+    "addendum_a_row6_hours_per_week": {
+      "pdfField": "form1[0].#subform[12].Average_Hours_Worked_Per_Week[5]",
+      "type": "text"
+    },
+    "addendum_a_row6_child_name": {
+      "pdfField": "form1[0].#subform[12].Name_Of_Child_Or_Other[18]",
+      "type": "text"
+    },
+    "addendum_b_row1_child_name": {
+      "pdfField": "form1[0].#subform[13].Name_Of_Child_Or_Other[19]",
+      "type": "text"
+    },
+    "addendum_b_row1_date_year": {
+      "pdfField": "form1[0].#subform[13].Date_Costs_Paid_Year[7]",
+      "type": "text"
+    },
+    "addendum_b_row1_date_day": {
+      "pdfField": "form1[0].#subform[13].Date_Costs_Paid_Day[7]",
+      "type": "text"
+    },
+    "addendum_b_row1_date_month": {
+      "pdfField": "form1[0].#subform[13].Date_Costs_Paid_Month[7]",
+      "type": "text"
+    },
+    "addendum_b_row1_amount_thousands": {
+      "pdfField": "form1[0].#subform[13].Payment_Amount[21]",
+      "type": "text"
+    },
+    "addendum_b_row1_amount_dollars": {
+      "pdfField": "form1[0].#subform[13].Amount[24]",
+      "type": "text"
+    },
+    "addendum_b_row1_amount_cents": {
+      "pdfField": "form1[0].#subform[13].Amount[25]",
+      "type": "text"
+    },
+    "addendum_b_row1_paid_to": {
+      "pdfField": "form1[0].#subform[13].Name_Of_Provider_Insurance_Company_ETC[1]",
+      "type": "text"
+    },
+    "addendum_b_row1_purpose": {
+      "pdfField": "form1[0].#subform[13].Purpose_Insurance_Premium_Medical_Supplies_ETC[1]",
+      "type": "text"
+    },
+    "addendum_b_row2_child_name": {
+      "pdfField": "form1[0].#subform[13].Name_Of_Child_Or_Other[20]",
+      "type": "text"
+    },
+    "addendum_b_row2_date_year": {
+      "pdfField": "form1[0].#subform[13].Date_Costs_Paid_Year[8]",
+      "type": "text"
+    },
+    "addendum_b_row2_date_day": {
+      "pdfField": "form1[0].#subform[13].Date_Costs_Paid_Day[8]",
+      "type": "text"
+    },
+    "addendum_b_row2_date_month": {
+      "pdfField": "form1[0].#subform[13].Date_Costs_Paid_Month[8]",
+      "type": "text"
+    },
+    "addendum_b_row2_amount_thousands": {
+      "pdfField": "form1[0].#subform[13].Payment_Amount[22]",
+      "type": "text"
+    },
+    "addendum_b_row2_amount_dollars": {
+      "pdfField": "form1[0].#subform[13].Amount[26]",
+      "type": "text"
+    },
+    "addendum_b_row2_amount_cents": {
+      "pdfField": "form1[0].#subform[13].Amount[27]",
+      "type": "text"
+    },
+    "addendum_b_row2_paid_to": {
+      "pdfField": "form1[0].#subform[13].Name_Of_Provider_Insurance_Company_ETC[2]",
+      "type": "text"
+    },
+    "addendum_b_row2_purpose": {
+      "pdfField": "form1[0].#subform[13].Purpose_Insurance_Premium_Medical_Supplies_ETC[2]",
+      "type": "text"
+    },
+    "addendum_b_row3_child_name": {
+      "pdfField": "form1[0].#subform[13].Name_Of_Child_Or_Other[21]",
+      "type": "text"
+    },
+    "addendum_b_row3_date_year": {
+      "pdfField": "form1[0].#subform[13].Date_Costs_Paid_Year[9]",
+      "type": "text"
+    },
+    "addendum_b_row3_date_day": {
+      "pdfField": "form1[0].#subform[13].Date_Costs_Paid_Day[9]",
+      "type": "text"
+    },
+    "addendum_b_row3_date_month": {
+      "pdfField": "form1[0].#subform[13].Date_Costs_Paid_Month[9]",
+      "type": "text"
+    },
+    "addendum_b_row3_amount_thousands": {
+      "pdfField": "form1[0].#subform[13].Payment_Amount[23]",
+      "type": "text"
+    },
+    "addendum_b_row3_amount_dollars": {
+      "pdfField": "form1[0].#subform[13].Amount[28]",
+      "type": "text"
+    },
+    "addendum_b_row3_amount_cents": {
+      "pdfField": "form1[0].#subform[13].Amount[29]",
+      "type": "text"
+    },
+    "addendum_b_row3_paid_to": {
+      "pdfField": "form1[0].#subform[13].Name_Of_Provider_Insurance_Company_ETC[3]",
+      "type": "text"
+    },
+    "addendum_b_row3_purpose": {
+      "pdfField": "form1[0].#subform[13].Purpose_Insurance_Premium_Medical_Supplies_ETC[3]",
+      "type": "text"
+    },
+    "addendum_b_row4_child_name": {
+      "pdfField": "form1[0].#subform[13].Name_Of_Child_Or_Other[22]",
+      "type": "text"
+    },
+    "addendum_b_row4_date_year": {
+      "pdfField": "form1[0].#subform[13].Date_Costs_Paid_Year[10]",
+      "type": "text"
+    },
+    "addendum_b_row4_date_day": {
+      "pdfField": "form1[0].#subform[13].Date_Costs_Paid_Day[10]",
+      "type": "text"
+    },
+    "addendum_b_row4_date_month": {
+      "pdfField": "form1[0].#subform[13].Date_Costs_Paid_Month[10]",
+      "type": "text"
+    },
+    "addendum_b_row4_amount_thousands": {
+      "pdfField": "form1[0].#subform[13].Payment_Amount[24]",
+      "type": "text"
+    },
+    "addendum_b_row4_amount_dollars": {
+      "pdfField": "form1[0].#subform[13].Amount[30]",
+      "type": "text"
+    },
+    "addendum_b_row4_amount_cents": {
+      "pdfField": "form1[0].#subform[13].Amount[31]",
+      "type": "text"
+    },
+    "addendum_b_row4_paid_to": {
+      "pdfField": "form1[0].#subform[13].Name_Of_Provider_Insurance_Company_ETC[4]",
+      "type": "text"
+    },
+    "addendum_b_row4_purpose": {
+      "pdfField": "form1[0].#subform[13].Purpose_Insurance_Premium_Medical_Supplies_ETC[4]",
+      "type": "text"
+    },
+    "addendum_b_row5_child_name": {
+      "pdfField": "form1[0].#subform[13].Name_Of_Child_Or_Other[23]",
+      "type": "text"
+    },
+    "addendum_b_row5_date_year": {
+      "pdfField": "form1[0].#subform[13].Date_Costs_Paid_Year[11]",
+      "type": "text"
+    },
+    "addendum_b_row5_date_day": {
+      "pdfField": "form1[0].#subform[13].Date_Costs_Paid_Day[11]",
+      "type": "text"
+    },
+    "addendum_b_row5_date_month": {
+      "pdfField": "form1[0].#subform[13].Date_Costs_Paid_Month[11]",
+      "type": "text"
+    },
+    "addendum_b_row5_amount_thousands": {
+      "pdfField": "form1[0].#subform[13].Payment_Amount[25]",
+      "type": "text"
+    },
+    "addendum_b_row5_amount_dollars": {
+      "pdfField": "form1[0].#subform[13].Amount[32]",
+      "type": "text"
+    },
+    "addendum_b_row5_amount_cents": {
+      "pdfField": "form1[0].#subform[13].Amount[33]",
+      "type": "text"
+    },
+    "addendum_b_row5_paid_to": {
+      "pdfField": "form1[0].#subform[13].Name_Of_Provider_Insurance_Company_ETC[5]",
+      "type": "text"
+    },
+    "addendum_b_row5_purpose": {
+      "pdfField": "form1[0].#subform[13].Purpose_Insurance_Premium_Medical_Supplies_ETC[5]",
+      "type": "text"
+    },
+    "addendum_b_row6_child_name": {
+      "pdfField": "form1[0].#subform[13].Name_Of_Child_Or_Other[24]",
+      "type": "text"
+    },
+    "addendum_b_row6_date_year": {
+      "pdfField": "form1[0].#subform[13].Date_Costs_Paid_Year[12]",
+      "type": "text"
+    },
+    "addendum_b_row6_date_day": {
+      "pdfField": "form1[0].#subform[13].Date_Costs_Paid_Day[12]",
+      "type": "text"
+    },
+    "addendum_b_row6_date_month": {
+      "pdfField": "form1[0].#subform[13].Date_Costs_Paid_Month[12]",
+      "type": "text"
+    },
+    "addendum_b_row6_amount_thousands": {
+      "pdfField": "form1[0].#subform[13].Payment_Amount[26]",
+      "type": "text"
+    },
+    "addendum_b_row6_amount_dollars": {
+      "pdfField": "form1[0].#subform[13].Amount[34]",
+      "type": "text"
+    },
+    "addendum_b_row6_amount_cents": {
+      "pdfField": "form1[0].#subform[13].Amount[35]",
+      "type": "text"
+    },
+    "addendum_b_row6_paid_to": {
+      "pdfField": "form1[0].#subform[13].Name_Of_Provider_Insurance_Company_ETC[6]",
+      "type": "text"
+    },
+    "addendum_b_row6_purpose": {
+      "pdfField": "form1[0].#subform[13].Purpose_Insurance_Premium_Medical_Supplies_ETC[6]",
+      "type": "text"
+    },
+    "addendum_b_row7_child_name": {
+      "pdfField": "form1[0].#subform[13].Name_Of_Child_Or_Other[25]",
+      "type": "text"
+    },
+    "addendum_b_row7_date_year": {
+      "pdfField": "form1[0].#subform[13].Date_Costs_Paid_Year[13]",
+      "type": "text"
+    },
+    "addendum_b_row7_date_day": {
+      "pdfField": "form1[0].#subform[13].Date_Costs_Paid_Day[13]",
+      "type": "text"
+    },
+    "addendum_b_row7_date_month": {
+      "pdfField": "form1[0].#subform[13].Date_Costs_Paid_Month[13]",
+      "type": "text"
+    },
+    "addendum_b_row7_amount_thousands": {
+      "pdfField": "form1[0].#subform[13].Payment_Amount[27]",
+      "type": "text"
+    },
+    "addendum_b_row7_amount_dollars": {
+      "pdfField": "form1[0].#subform[13].Amount[36]",
+      "type": "text"
+    },
+    "addendum_b_row7_amount_cents": {
+      "pdfField": "form1[0].#subform[13].Amount[37]",
+      "type": "text"
+    },
+    "addendum_b_row7_paid_to": {
+      "pdfField": "form1[0].#subform[13].Name_Of_Provider_Insurance_Company_ETC[0]",
+      "type": "text"
+    },
+    "addendum_b_row7_purpose": {
+      "pdfField": "form1[0].#subform[13].Purpose_Insurance_Premium_Medical_Supplies_ETC[0]",
+      "type": "text"
+    },
+    "addendum_b_row1_whose": {
+      "pdfField": "form1[0].#subform[13].RadioButtonList[26]",
+      "type": "radio",
+      "values": {
+        "veteran": "4",
+        "spouse": "1",
+        "child": "3",
+        "other": "2"
+      }
+    },
+    "addendum_b_row1_frequency": {
+      "pdfField": "form1[0].#subform[13].RadioButtonList[27]",
+      "type": "radio",
+      "values": {
+        "monthly": "4",
+        "annually": "1",
+        "not_recurring": "3"
+      }
+    },
+    "addendum_b_row2_whose": {
+      "pdfField": "form1[0].#subform[13].RadioButtonList[28]",
+      "type": "radio",
+      "values": {
+        "veteran": "4",
+        "spouse": "1",
+        "child": "3",
+        "other": "2"
+      }
+    },
+    "addendum_b_row2_frequency": {
+      "pdfField": "form1[0].#subform[13].RadioButtonList[29]",
+      "type": "radio",
+      "values": {
+        "monthly": "4",
+        "annually": "1",
+        "not_recurring": "3"
+      }
+    },
+    "addendum_b_row3_whose": {
+      "pdfField": "form1[0].#subform[13].RadioButtonList[30]",
+      "type": "radio",
+      "values": {
+        "veteran": "4",
+        "spouse": "1",
+        "child": "3",
+        "other": "2"
+      }
+    },
+    "addendum_b_row3_frequency": {
+      "pdfField": "form1[0].#subform[13].RadioButtonList[31]",
+      "type": "radio",
+      "values": {
+        "monthly": "4",
+        "annually": "1",
+        "not_recurring": "3"
+      }
+    },
+    "addendum_b_row4_whose": {
+      "pdfField": "form1[0].#subform[13].RadioButtonList[32]",
+      "type": "radio",
+      "values": {
+        "veteran": "4",
+        "spouse": "1",
+        "child": "3",
+        "other": "2"
+      }
+    },
+    "addendum_b_row4_frequency": {
+      "pdfField": "form1[0].#subform[13].RadioButtonList[33]",
+      "type": "radio",
+      "values": {
+        "monthly": "4",
+        "annually": "1",
+        "not_recurring": "3"
+      }
+    },
+    "addendum_b_row5_whose": {
+      "pdfField": "form1[0].#subform[13].RadioButtonList[34]",
+      "type": "radio",
+      "values": {
+        "veteran": "4",
+        "spouse": "1",
+        "child": "3",
+        "other": "2"
+      }
+    },
+    "addendum_b_row5_frequency": {
+      "pdfField": "form1[0].#subform[13].RadioButtonList[35]",
+      "type": "radio",
+      "values": {
+        "monthly": "4",
+        "annually": "1",
+        "not_recurring": "3"
+      }
+    },
+    "addendum_b_row6_whose": {
+      "pdfField": "form1[0].#subform[13].RadioButtonList[36]",
+      "type": "radio",
+      "values": {
+        "veteran": "4",
+        "spouse": "1",
+        "child": "3",
+        "other": "2"
+      }
+    },
+    "addendum_b_row6_frequency": {
+      "pdfField": "form1[0].#subform[13].RadioButtonList[37]",
+      "type": "radio",
+      "values": {
+        "monthly": "4",
+        "annually": "1",
+        "not_recurring": "3"
+      }
+    },
+    "addendum_b_row7_whose": {
+      "pdfField": "form1[0].#subform[13].RadioButtonList[38]",
+      "type": "radio",
+      "values": {
+        "veteran": "4",
+        "spouse": "1",
+        "child": "3",
+        "other": "2"
+      }
+    },
+    "addendum_b_row7_frequency": {
+      "pdfField": "form1[0].#subform[13].RadioButtonList[39]",
+      "type": "radio",
+      "values": {
+        "monthly": "4",
+        "annually": "1",
+        "not_recurring": "3"
+      }
+    },
+    "addendum_c_row1_child_name": {
+      "pdfField": "form1[0].#subform[14].Name_Of_Child_Or_Other[26]",
+      "type": "text"
+    },
+    "addendum_c_row1_location": {
+      "pdfField": "form1[0].#subform[14].Location_Traveled_To_Hospital_Clinic_Pharmacy_ETC[0]",
+      "type": "text"
+    },
+    "addendum_c_row1_total_miles": {
+      "pdfField": "form1[0].#subform[14].Total_Miles_Traveled[4]",
+      "type": "text"
+    },
+    "addendum_c_row1_date_year": {
+      "pdfField": "form1[0].#subform[14].Date_Year[0]",
+      "type": "text"
+    },
+    "addendum_c_row1_date_day": {
+      "pdfField": "form1[0].#subform[14].Date_Day[0]",
+      "type": "text"
+    },
+    "addendum_c_row1_date_month": {
+      "pdfField": "form1[0].#subform[14].Date_Traveled_Month[4]",
+      "type": "text"
+    },
+    "addendum_c_row1_amount_thousands": {
+      "pdfField": "form1[0].#subform[14].Amount_Reimbursed_From_Any_Source_VA_Medical_Center_ETC[0]",
+      "type": "text"
+    },
+    "addendum_c_row1_amount_reimbursed": {
+      "pdfField": "form1[0].#subform[14].Amount[38]",
+      "type": "text"
+    },
+    "addendum_c_row1_amount_cents": {
+      "pdfField": "form1[0].#subform[14].Amount[39]",
+      "type": "text"
+    },
+    "addendum_c_row2_child_name": {
+      "pdfField": "form1[0].#subform[14].Name_Of_Child_Or_Other[27]",
+      "type": "text"
+    },
+    "addendum_c_row2_location": {
+      "pdfField": "form1[0].#subform[14].Location_Traveled_To_Hospital_Clinic_Pharmacy_ETC[1]",
+      "type": "text"
+    },
+    "addendum_c_row2_total_miles": {
+      "pdfField": "form1[0].#subform[14].Total_Miles_Traveled[5]",
+      "type": "text"
+    },
+    "addendum_c_row2_date_year": {
+      "pdfField": "form1[0].#subform[14].Date_Year[1]",
+      "type": "text"
+    },
+    "addendum_c_row2_date_day": {
+      "pdfField": "form1[0].#subform[14].Date_Day[1]",
+      "type": "text"
+    },
+    "addendum_c_row2_date_month": {
+      "pdfField": "form1[0].#subform[14].Date_Traveled_Month[5]",
+      "type": "text"
+    },
+    "addendum_c_row2_amount_thousands": {
+      "pdfField": "form1[0].#subform[14].Amount_Reimbursed_From_Any_Source_VA_Medical_Center_ETC[1]",
+      "type": "text"
+    },
+    "addendum_c_row2_amount_reimbursed": {
+      "pdfField": "form1[0].#subform[14].Amount[40]",
+      "type": "text"
+    },
+    "addendum_c_row2_amount_cents": {
+      "pdfField": "form1[0].#subform[14].Amount[41]",
+      "type": "text"
+    },
+    "addendum_c_row3_child_name": {
+      "pdfField": "form1[0].#subform[14].Name_Of_Child_Or_Other[28]",
+      "type": "text"
+    },
+    "addendum_c_row3_location": {
+      "pdfField": "form1[0].#subform[14].Location_Traveled_To_Hospital_Clinic_Pharmacy_ETC[2]",
+      "type": "text"
+    },
+    "addendum_c_row3_total_miles": {
+      "pdfField": "form1[0].#subform[14].Total_Miles_Traveled[6]",
+      "type": "text"
+    },
+    "addendum_c_row3_date_year": {
+      "pdfField": "form1[0].#subform[14].Date_Year[2]",
+      "type": "text"
+    },
+    "addendum_c_row3_date_day": {
+      "pdfField": "form1[0].#subform[14].Date_Day[2]",
+      "type": "text"
+    },
+    "addendum_c_row3_date_month": {
+      "pdfField": "form1[0].#subform[14].Date_Traveled_Month[6]",
+      "type": "text"
+    },
+    "addendum_c_row3_amount_thousands": {
+      "pdfField": "form1[0].#subform[14].Amount_Reimbursed_From_Any_Source_VA_Medical_Center_ETC[2]",
+      "type": "text"
+    },
+    "addendum_c_row3_amount_reimbursed": {
+      "pdfField": "form1[0].#subform[14].Amount[42]",
+      "type": "text"
+    },
+    "addendum_c_row3_amount_cents": {
+      "pdfField": "form1[0].#subform[14].Amount[43]",
+      "type": "text"
+    },
+    "addendum_c_row4_child_name": {
+      "pdfField": "form1[0].#subform[14].Name_Of_Child_Or_Other[29]",
+      "type": "text"
+    },
+    "addendum_c_row4_location": {
+      "pdfField": "form1[0].#subform[14].Location_Traveled_To_Hospital_Clinic_Pharmacy_ETC[3]",
+      "type": "text"
+    },
+    "addendum_c_row4_total_miles": {
+      "pdfField": "form1[0].#subform[14].Total_Miles_Traveled[7]",
+      "type": "text"
+    },
+    "addendum_c_row4_date_year": {
+      "pdfField": "form1[0].#subform[14].Date_Year[3]",
+      "type": "text"
+    },
+    "addendum_c_row4_date_day": {
+      "pdfField": "form1[0].#subform[14].Date_Day[3]",
+      "type": "text"
+    },
+    "addendum_c_row4_date_month": {
+      "pdfField": "form1[0].#subform[14].Date_Traveled_Month[7]",
+      "type": "text"
+    },
+    "addendum_c_row4_amount_thousands": {
+      "pdfField": "form1[0].#subform[14].Amount_Reimbursed_From_Any_Source_VA_Medical_Center_ETC[3]",
+      "type": "text"
+    },
+    "addendum_c_row4_amount_reimbursed": {
+      "pdfField": "form1[0].#subform[14].Amount[44]",
+      "type": "text"
+    },
+    "addendum_c_row4_amount_cents": {
+      "pdfField": "form1[0].#subform[14].Amount[45]",
+      "type": "text"
+    },
+    "addendum_c_row5_child_name": {
+      "pdfField": "form1[0].#subform[14].Name_Of_Child_Or_Other[30]",
+      "type": "text"
+    },
+    "addendum_c_row5_location": {
+      "pdfField": "form1[0].#subform[14].Location_Traveled_To_Hospital_Clinic_Pharmacy_ETC[4]",
+      "type": "text"
+    },
+    "addendum_c_row5_total_miles": {
+      "pdfField": "form1[0].#subform[14].Total_Miles_Traveled[8]",
+      "type": "text"
+    },
+    "addendum_c_row5_date_year": {
+      "pdfField": "form1[0].#subform[14].Date_Year[4]",
+      "type": "text"
+    },
+    "addendum_c_row5_date_day": {
+      "pdfField": "form1[0].#subform[14].Date_Day[4]",
+      "type": "text"
+    },
+    "addendum_c_row5_date_month": {
+      "pdfField": "form1[0].#subform[14].Date_Traveled_Month[8]",
+      "type": "text"
+    },
+    "addendum_c_row5_amount_thousands": {
+      "pdfField": "form1[0].#subform[14].Amount_Reimbursed_From_Any_Source_VA_Medical_Center_ETC[4]",
+      "type": "text"
+    },
+    "addendum_c_row5_amount_reimbursed": {
+      "pdfField": "form1[0].#subform[14].Amount[46]",
+      "type": "text"
+    },
+    "addendum_c_row5_amount_cents": {
+      "pdfField": "form1[0].#subform[14].Amount[47]",
+      "type": "text"
+    },
+    "addendum_c_row6_child_name": {
+      "pdfField": "form1[0].#subform[14].Name_Of_Child_Or_Other[31]",
+      "type": "text"
+    },
+    "addendum_c_row6_location": {
+      "pdfField": "form1[0].#subform[14].Location_Traveled_To_Hospital_Clinic_Pharmacy_ETC[5]",
+      "type": "text"
+    },
+    "addendum_c_row6_total_miles": {
+      "pdfField": "form1[0].#subform[14].Total_Miles_Traveled[9]",
+      "type": "text"
+    },
+    "addendum_c_row6_date_year": {
+      "pdfField": "form1[0].#subform[14].Date_Year[5]",
+      "type": "text"
+    },
+    "addendum_c_row6_date_day": {
+      "pdfField": "form1[0].#subform[14].Date_Day[5]",
+      "type": "text"
+    },
+    "addendum_c_row6_date_month": {
+      "pdfField": "form1[0].#subform[14].Date_Traveled_Month[9]",
+      "type": "text"
+    },
+    "addendum_c_row6_amount_thousands": {
+      "pdfField": "form1[0].#subform[14].Amount_Reimbursed_From_Any_Source_VA_Medical_Center_ETC[5]",
+      "type": "text"
+    },
+    "addendum_c_row6_amount_reimbursed": {
+      "pdfField": "form1[0].#subform[14].Amount[48]",
+      "type": "text"
+    },
+    "addendum_c_row6_amount_cents": {
+      "pdfField": "form1[0].#subform[14].Amount[49]",
+      "type": "text"
+    },
+    "addendum_c_row7_child_name": {
+      "pdfField": "form1[0].#subform[14].Name_Of_Child_Or_Other[32]",
+      "type": "text"
+    },
+    "addendum_c_row7_location": {
+      "pdfField": "form1[0].#subform[14].Location_Traveled_To_Hospital_Clinic_Pharmacy_ETC[6]",
+      "type": "text"
+    },
+    "addendum_c_row7_total_miles": {
+      "pdfField": "form1[0].#subform[14].Total_Miles_Traveled[10]",
+      "type": "text"
+    },
+    "addendum_c_row7_date_year": {
+      "pdfField": "form1[0].#subform[14].Date_Year[6]",
+      "type": "text"
+    },
+    "addendum_c_row7_date_day": {
+      "pdfField": "form1[0].#subform[14].Date_Day[6]",
+      "type": "text"
+    },
+    "addendum_c_row7_date_month": {
+      "pdfField": "form1[0].#subform[14].Date_Traveled_Month[10]",
+      "type": "text"
+    },
+    "addendum_c_row7_amount_thousands": {
+      "pdfField": "form1[0].#subform[14].Amount_Reimbursed_From_Any_Source_VA_Medical_Center_ETC[6]",
+      "type": "text"
+    },
+    "addendum_c_row7_amount_reimbursed": {
+      "pdfField": "form1[0].#subform[14].Amount[50]",
+      "type": "text"
+    },
+    "addendum_c_row7_amount_cents": {
+      "pdfField": "form1[0].#subform[14].Amount[51]",
+      "type": "text"
+    },
+    "addendum_c_row8_child_name": {
+      "pdfField": "form1[0].#subform[14].Name_Of_Child_Or_Other[33]",
+      "type": "text"
+    },
+    "addendum_c_row8_location": {
+      "pdfField": "form1[0].#subform[14].Location_Traveled_To_Hospital_Clinic_Pharmacy_ETC[7]",
+      "type": "text"
+    },
+    "addendum_c_row8_total_miles": {
+      "pdfField": "form1[0].#subform[14].Total_Miles_Traveled[11]",
+      "type": "text"
+    },
+    "addendum_c_row8_date_year": {
+      "pdfField": "form1[0].#subform[14].Date_Year[7]",
+      "type": "text"
+    },
+    "addendum_c_row8_date_day": {
+      "pdfField": "form1[0].#subform[14].Date_Day[7]",
+      "type": "text"
+    },
+    "addendum_c_row8_date_month": {
+      "pdfField": "form1[0].#subform[14].Date_Traveled_Month[11]",
+      "type": "text"
+    },
+    "addendum_c_row8_amount_thousands": {
+      "pdfField": "form1[0].#subform[14].Amount_Reimbursed_From_Any_Source_VA_Medical_Center_ETC[7]",
+      "type": "text"
+    },
+    "addendum_c_row8_amount_reimbursed": {
+      "pdfField": "form1[0].#subform[14].Amount[52]",
+      "type": "text"
+    },
+    "addendum_c_row8_amount_cents": {
+      "pdfField": "form1[0].#subform[14].Amount[53]",
+      "type": "text"
+    },
+    "addendum_c_row1_whose": {
+      "pdfField": "form1[0].#subform[14].RadioButtonList[40]",
+      "type": "radio",
+      "values": {
+        "veteran": "4",
+        "spouse": "1",
+        "child": "3"
+      }
+    },
+    "addendum_c_row2_whose": {
+      "pdfField": "form1[0].#subform[14].RadioButtonList[41]",
+      "type": "radio",
+      "values": {
+        "veteran": "4",
+        "spouse": "1",
+        "child": "3"
+      }
+    },
+    "addendum_c_row3_whose": {
+      "pdfField": "form1[0].#subform[14].RadioButtonList[42]",
+      "type": "radio",
+      "values": {
+        "veteran": "4",
+        "spouse": "1",
+        "child": "3"
+      }
+    },
+    "addendum_c_row4_whose": {
+      "pdfField": "form1[0].#subform[14].RadioButtonList[43]",
+      "type": "radio",
+      "values": {
+        "veteran": "4",
+        "spouse": "1",
+        "child": "3"
+      }
+    },
+    "addendum_c_row5_whose": {
+      "pdfField": "form1[0].#subform[14].RadioButtonList[44]",
+      "type": "radio",
+      "values": {
+        "veteran": "4",
+        "spouse": "1",
+        "child": "3"
+      }
+    },
+    "addendum_c_row6_whose": {
+      "pdfField": "form1[0].#subform[14].RadioButtonList[45]",
+      "type": "radio",
+      "values": {
+        "veteran": "4",
+        "spouse": "1",
+        "child": "3"
+      }
+    },
+    "addendum_c_row7_whose": {
+      "pdfField": "form1[0].#subform[14].RadioButtonList[46]",
+      "type": "radio",
+      "values": {
+        "veteran": "4",
+        "spouse": "1",
+        "child": "3"
+      }
+    },
+    "addendum_c_row8_whose": {
+      "pdfField": "form1[0].#subform[14].RadioButtonList[47]",
+      "type": "radio",
+      "values": {
+        "veteran": "4",
+        "spouse": "1",
+        "child": "3"
+      }
+    }
+  }
+}

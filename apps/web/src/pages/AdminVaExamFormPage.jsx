@@ -43,7 +43,7 @@ const TEXT_FIELDS = [
     ['exam_height_feet', 'Height — Feet'], ['exam_height_inches', 'Height — Inches'],
     ['exam_blood_pressure', 'Blood Pressure'], ['exam_pulse_rate', 'Pulse Rate'], ['exam_respiratory_rate', 'Respiratory Rate'],
     ['bed_hours_9pm_to_9am', 'Hours in Bed — 9PM to 9AM'], ['bed_hours_9am_to_9pm', 'Hours in Bed — 9AM to 9PM'],
-    ['corrected_vision_left', 'Corrected Vision — Left Eye'], ['corrected_vision_right', 'Corrected Vision — Right Eye'],
+    ['corrected_vision_left', 'Corrected Vision — Left Eye (e.g. 200 for 20/200)'], ['corrected_vision_right', 'Corrected Vision — Right Eye (e.g. 200 for 20/200)'],
   ]},
   { section: 'Examiner Signature & Facility', keys: [
     ['examiner_printed_name', 'Printed Name of Examiner'], ['examiner_title', 'Title of Examiner'],
@@ -166,6 +166,11 @@ const AdminVaExamFormPage = () => {
       delete caseFormFields.veteran_ssn;
       delete caseFormFields.claimant_ssn;
       caseFields.forEach((k) => delete caseFormFields[k]);
+      // 28B has 3 boxes per eye, so "20/200" must go in as "200".
+      ['corrected_vision_left', 'corrected_vision_right'].forEach((k) => {
+        const m = String(caseFormFields[k] || '').match(/^\s*20\s*\/\s*(\d+)\s*$/);
+        if (m) caseFormFields[k] = m[1];
+      });
 
       const caseForm = await pb.collection('va_case_forms').create({
         case_id: vaCase.id,
